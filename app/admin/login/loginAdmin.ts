@@ -1,6 +1,5 @@
 "use server";
 
-import * as sdk from "node-appwrite";
 import { LoginData } from "./loginData";
 import { loginSchema } from "./loginSchema";
 import { cookies } from "next/headers";
@@ -11,13 +10,7 @@ import {
   invalidFieldsError,
 } from "@/lib/results";
 import { ZodError } from "zod";
-
-const client = new sdk.Client()
-  .setEndpoint("https://cloud.appwrite.io/v1")
-  .setProject(process.env.PROJECT_ID!)
-  .setKey(process.env.API_KEY!);
-
-const account = new sdk.Account(client);
+import { account, AppwriteException } from "@/lib/appwrite/adminClient";
 
 export async function loginAdmin(data: LoginData) {
   try {
@@ -55,7 +48,7 @@ export async function loginAdmin(data: LoginData) {
   }
 }
 
-function isAppwriteException(error: any): error is sdk.AppwriteException {
+function isAppwriteException(error: any): error is AppwriteException {
   return (
     typeof error === "object" &&
     error !== null &&

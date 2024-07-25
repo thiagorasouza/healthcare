@@ -7,7 +7,7 @@ jest.mock("zod", () => {
     z: {
       ...actualZod.z,
       object: jest.fn().mockImplementation(() => ({
-        parse: jest.fn(),
+        parse: jest.fn((data) => data),
       })),
     },
   };
