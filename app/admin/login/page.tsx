@@ -75,7 +75,9 @@ export default function LoginPage() {
               </FormItem>
             )}
           />
-          <Button type="submit">Submit</Button>
+          <Button type="submit" data-cy="submit">
+            Submit
+          </Button>
         </form>
       </Form>
     </main>

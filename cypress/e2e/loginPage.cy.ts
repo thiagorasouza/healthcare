@@ -10,4 +10,8 @@ describe("LoginPage Test Suite", () => {
   it("has a password field", () => {
     cy.get("[data-cy='password']").should("exist");
   });
+
+  it("has a submit button", () => {
+    cy.get("[data-cy='submit']").should("exist");
+  });
 });
