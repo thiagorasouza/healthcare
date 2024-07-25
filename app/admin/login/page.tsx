@@ -14,8 +14,9 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { loginAdmin } from "./loginAdmin";
 
-const loginSchema = z.object({
+export const loginSchema = z.object({
   email: z
     .string({
       errorMap: () => ({ message: "Invalid email" }),
@@ -38,8 +39,9 @@ export default function LoginPage() {
     },
   });
 
-  function onSubmit(values: z.infer<typeof loginSchema>) {
+  async function onSubmit(values: z.infer<typeof loginSchema>) {
     console.log(values);
+    await loginAdmin(values);
   }
 
   return (
@@ -58,7 +60,7 @@ export default function LoginPage() {
                 <FormControl>
                   <Input data-cy="email" {...field} />
                 </FormControl>
-                <FormMessage />
+                <FormMessage data-cy="emailError" />
               </FormItem>
             )}
           />
@@ -71,7 +73,7 @@ export default function LoginPage() {
                 <FormControl>
                   <Input type="password" data-cy="password" {...field} />
                 </FormControl>
-                <FormMessage />
+                <FormMessage data-cy="passwordError" />
               </FormItem>
             )}
           />
