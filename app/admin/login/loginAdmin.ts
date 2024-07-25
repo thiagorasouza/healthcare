@@ -8,7 +8,9 @@ import {
   success,
   unexpectedError,
   invalidCredentialsError,
+  invalidFieldsError,
 } from "@/lib/results";
+import { ZodError } from "zod";
 
 const client = new sdk.Client()
   .setEndpoint("https://cloud.appwrite.io/v1")
@@ -20,6 +22,7 @@ const account = new sdk.Account(client);
 export async function loginAdmin(data: LoginData) {
   try {
     const validData = loginSchema.parse(data);
+    console.log("🚀 ~ validData:", validData);
 
     const session = await account.createEmailPasswordSession(
       validData.email,
@@ -44,6 +47,10 @@ export async function loginAdmin(data: LoginData) {
       }
     }
 
+    if (isZodException(error)) {
+      return invalidFieldsError();
+    }
+
     return unexpectedError();
   }
 }
@@ -53,5 +60,13 @@ function isAppwriteException(error: any): error is sdk.AppwriteException {
     typeof error === "object" &&
     error !== null &&
     error.constructor.name === "AppwriteException"
+  );
+}
+
+function isZodException(error: any): error is ZodError {
+  return (
+    typeof error === "object" &&
+    error !== null &&
+    error.constructor.name === "ZodError"
   );
 }
