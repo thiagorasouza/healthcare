@@ -13,4 +13,7 @@ const config: Config = {
   },
 };
 
-export default createJestConfig(config);
+const jestConfig = createJestConfig(config);
+console.log("🚀 ~ jestConfig:", jestConfig);
+
+export default jestConfig;

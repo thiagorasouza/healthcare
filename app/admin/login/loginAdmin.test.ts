@@ -1,11 +1,14 @@
 import { expect, jest } from "@jest/globals";
 import "./zodMock";
+import "./cookiesMock";
+import "./appwriteMock";
 import { ZodError } from "zod";
 import { loginSchema } from "./loginSchema";
 import { loginAdmin } from "./loginAdmin";
 import {
   invalidCredentialsError,
   invalidFieldsError,
+  success,
   unexpectedError,
 } from "@/lib/results";
 import { account, AppwriteException } from "@/lib/appwrite/adminClient";
@@ -25,10 +28,10 @@ describe("loginAdmin", () => {
     expect(result).toStrictEqual(invalidFieldsError());
   });
 
-  it("return an error for invalid credentials", async () => {
+  it("returns an error for invalid credentials", async () => {
     const createSessionSpy = jest.spyOn(account, "createEmailPasswordSession");
 
-    createSessionSpy.mockImplementation(() => {
+    createSessionSpy.mockImplementationOnce(() => {
       throw new AppwriteException("", 401, "user_invalid_credentials");
     });
 
@@ -36,14 +39,20 @@ describe("loginAdmin", () => {
     expect(result).toStrictEqual(invalidCredentialsError());
   });
 
-  it("return unexpected error if appwrite throws", async () => {
+  it("returns unexpected error if appwrite throws", async () => {
     const createSessionSpy = jest.spyOn(account, "createEmailPasswordSession");
 
-    createSessionSpy.mockImplementation(() => {
+    createSessionSpy.mockImplementationOnce(() => {
       throw new AppwriteException("");
     });
 
     const result = await loginAdmin(mockUserData);
+
     expect(result).toStrictEqual(unexpectedError());
+  });
+
+  it("returns success for valid data", async () => {
+    const result = await loginAdmin(mockUserData);
+    expect(result).toStrictEqual(success());
   });
 });
