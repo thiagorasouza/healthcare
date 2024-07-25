@@ -12,6 +12,8 @@ import {
   unexpectedError,
 } from "@/lib/results";
 import { account, AppwriteException } from "@/lib/appwrite/adminClient";
+import { cookies } from "next/headers";
+import { sessionMock } from "./sessionMock";
 
 const mockUserData = {
   email: "john@email.com",
@@ -49,6 +51,27 @@ describe("loginAdmin", () => {
     const result = await loginAdmin(mockUserData);
 
     expect(result).toStrictEqual(unexpectedError());
+  });
+
+  it("sets cookie with the session secret", async () => {
+    const cookiesMock = { set: jest.fn() };
+    // @ts-ignore
+    cookies.mockImplementationOnce(() => cookiesMock);
+
+    const result = await loginAdmin(mockUserData);
+    console.log("🚀 ~ result:", result);
+
+    expect(cookiesMock.set).toHaveBeenCalledWith(
+      "session",
+      sessionMock.secret,
+      {
+        httpOnly: true,
+        secure: true,
+        sameSite: "none",
+        maxAge: Number(sessionMock.expire),
+        path: "/",
+      },
+    );
   });
 
   it("returns success for valid data", async () => {
