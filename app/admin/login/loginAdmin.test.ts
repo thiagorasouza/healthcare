@@ -20,7 +20,7 @@ const mockUserData = {
 
 describe("loginAdmin", () => {
   it("returns an error for invalid fields", async () => {
-    (loginSchema.parse as jest.Mock).mockImplementationOnce(() => {
+    jest.spyOn(loginSchema, "parse").mockImplementationOnce(() => {
       throw new ZodError([]);
     });
 
@@ -29,22 +29,22 @@ describe("loginAdmin", () => {
   });
 
   it("returns an error for invalid credentials", async () => {
-    const createSessionSpy = jest.spyOn(account, "createEmailPasswordSession");
-
-    createSessionSpy.mockImplementationOnce(() => {
-      throw new AppwriteException("", 401, "user_invalid_credentials");
-    });
+    jest
+      .spyOn(account, "createEmailPasswordSession")
+      .mockImplementationOnce(() => {
+        throw new AppwriteException("", 401, "user_invalid_credentials");
+      });
 
     const result = await loginAdmin(mockUserData);
     expect(result).toStrictEqual(invalidCredentialsError());
   });
 
   it("returns unexpected error if appwrite throws", async () => {
-    const createSessionSpy = jest.spyOn(account, "createEmailPasswordSession");
-
-    createSessionSpy.mockImplementationOnce(() => {
-      throw new AppwriteException("");
-    });
+    jest
+      .spyOn(account, "createEmailPasswordSession")
+      .mockImplementationOnce(() => {
+        throw new AppwriteException("");
+      });
 
     const result = await loginAdmin(mockUserData);
 
