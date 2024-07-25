@@ -1,5 +1,13 @@
-describe('template spec', () => {
-  it('passes', () => {
-    cy.visit('https://example.cypress.io')
-  })
-})
+describe("LoginPage Test Suite", () => {
+  beforeEach(() => {
+    cy.visit("http://localhost:3001/admin/login");
+  });
+
+  it("has an email field", () => {
+    cy.get("[data-cy='email']").should("exist");
+  });
+
+  it("has a password field", () => {
+    cy.get("[data-cy='password']").should("exist");
+  });
+});
