@@ -15,23 +15,11 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { loginAdmin } from "./loginAdmin";
-
-export const loginSchema = z.object({
-  email: z
-    .string({
-      errorMap: () => ({ message: "Invalid email" }),
-    })
-    .email(),
-  password: z
-    .string({
-      errorMap: () => ({ message: "Invalid password" }),
-    })
-    .min(8)
-    .max(32),
-});
+import { loginSchema } from "./loginSchema";
+import { LoginData } from "./loginData";
 
 export default function LoginPage() {
-  const form = useForm<z.infer<typeof loginSchema>>({
+  const form = useForm<LoginData>({
     resolver: zodResolver(loginSchema),
     defaultValues: {
       email: "",
@@ -39,9 +27,10 @@ export default function LoginPage() {
     },
   });
 
-  async function onSubmit(values: z.infer<typeof loginSchema>) {
-    console.log(values);
-    await loginAdmin(values);
+  async function onSubmit(values: LoginData) {
+    // console.log(values);
+    const result = await loginAdmin(values);
+    console.log("🚀 ~ result:", result);
   }
 
   return (
