@@ -15,7 +15,7 @@ import { account, AppwriteException } from "@/lib/appwrite/adminClient";
 export async function loginAdmin(data: LoginData) {
   try {
     const validData = loginSchema.parse(data);
-    console.log("🚀 ~ validData:", validData);
+    // console.log("🚀 ~ validData:", validData);
 
     const session = await account.createEmailPasswordSession(
       validData.email,

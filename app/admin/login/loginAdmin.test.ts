@@ -3,8 +3,17 @@ import "./zodMock";
 import { ZodError } from "zod";
 import { loginSchema } from "./loginSchema";
 import { loginAdmin } from "./loginAdmin";
-import { invalidCredentialsError, invalidFieldsError } from "@/lib/results";
+import {
+  invalidCredentialsError,
+  invalidFieldsError,
+  unexpectedError,
+} from "@/lib/results";
 import { account, AppwriteException } from "@/lib/appwrite/adminClient";
+
+const mockUserData = {
+  email: "john@email.com",
+  password: "abcd1234",
+};
 
 describe("loginAdmin", () => {
   it("returns an error for invalid fields", async () => {
@@ -12,12 +21,7 @@ describe("loginAdmin", () => {
       throw new ZodError([]);
     });
 
-    const userData = {
-      email: "invalid_email@email.com",
-      password: "invalid_password",
-    };
-
-    const result = await loginAdmin(userData);
+    const result = await loginAdmin(mockUserData);
     expect(result).toStrictEqual(invalidFieldsError());
   });
 
@@ -28,12 +32,18 @@ describe("loginAdmin", () => {
       throw new AppwriteException("", 401, "user_invalid_credentials");
     });
 
-    const userData = {
-      email: "invalid_credential@email.com",
-      password: "invalid_credential",
-    };
-
-    const result = await loginAdmin(userData);
+    const result = await loginAdmin(mockUserData);
     expect(result).toStrictEqual(invalidCredentialsError());
+  });
+
+  it("return unexpected error if appwrite throws", async () => {
+    const createSessionSpy = jest.spyOn(account, "createEmailPasswordSession");
+
+    createSessionSpy.mockImplementation(() => {
+      throw new AppwriteException("");
+    });
+
+    const result = await loginAdmin(mockUserData);
+    expect(result).toStrictEqual(unexpectedError());
   });
 });
