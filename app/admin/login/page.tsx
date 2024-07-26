@@ -16,13 +16,12 @@ import { Input } from "@/components/ui/input";
 import { loginAdmin } from "./loginAdmin";
 import { loginSchema } from "./loginSchema";
 import { LoginData } from "./loginData";
-import { useRef } from "react";
-import { useFormState } from "react-dom";
-
-const initialState = { message: "" };
+import { useRef, useState } from "react";
+import { unexpectedError } from "@/lib/results";
 
 export default function LoginPage() {
-  const [state, formAction] = useFormState(loginAdmin, initialState);
+  const [message, setMessage] = useState("");
+
   const formRef = useRef<HTMLFormElement>(null);
 
   const form = useForm<LoginData>({
@@ -33,18 +32,30 @@ export default function LoginPage() {
     },
   });
 
+  async function onSubmit(loginData: LoginData) {
+    setMessage("");
+    try {
+      await new Promise((resolve) => setTimeout(resolve, 5000));
+      const result = await loginAdmin(loginData);
+      setMessage(result.message);
+    } catch (error) {
+      console.log("🚀 ~ error:", error);
+      setMessage(unexpectedError().message);
+    }
+  }
+
+  console.log("isSubmitting", form.formState.isSubmitting);
+
   return (
     <main className="w-[600px] mx-auto py-12 space-y-8">
       <header>
         <h1 className="text-3xl font-semibold">Login</h1>
       </header>
-      {state.message && <p>{state.message}</p>}
+      {message && <p>{message}</p>}
       <Form {...form}>
         <form
           ref={formRef}
-          onSubmit={form.handleSubmit(() => {
-            formAction(new FormData(formRef.current!));
-          })}
+          onSubmit={form.handleSubmit(onSubmit)}
           className="space-y-6"
         >
           <FormField
@@ -54,7 +65,11 @@ export default function LoginPage() {
               <FormItem>
                 <FormLabel>Email</FormLabel>
                 <FormControl>
-                  <Input data-cy="email" {...field} />
+                  <Input
+                    data-cy="email"
+                    readOnly={form.formState.isSubmitting}
+                    {...field}
+                  />
                 </FormControl>
                 <FormMessage data-cy="emailError" />
               </FormItem>
@@ -67,13 +82,22 @@ export default function LoginPage() {
               <FormItem>
                 <FormLabel>Password</FormLabel>
                 <FormControl>
-                  <Input type="password" data-cy="password" {...field} />
+                  <Input
+                    type="password"
+                    data-cy="password"
+                    readOnly={form.formState.isSubmitting}
+                    {...field}
+                  />
                 </FormControl>
                 <FormMessage data-cy="passwordError" />
               </FormItem>
             )}
           />
-          <Button type="submit" data-cy="submit">
+          <Button
+            type="submit"
+            data-cy="submit"
+            disabled={form.formState.isSubmitting}
+          >
             Submit
           </Button>
         </form>

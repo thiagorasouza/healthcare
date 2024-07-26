@@ -13,9 +13,8 @@ import {
 import { ZodError } from "zod";
 import { account, AppwriteException } from "@/lib/appwrite/adminClient";
 
-export async function loginAdmin(initialState: any, formData: FormData) {
+export async function loginAdmin(loginData: LoginData) {
   try {
-    const loginData = Object.fromEntries(formData);
     const validData = loginSchema.parse(loginData);
     // console.log("🚀 ~ validData:", validData);
 
