@@ -62,10 +62,10 @@ export default function LoginForm() {
           name="email"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Email</FormLabel>
               <FormControl>
                 <Input
                   data-cy="email"
+                  placeholder="name@example.com"
                   readOnly={form.formState.isSubmitting}
                   {...field}
                 />
@@ -79,11 +79,11 @@ export default function LoginForm() {
           name="password"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Password</FormLabel>
               <FormControl>
                 <Input
                   type="password"
                   data-cy="password"
+                  placeholder="&#9679;&#9679;&#9679;&#9679;&#9679;&#9679;&#9679;&#9679;"
                   readOnly={form.formState.isSubmitting}
                   {...field}
                 />
@@ -95,9 +95,10 @@ export default function LoginForm() {
         <Button
           type="submit"
           data-cy="submit"
+          className="w-full"
           disabled={form.formState.isSubmitting}
         >
-          Submit
+          Continue
         </Button>
       </form>
     </Form>
