@@ -4,7 +4,7 @@ import "./cookiesMock";
 import "./appwriteMock";
 import { ZodError } from "zod";
 import { loginSchema } from "./loginSchema";
-import { loginAdmin } from "./loginAdmin";
+
 import {
   invalidCredentialsError,
   invalidFieldsError,
@@ -14,10 +14,17 @@ import {
 import { account, AppwriteException } from "@/lib/appwrite/adminClient";
 import { cookies } from "next/headers";
 import { sessionMock } from "./sessionMock";
+import { loginAdmin } from "./loginAdmin";
 
-const mockUserData = {
-  email: "john@email.com",
-  password: "abcd1234",
+const mockUserData = (() => {
+  const formData = new FormData();
+  formData.append("email", "john@email.com");
+  formData.append("password", "abc123");
+  return formData;
+})();
+
+const initialState = {
+  message: "",
 };
 
 describe("loginAdmin", () => {
@@ -26,7 +33,7 @@ describe("loginAdmin", () => {
       throw new ZodError([]);
     });
 
-    const result = await loginAdmin(mockUserData);
+    const result = await loginAdmin(initialState, mockUserData);
     expect(result).toStrictEqual(invalidFieldsError());
   });
 
@@ -37,7 +44,7 @@ describe("loginAdmin", () => {
         throw new AppwriteException("", 401, "user_invalid_credentials");
       });
 
-    const result = await loginAdmin(mockUserData);
+    const result = await loginAdmin(initialState, mockUserData);
     expect(result).toStrictEqual(invalidCredentialsError());
   });
 
@@ -48,7 +55,7 @@ describe("loginAdmin", () => {
         throw new AppwriteException("");
       });
 
-    const result = await loginAdmin(mockUserData);
+    const result = await loginAdmin(initialState, mockUserData);
 
     expect(result).toStrictEqual(unexpectedError());
   });
@@ -58,8 +65,8 @@ describe("loginAdmin", () => {
     // @ts-ignore
     cookies.mockImplementationOnce(() => cookiesMock);
 
-    const result = await loginAdmin(mockUserData);
-    console.log("🚀 ~ result:", result);
+    const result = await loginAdmin(initialState, mockUserData);
+    // console.log("🚀 ~ result:", result);
 
     expect(cookiesMock.set).toHaveBeenCalledWith(
       "session",
@@ -75,7 +82,7 @@ describe("loginAdmin", () => {
   });
 
   it("returns success for valid data", async () => {
-    const result = await loginAdmin(mockUserData);
+    const result = await loginAdmin(initialState, mockUserData);
     expect(result).toStrictEqual(success());
   });
 });

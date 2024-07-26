@@ -8,13 +8,15 @@ import {
   unexpectedError,
   invalidCredentialsError,
   invalidFieldsError,
+  Result,
 } from "@/lib/results";
 import { ZodError } from "zod";
 import { account, AppwriteException } from "@/lib/appwrite/adminClient";
 
-export async function loginAdmin(data: LoginData) {
+export async function loginAdmin(initialState: any, formData: FormData) {
   try {
-    const validData = loginSchema.parse(data);
+    const loginData = Object.fromEntries(formData);
+    const validData = loginSchema.parse(loginData);
     // console.log("🚀 ~ validData:", validData);
 
     const session = await account.createEmailPasswordSession(
