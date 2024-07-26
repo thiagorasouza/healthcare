@@ -37,6 +37,10 @@ export default function LoginPage() {
     setMessage("");
     try {
       const result = await loginAdmin(loginData);
+      if (result.success) {
+        router.push("/admin");
+        return;
+      }
 
       setMessage(result.message);
     } catch (error) {
