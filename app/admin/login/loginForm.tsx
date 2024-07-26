@@ -1,4 +1,4 @@
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { Alert, AlertDescription } from "@/components/ui/alert";
 import {
   Form,
   FormControl,
@@ -13,15 +13,18 @@ import { ExclamationTriangleIcon } from "@radix-ui/react-icons";
 import { loginAdmin } from "./loginAdmin";
 import { LoginData } from "./loginData";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { loginSchema } from "./loginSchema";
 import { Button } from "@/components/ui/button";
+import { FlaskConicalIcon } from "lucide-react";
+import { cn } from "@/lib/utils";
 
 export default function LoginForm() {
   const router = useRouter();
   const [message, setMessage] = useState("");
+  const formRef = useRef<HTMLFormElement>(null);
 
   const form = useForm<LoginData>({
     resolver: zodResolver(loginSchema),
@@ -47,60 +50,94 @@ export default function LoginForm() {
     }
   }
 
+  function testLoginAsAdmin() {
+    form.setValue("email", "mednowadmin@email.com");
+    form.setValue("password", "mednowadmin1234");
+    formRef.current?.requestSubmit();
+  }
+
   return (
-    <Form {...form}>
-      {message && (
-        <Alert variant="destructive" className="text-sm">
+    <>
+      <Form {...form}>
+        <Alert
+          variant="destructive"
+          className={cn("leading-none text-sm", { hidden: message === "" })}
+        >
           <ExclamationTriangleIcon className="h-4 w-4" />
-          <AlertTitle>Error</AlertTitle>
           <AlertDescription>{message}</AlertDescription>
         </Alert>
-      )}
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-        <FormField
-          control={form.control}
-          name="email"
-          render={({ field }) => (
-            <FormItem>
-              <FormControl>
-                <Input
-                  data-cy="email"
-                  placeholder="name@example.com"
-                  readOnly={form.formState.isSubmitting}
-                  {...field}
-                />
-              </FormControl>
-              <FormMessage data-cy="emailError" />
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
-          name="password"
-          render={({ field }) => (
-            <FormItem>
-              <FormControl>
-                <Input
-                  type="password"
-                  data-cy="password"
-                  placeholder="&#9679;&#9679;&#9679;&#9679;&#9679;&#9679;&#9679;&#9679;"
-                  readOnly={form.formState.isSubmitting}
-                  {...field}
-                />
-              </FormControl>
-              <FormMessage data-cy="passwordError" />
-            </FormItem>
-          )}
-        />
-        <Button
-          type="submit"
-          data-cy="submit"
-          className="w-full"
-          disabled={form.formState.isSubmitting}
+        <form
+          onSubmit={form.handleSubmit(onSubmit)}
+          className="flex flex-col gap-3"
+          ref={formRef}
         >
-          Continue
+          <FormField
+            control={form.control}
+            name="email"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Email</FormLabel>
+                <FormControl>
+                  <Input
+                    data-cy="email"
+                    placeholder="name@example.com"
+                    readOnly={form.formState.isSubmitting}
+                    {...field}
+                  />
+                </FormControl>
+                <FormMessage data-cy="emailError" />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="password"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Password</FormLabel>
+                <FormControl>
+                  <Input
+                    type="password"
+                    data-cy="password"
+                    placeholder="&#9679;&#9679;&#9679;&#9679;&#9679;&#9679;&#9679;&#9679;"
+                    readOnly={form.formState.isSubmitting}
+                    {...field}
+                  />
+                </FormControl>
+                <FormMessage data-cy="passwordError" />
+              </FormItem>
+            )}
+          />
+          <Button
+            type="submit"
+            data-cy="submit"
+            className="w-full mt-4"
+            disabled={form.formState.isSubmitting}
+          >
+            Submit
+          </Button>
+        </form>
+      </Form>
+      <div className="space-y-4">
+        <div className="relative">
+          <div className="absolute inset-0 flex items-center">
+            <span className="w-full border-t"></span>
+          </div>
+          <div className="relative flex justify-center text-xs uppercase">
+            <span className="bg-background px-2 text-muted-foreground">
+              Testing options
+            </span>
+          </div>
+        </div>
+        <Button
+          type="button"
+          className="w-full"
+          variant="outline"
+          onClick={testLoginAsAdmin}
+        >
+          <FlaskConicalIcon className="w-4 h-4 mr-2" /> Login as Admin
         </Button>
-      </form>
-    </Form>
+      </div>
+    </>
   );
 }
