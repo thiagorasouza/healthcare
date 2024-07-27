@@ -14,7 +14,7 @@ import { Input } from "@/components/ui/input";
 import { ExclamationTriangleIcon } from "@radix-ui/react-icons";
 import { useRouter } from "next/navigation";
 import { useCallback, useRef, useState } from "react";
-import { Controller, useForm } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Button } from "@/components/ui/button";
 import { cn, objectToFormData } from "@/lib/utils";
@@ -28,10 +28,12 @@ import { ImageUp } from "lucide-react";
 import { useDropzone } from "react-dropzone";
 import { createDoctor } from "@/lib/actions/createDoctor";
 import { unexpectedError } from "@/lib/results";
+import Image from "next/image";
 
 export default function DoctorsForm() {
   const router = useRouter();
   const [message, setMessage] = useState("");
+  // const [picture, setPicture] = useState(null);
   const formRef = useRef<HTMLFormElement>(null);
 
   const form = useForm<DoctorData>({
@@ -48,7 +50,8 @@ export default function DoctorsForm() {
 
   const onDrop = useCallback(
     (acceptedFiles: File[]) => {
-      form.setValue("picture", acceptedFiles[0], { shouldValidate: true });
+      const file = acceptedFiles[0];
+      form.setValue("picture", file, { shouldValidate: true });
     },
     [form],
   );
@@ -105,17 +108,30 @@ export default function DoctorsForm() {
                   <FormControl>
                     <div
                       className={cn(
-                        "flex h-32 w-32 cursor-pointer flex-col items-center justify-center gap-1 rounded-md border-2 border-dashed border-border bg-background text-foreground",
+                        "flex h-32 w-32 cursor-pointer flex-col items-center justify-center gap-1 overflow-hidden rounded-md border-2 border-dashed border-border bg-background text-foreground",
                         form.formState.errors.picture &&
                           "border-red-400 text-red-400",
+                        field.value && "border-none",
                       )}
                       {...getRootProps()}
                     >
                       <input {...getInputProps({})} />
-                      <ImageUp className="h-6 w-6" />
-                      <span className="text-center text-xs">
-                        {isDragActive ? "Drop here" : "Upload"}
-                      </span>
+                      {field.value ? (
+                        <Image
+                          src={URL.createObjectURL(field.value)}
+                          alt="selected picture"
+                          className="h-full w-full object-cover"
+                          width={128}
+                          height={128}
+                        />
+                      ) : (
+                        <>
+                          <ImageUp className="h-6 w-6" />
+                          <span className="text-center text-xs">
+                            {isDragActive ? "Drop here" : "Upload"}
+                          </span>
+                        </>
+                      )}
                     </div>
                   </FormControl>
                 </FormItem>
