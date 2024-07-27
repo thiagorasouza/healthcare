@@ -13,15 +13,15 @@ import {
 import { Input } from "@/components/ui/input";
 import { ExclamationTriangleIcon } from "@radix-ui/react-icons";
 import { useRouter } from "next/navigation";
-import { useRef, useState } from "react";
-import { useForm } from "react-hook-form";
+import { useCallback, useRef, useState } from "react";
+import { Controller, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { DoctorData, doctorsSchema } from "@/lib/schemas/doctorsSchema";
 import { Textarea } from "@/components/ui/textarea";
-import Image from "next/image";
-import { CloudUpload, ImageUp } from "lucide-react";
+import { ImageUp } from "lucide-react";
+import { useDropzone } from "react-dropzone";
 
 export default function DoctorsForm() {
   const router = useRouter();
@@ -40,7 +40,22 @@ export default function DoctorsForm() {
     },
   });
 
-  async function onSubmit(doctorData: DoctorData) {
+  const onDrop = useCallback(
+    (acceptedFiles: File[]) => {
+      form.setValue("picture", acceptedFiles[0]);
+    },
+    [form],
+  );
+
+  const { getRootProps, getInputProps, isDragActive, isDragReject } =
+    useDropzone({
+      onDrop,
+      accept: { "image/*": [] },
+      multiple: false,
+    });
+
+  async function onSubmit(data: any) {
+    console.log("🚀 ~ data:", data);
     // setMessage("");
     // try {
     //   const result = await loginAdmin(loginData);
@@ -71,10 +86,30 @@ export default function DoctorsForm() {
           ref={formRef}
         >
           <div className="flex items-center gap-5">
-            <div className="flex h-32 w-32 flex-col items-center justify-center gap-1 rounded-md border border-dashed border-border bg-background text-foreground">
-              <ImageUp className="h-6 w-6" />
-              <span className="text-center text-xs">Upload</span>
-            </div>
+            <FormField
+              name="picture"
+              control={form.control}
+              render={({ field }) => (
+                <FormItem>
+                  <FormControl>
+                    <div
+                      className={cn(
+                        "flex h-32 w-32 cursor-pointer flex-col items-center justify-center gap-1 rounded-md border-2 border-dashed border-border bg-background text-foreground",
+                      )}
+                      {...getRootProps()}
+                    >
+                      <input {...getInputProps({})} />
+                      <ImageUp className="h-6 w-6" />
+                      <span className="text-center text-xs">
+                        {isDragActive ? "Drop here" : "Upload"}
+                      </span>
+                    </div>
+                  </FormControl>
+                  <FormMessage data-cy="pictureError" />
+                </FormItem>
+              )}
+            />
+
             <FormField
               control={form.control}
               name="name"
