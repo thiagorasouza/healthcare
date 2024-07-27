@@ -42,7 +42,7 @@ export default function DoctorsForm() {
 
   const onDrop = useCallback(
     (acceptedFiles: File[]) => {
-      form.setValue("picture", acceptedFiles[0]);
+      form.setValue("picture", acceptedFiles[0], { shouldValidate: true });
     },
     [form],
   );
@@ -95,6 +95,8 @@ export default function DoctorsForm() {
                     <div
                       className={cn(
                         "flex h-32 w-32 cursor-pointer flex-col items-center justify-center gap-1 rounded-md border-2 border-dashed border-border bg-background text-foreground",
+                        form.formState.errors.picture &&
+                          "border-red-400 text-red-400",
                       )}
                       {...getRootProps()}
                     >
@@ -105,7 +107,6 @@ export default function DoctorsForm() {
                       </span>
                     </div>
                   </FormControl>
-                  <FormMessage data-cy="pictureError" />
                 </FormItem>
               )}
             />
