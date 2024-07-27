@@ -1,12 +1,14 @@
-import * as sdk from "node-appwrite";
+import { Account, Client, Databases, Storage, Users } from "node-appwrite";
 
-const client = new sdk.Client()
+const client = new Client()
   .setEndpoint("https://cloud.appwrite.io/v1")
   .setProject(process.env.PROJECT_ID!)
   .setKey(process.env.API_KEY!);
 
-const account = new sdk.Account(client);
-const databases = new sdk.Databases(client);
+const account = new Account(client);
+const users = new Users(client);
+const databases = new Databases(client);
+const storage = new Storage(client);
 
-export { client, account, databases };
-export { AppwriteException } from "node-appwrite";
+export { client, users, account, databases, storage };
+export { AppwriteException, ID, Permission, Role } from "node-appwrite";
