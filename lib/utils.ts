@@ -60,3 +60,25 @@ export function isAppwriteException(error: any): error is AppwriteException {
     error.constructor.name === "AppwriteException"
   );
 }
+
+export function abbreviateText(text: string, maxLength: number): string {
+  if (text.length <= maxLength) {
+    return text;
+  }
+
+  const truncated = text.substring(0, maxLength);
+  const lastSpaceIndex = truncated.lastIndexOf(" ");
+
+  if (lastSpaceIndex > -1) {
+    return text.substring(0, lastSpaceIndex) + " (...)";
+  }
+
+  return truncated + " (...)";
+}
+
+export function getRandomPictureURL() {
+  const gendersList = ["men", "women"];
+  const gender = gendersList[Math.floor(Math.random() * gendersList.length)];
+  const number = Math.floor(Math.random() * 91);
+  return `https://randomuser.me/api/portraits/${gender}/${number}.jpg`;
+}
