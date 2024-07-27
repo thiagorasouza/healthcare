@@ -7,3 +7,7 @@
 - [x] Define doctor page design
 - [x] Create list doctors action
 - [x] Implement doctors table
+
+- [ ] Define doctor create page design
+- [ ] Create doctor create page
+- [ ] Implement doctor create action
