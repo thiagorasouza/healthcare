@@ -5,8 +5,7 @@ import { Account } from "node-appwrite";
 
 export async function middleware(request: NextRequest) {
   try {
-    const sessionClient = getNodeSessionClient(request);
-    const account = new Account(sessionClient);
+    const { account } = getNodeSessionClient();
     const user = await account.get();
     if (!user.labels.includes("admin")) throw new Error("User is not admin");
   } catch (error) {

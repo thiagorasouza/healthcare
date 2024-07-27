@@ -1,15 +1,18 @@
-import { NextRequest } from "next/server";
-import { Client } from "node-appwrite";
+import { cookies } from "next/headers";
+import { Account, Client } from "node-appwrite";
 
-export const getNodeSessionClient = (request: NextRequest) => {
-  const sessionClient = new Client()
+export const getNodeSessionClient = () => {
+  const client = new Client()
     .setEndpoint("https://cloud.appwrite.io/v1")
     .setProject(process.env.PROJECT_ID!);
 
-  const sessionCookie = request.cookies.get("session");
-  if (sessionCookie) {
-    sessionClient.setSession(sessionCookie.value);
+  const sessionCookie = cookies().get("session");
+  if (!sessionCookie) {
+    throw new Error("Session cookie is not set.");
   }
 
-  return sessionClient;
+  client.setSession(sessionCookie.value);
+  const account = new Account(client);
+
+  return { client, account };
 };
