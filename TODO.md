@@ -8,6 +8,7 @@
 - [x] Create list doctors action
 - [x] Implement doctors table
 
-- [ ] Define doctor create page design
-- [ ] Create doctor create page
+- [x] Define doctor create page design
+- [x] Create doctor create page
+- [ ] Implement upload file field
 - [ ] Implement doctor create action
