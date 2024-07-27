@@ -82,10 +82,10 @@ export default function DoctorsForm() {
         </Alert>
         <form
           onSubmit={form.handleSubmit(onSubmit)}
-          className="flex flex-col gap-6"
+          className="flex flex-col gap-3 md:gap-6"
           ref={formRef}
         >
-          <div className="flex items-center gap-5">
+          <div className="flex items-center gap-3 md:gap-5">
             <FormField
               name="picture"
               control={form.control}
@@ -167,18 +167,18 @@ export default function DoctorsForm() {
                     {...field}
                   />
                 </FormControl>
-                <FormDescription className="text-right text-xs">
+                <FormDescription className="text-xs">
                   Characters count: <strong>{field.value.length}/150</strong>
                 </FormDescription>
                 <FormMessage data-cy="bioError" />
               </FormItem>
             )}
           />
-          <fieldset className="rounded-lg border px-5 pb-5 pt-3">
+          <fieldset className="rounded-lg border p-5 pt-3">
             <legend className="-ml-1 px-1 text-sm font-medium text-muted-foreground">
               User
             </legend>
-            <div className="flex flex-col gap-6 md:flex-row">
+            <div className="flex flex-col gap-3 md:flex-row md:gap-6">
               <FormField
                 control={form.control}
                 name="email"
@@ -227,7 +227,7 @@ export default function DoctorsForm() {
           <Button
             type="submit"
             data-cy="submit"
-            className="mt-4 w-full"
+            className="mt-2 w-full md:mt-4"
             disabled={form.formState.isSubmitting}
           >
             Submit
