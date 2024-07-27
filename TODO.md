@@ -5,5 +5,5 @@
 - [x] Create login action
 
 - [x] Define doctor page design
-- [ ] Create list doctors action
-- [ ] Implement doctors table
+- [x] Create list doctors action
+- [x] Implement doctors table

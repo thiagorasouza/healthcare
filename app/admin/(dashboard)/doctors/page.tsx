@@ -1,4 +1,5 @@
-import { Badge } from "@/components/ui/badge";
+"use server";
+
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -16,6 +17,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { getAllDoctors } from "@/lib/actions/getAllDoctors";
 import Image from "next/image";
 
 // Mock data for doctors
@@ -65,7 +67,34 @@ const doctorsData = [
   },
 ];
 
-export default function DoctorsPage() {
+export default async function DoctorsPage() {
+  const result = await getAllDoctors();
+  const doctors = result?.data as any;
+  console.log("🚀 ~ doctors:", doctors);
+
+  const maxLength = 50;
+  function abbreviateText(text: string): string {
+    if (text.length <= maxLength) {
+      return text;
+    }
+
+    const truncated = text.substring(0, maxLength);
+    const lastSpaceIndex = truncated.lastIndexOf(" ");
+
+    if (lastSpaceIndex > -1) {
+      return text.substring(0, lastSpaceIndex) + " (...)";
+    }
+
+    return truncated + " (...)";
+  }
+
+  function getRandomPictureURL() {
+    const gendersList = ["men", "women"];
+    const gender = gendersList[Math.floor(Math.random() * gendersList.length)];
+    const number = Math.floor(Math.random() * 91);
+    return `https://randomuser.me/api/portraits/${gender}/${number}.jpg`;
+  }
+
   return (
     <Card x-chunk="dashboard-06-chunk-0">
       <CardHeader>
@@ -86,34 +115,36 @@ export default function DoctorsPage() {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {doctorsData.map((doctor, index) => (
-              <TableRow key={index}>
-                <TableCell>
-                  <Image
-                    alt={`${doctor.name} picture`}
-                    className="aspect-square rounded-md object-cover"
-                    height="64"
-                    src={doctor.picture}
-                    width="64"
-                  />
-                </TableCell>
-                <TableCell className="font-medium">{doctor.name}</TableCell>
-                <TableCell>{doctor.specialty}</TableCell>
-                <TableCell>{doctor.biography}</TableCell>
-                <TableCell>
-                  <Button variant="outline" className="mr-2">
-                    Update
-                  </Button>
-                  <Button variant="destructive">Delete</Button>
-                </TableCell>
-              </TableRow>
-            ))}
+            {doctors.map((doctor: any, index: number) => {
+              return (
+                <TableRow key={index}>
+                  <TableCell>
+                    <Image
+                      alt={`${doctor.name} picture`}
+                      className="aspect-square rounded-md object-cover"
+                      height="64"
+                      src={getRandomPictureURL()}
+                      width="64"
+                    />
+                  </TableCell>
+                  <TableCell className="font-medium">{doctor.name}</TableCell>
+                  <TableCell>{doctor.specialty}</TableCell>
+                  <TableCell>{abbreviateText(doctor.bio)}</TableCell>
+                  <TableCell>
+                    <Button variant="outline" className="mr-2">
+                      Update
+                    </Button>
+                    <Button variant="destructive">Delete</Button>
+                  </TableCell>
+                </TableRow>
+              );
+            })}
           </TableBody>
         </Table>
       </CardContent>
       <CardFooter>
         <div className="text-xs text-muted-foreground">
-          Showing <strong>1-6</strong> of <strong>6</strong> doctors
+          Showing a total of <strong>{doctors.length}</strong> doctors
         </div>
       </CardFooter>
     </Card>

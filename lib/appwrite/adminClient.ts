@@ -6,6 +6,7 @@ const client = new sdk.Client()
   .setKey(process.env.API_KEY!);
 
 const account = new sdk.Account(client);
+const databases = new sdk.Databases(client);
 
-export { client, account };
+export { client, account, databases };
 export { AppwriteException } from "node-appwrite";
