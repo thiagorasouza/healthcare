@@ -17,11 +17,17 @@ import { useCallback, useRef, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Button } from "@/components/ui/button";
-import { cn } from "@/lib/utils";
-import { DoctorData, doctorsSchema } from "@/lib/schemas/doctorsSchema";
+import { cn, objectToFormData } from "@/lib/utils";
+import {
+  allowedImageTypes,
+  DoctorData,
+  doctorsSchema,
+} from "@/lib/schemas/doctorsSchema";
 import { Textarea } from "@/components/ui/textarea";
 import { ImageUp } from "lucide-react";
 import { useDropzone } from "react-dropzone";
+import { createDoctor } from "@/lib/actions/createDoctor";
+import { unexpectedError } from "@/lib/results";
 
 export default function DoctorsForm() {
   const router = useRouter();
@@ -50,24 +56,27 @@ export default function DoctorsForm() {
   const { getRootProps, getInputProps, isDragActive, isDragReject } =
     useDropzone({
       onDrop,
-      accept: { "image/*": [] },
+      accept: allowedImageTypes.reduce((obj: any, type: string) => {
+        obj[type] = [];
+        return obj;
+      }, {}),
       multiple: false,
     });
 
   async function onSubmit(data: any) {
-    console.log("🚀 ~ data:", data);
-    // setMessage("");
-    // try {
-    //   const result = await loginAdmin(loginData);
-    //   if (result.success) {
-    //     router.push("/admin");
-    //     return;
-    //   }
-    //   setMessage(result.message);
-    // } catch (error) {
-    //   console.log("🚀 ~ error:", error);
-    //   setMessage(unexpectedError().message);
-    // }
+    setMessage("");
+    try {
+      const formData = objectToFormData(data);
+      const result = await createDoctor(formData);
+      if (result.success) {
+        router.push("/admin/doctors");
+        return;
+      }
+      setMessage(result.message);
+    } catch (error) {
+      console.log("🚀 ~ error:", error);
+      setMessage(unexpectedError().message);
+    }
   }
 
   return (
@@ -75,7 +84,9 @@ export default function DoctorsForm() {
       <Form {...form}>
         <Alert
           variant="destructive"
-          className={cn("text-sm leading-none", { hidden: message === "" })}
+          className={cn("mb-4 text-sm leading-none", {
+            hidden: message === "",
+          })}
         >
           <ExclamationTriangleIcon className="h-4 w-4" />
           <AlertDescription>{message}</AlertDescription>
