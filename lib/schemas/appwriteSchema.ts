@@ -9,4 +9,7 @@ export type DoctorDocumentSchema = {
   pictureId: string;
 } & Models.Document;
 
+export type DoctorDocumentListSchema =
+  Models.DocumentList<DoctorDocumentSchema>;
+
 export type UserDocumentSchema = Models.User<Models.Preferences>;

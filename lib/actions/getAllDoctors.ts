@@ -1,12 +1,12 @@
 "use server";
 
 import { databases } from "@/lib/appwrite/adminClient";
-import { Result, success, unexpectedError } from "@/lib/results";
-import { AppwriteDoctorData } from "../schemas/doctorsSchema";
+import { success, unexpectedError } from "@/lib/results";
+import { DoctorDocumentListSchema } from "@/lib/schemas/appwriteSchema";
 
 export async function getAllDoctors() {
   try {
-    const allDoctors = await databases.listDocuments(
+    const allDoctors: DoctorDocumentListSchema = await databases.listDocuments(
       process.env.DATABASE_ID!,
       process.env.DOCTORS_COLLECTION_ID!,
       [],

@@ -29,7 +29,7 @@ import { ImageUp } from "lucide-react";
 import { useDropzone } from "react-dropzone";
 import { Error, Result, unexpectedError } from "@/lib/results";
 import Image from "next/image";
-import { getImage } from "@/lib/actions/getImage";
+import { getImageClient } from "@/lib/actions/getImageClient";
 
 export default function DoctorsForm({
   data: doctorData,
@@ -56,9 +56,10 @@ export default function DoctorsForm({
 
   useEffect(() => {
     if (!doctorData?.pictureId) return;
-    getImage(doctorData.pictureId).then((result) => {
+    getImageClient(doctorData.pictureId).then((result) => {
       if (result.success) {
         const imageUrl = result.data as URL;
+        console.log("🚀 ~ imageUrl:", imageUrl);
         fetch(imageUrl)
           .then((response) => response.blob())
           .then((blob) =>

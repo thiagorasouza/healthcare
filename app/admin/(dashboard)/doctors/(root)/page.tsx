@@ -1,11 +1,10 @@
-"use server";
+"use client";
 
 import { Button } from "@/components/ui/button";
 import {
   Card,
   CardContent,
   CardDescription,
-  CardFooter,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
@@ -18,15 +17,37 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { getAllDoctors } from "@/lib/actions/getAllDoctors";
+import { getImageLink } from "@/lib/actions/getImageLink";
+import {
+  DoctorDocumentListSchema,
+  DoctorDocumentSchema,
+} from "@/lib/schemas/appwriteSchema";
 import { abbreviateText, getRandomPictureURL } from "@/lib/utils";
-import { PlusCircle } from "lucide-react";
+import { ImageIcon, PlusCircle, User } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
+import { useEffect, useState } from "react";
 
-export default async function DoctorsPage() {
-  const result = await getAllDoctors();
-  const doctors = result?.data as any;
-  // console.log("🚀 ~ doctors:", doctors);
+export default function DoctorsPage() {
+  const [loading, setLoading] = useState(true);
+  const [doctors, setDoctors] = useState<DoctorDocumentSchema[]>();
+
+  useEffect(() => {
+    const asyncEffect = async () => {
+      try {
+        const result = await getAllDoctors();
+        if (result.success && result.data) {
+          setDoctors(result.data);
+        }
+      } catch (error) {
+        console.log(error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    asyncEffect();
+  }, []);
 
   return (
     <>
@@ -44,51 +65,60 @@ export default async function DoctorsPage() {
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>Picture</TableHead>
-                <TableHead>Name</TableHead>
-                <TableHead>Specialty</TableHead>
-                <TableHead>Biography</TableHead>
-                <TableHead>Actions</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {doctors.map((doctor: any, index: number) => {
-                return (
-                  <TableRow key={index}>
-                    <TableCell>
-                      <Image
-                        alt={`${doctor.name} picture`}
-                        className="aspect-square rounded-md object-cover"
-                        height="64"
-                        src={getRandomPictureURL()}
-                        width="64"
-                      />
-                    </TableCell>
-                    <TableCell className="font-medium">{doctor.name}</TableCell>
-                    <TableCell>{doctor.specialty}</TableCell>
-                    <TableCell>{abbreviateText(doctor.bio, 50)}</TableCell>
-                    <TableCell>
-                      <Button variant="outline" className="mr-2">
-                        <Link href={`/admin/doctors/update/${doctor.$id}`}>
-                          Update
-                        </Link>
-                      </Button>
-                      <Button variant="destructive">Delete</Button>
-                    </TableCell>
-                  </TableRow>
-                );
-              })}
-            </TableBody>
-          </Table>
+          {loading ? (
+            "Loading..."
+          ) : doctors ? (
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead>Picture</TableHead>
+                  <TableHead>Name</TableHead>
+                  <TableHead>Specialty</TableHead>
+                  <TableHead>Biography</TableHead>
+                  <TableHead>Actions</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {doctors.map((doctor: DoctorDocumentSchema, index: number) => {
+                  return (
+                    <TableRow key={index}>
+                      <TableCell className="">
+                        {doctor.pictureId ? (
+                          <Image
+                            alt={`${doctor.name} picture`}
+                            className="aspect-square rounded-md object-cover"
+                            height="64"
+                            src={getImageLink(doctor.pictureId)}
+                            width="64"
+                          />
+                        ) : (
+                          <div className="flex h-16 w-16 items-center justify-center">
+                            <ImageIcon className="h-10 w-10" />
+                          </div>
+                        )}
+                      </TableCell>
+                      <TableCell className="font-medium">
+                        {doctor.name}
+                      </TableCell>
+                      <TableCell>{doctor.specialty}</TableCell>
+                      <TableCell>{abbreviateText(doctor.bio, 50)}</TableCell>
+                      <TableCell>
+                        <Button variant="outline" className="mr-2">
+                          <Link href={`/admin/doctors/update/${doctor.$id}`}>
+                            Update
+                          </Link>
+                        </Button>
+                        <Button variant="destructive">Delete</Button>
+                      </TableCell>
+                    </TableRow>
+                  );
+                })}
+              </TableBody>
+            </Table>
+          ) : (
+            "Not doctors found"
+          )}
         </CardContent>
-        <CardFooter>
-          <div className="text-xs text-muted-foreground">
-            Showing a total of <strong>{doctors.length}</strong> doctors
-          </div>
-        </CardFooter>
       </Card>
     </>
   );

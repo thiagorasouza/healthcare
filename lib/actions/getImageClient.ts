@@ -3,7 +3,7 @@
 import { ImageFormat, storage } from "@/lib/appwrite/webClient";
 import { success, unexpectedError } from "@/lib/results";
 
-export async function getImage(imageId: string) {
+export async function getImageClient(imageId: string) {
   try {
     const imageUrl = await storage.getFilePreview(
       process.env.NEXT_PUBLIC_IMAGES_BUCKET_ID!,
