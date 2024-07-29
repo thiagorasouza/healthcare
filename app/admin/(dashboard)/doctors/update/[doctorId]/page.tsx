@@ -17,19 +17,19 @@ export default async function DoctorsUpdatePage({
 
   return (
     <div className="mx-auto w-full max-w-[600px]">
-      <div className="flex">
-        <h1 className="mb-8 w-fit border-b border-border pb-2 text-2xl font-semibold tracking-tight md:text-3xl">
-          Update Doctor
-        </h1>
-        <Button variant="outline" className="ml-auto">
-          <Link href="/admin/doctors" className="flex items-center">
-            <ArrowLeft className="mr-2 h-4 w-4" />
-            Back
-          </Link>
-        </Button>
-      </div>
+      <Button variant="outline" className="mb-3">
+        <Link href="/admin/doctors" className="flex items-center">
+          <ArrowLeft className="mr-2 h-4 w-4" />
+          Back
+        </Link>
+      </Button>
       {result.success && result.data ? (
-        <DoctorsForm doctorData={result.data} action={updateDoctor} />
+        <DoctorsForm
+          title="Update Doctor"
+          description="Update this doctor and the user account associated with it"
+          doctorData={result.data}
+          action={updateDoctor}
+        />
       ) : (
         <p>Doctor not found</p>
       )}

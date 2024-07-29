@@ -19,13 +19,28 @@ import SubmitButton from "@/components/forms/SubmitButton";
 import { getImageLink } from "@/lib/actions/getImageLink";
 import { currentPictureName } from "@/lib/constants";
 import AlertMessage from "@/components/forms/AlertMessage";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 
 interface DoctorsFormProps {
+  title: string;
+  description: string;
   doctorData?: DoctorDataUpdate;
   action: (form: FormData) => Promise<Result<unknown> | Error<unknown>>;
 }
 
-export default function DoctorsForm({ doctorData, action }: DoctorsFormProps) {
+export default function DoctorsForm({
+  title,
+  description,
+  doctorData,
+  action,
+}: DoctorsFormProps) {
   const router = useRouter();
   const [message, setMessage] = useState("");
   const formRef = useRef<HTMLFormElement>(null);
@@ -82,59 +97,67 @@ export default function DoctorsForm({ doctorData, action }: DoctorsFormProps) {
   }
 
   return (
-    <Form {...form}>
-      <AlertMessage message={message} />
-      <form
-        onSubmit={form.handleSubmit(onSubmit)}
-        className="flex flex-col gap-3 md:gap-6"
-        ref={formRef}
-      >
-        <div className="flex items-center gap-3 md:gap-5">
-          <PictureField form={form} />
-          <TextField
-            form={form}
-            name="name"
-            label="Name"
-            placeholder="Your name"
-            description="Should not include title (Dr., Mr., Mrs., etc.)"
-          />
-        </div>
-        <TextField
-          form={form}
-          name="specialty"
-          label="Specialty"
-          placeholder="Cardiology, Orthopedist..."
-          description="Medical specialty"
-        />
-        <TextareaField
-          form={form}
-          name="bio"
-          label="Biography"
-          placeholder="Short medical experience and training description"
-        />
-        <fieldset className="rounded-lg border p-5 pt-3">
-          <legend className="-ml-1 px-1 text-sm font-medium text-muted-foreground">
-            User
-          </legend>
-          <div className="flex flex-col gap-3 md:flex-row md:gap-6">
+    <Card>
+      <CardHeader>
+        <CardTitle>{title}</CardTitle>
+        <CardDescription>{description}</CardDescription>
+      </CardHeader>
+      <CardContent>
+        <Form {...form}>
+          <AlertMessage message={message} />
+          <form
+            onSubmit={form.handleSubmit(onSubmit)}
+            className="flex flex-col gap-3 md:gap-6"
+            ref={formRef}
+          >
+            <div className="flex items-center gap-3 md:gap-5">
+              <PictureField form={form} />
+              <TextField
+                form={form}
+                name="name"
+                label="Name"
+                placeholder="Your name"
+                description="Should not include title (Dr., Mr., Mrs., etc.)"
+              />
+            </div>
             <TextField
               form={form}
-              name="email"
-              label="Email"
-              placeholder="name@example.com"
-              description="This will be used for the doctor to login"
+              name="specialty"
+              label="Specialty"
+              placeholder="Cardiology, Orthopedist..."
+              description="Medical specialty"
             />
-            <TextField
+            <TextareaField
               form={form}
-              name="phone"
-              label="Phone"
-              placeholder="+351 000 000 000"
-              description="Must include country code"
+              name="bio"
+              label="Biography"
+              placeholder="Short medical experience and training description"
             />
-          </div>
-        </fieldset>
-        <SubmitButton form={form} label="Submit" />
-      </form>
-    </Form>
+            <fieldset className="rounded-lg border p-5 pt-3">
+              <legend className="-ml-1 px-1 text-sm font-medium text-muted-foreground">
+                User
+              </legend>
+              <div className="flex flex-col gap-3 md:flex-row md:gap-6">
+                <TextField
+                  form={form}
+                  name="email"
+                  label="Email"
+                  placeholder="name@example.com"
+                  description="This will be used for the login"
+                />
+                <TextField
+                  form={form}
+                  name="phone"
+                  label="Phone"
+                  placeholder="+351 000 000 000"
+                  description="Must include country code"
+                />
+              </div>
+            </fieldset>
+            <SubmitButton form={form} label="Submit" />
+          </form>
+        </Form>
+      </CardContent>
+    </Card>
   );
 }
