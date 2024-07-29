@@ -16,6 +16,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { deleteDoctor } from "@/lib/actions/deleteDoctor";
 import { getAllDoctors } from "@/lib/actions/getAllDoctors";
 import { getImageLink } from "@/lib/actions/getImageLink";
 import { DoctorDocumentSchema } from "@/lib/schemas/appwriteSchema";
@@ -24,15 +25,19 @@ import { ImageIcon, PlusCircle, Trash2, UserPen } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";
+import { toast } from "sonner";
 
 export default function DoctorsPage() {
   const [loading, setLoading] = useState(true);
   const [doctors, setDoctors] = useState<DoctorDocumentSchema[]>();
 
   useEffect(() => {
+    if (!loading) return;
+
     const asyncEffect = async () => {
       try {
         const result = await getAllDoctors();
+        // console.log("🚀 ~ result:", result);
         if (result.success && result.data) {
           setDoctors(result.data);
         }
@@ -44,7 +49,20 @@ export default function DoctorsPage() {
     };
 
     asyncEffect();
-  }, []);
+  }, [loading]);
+
+  async function onDelete(name: string, doctorId: string, authId: string) {
+    try {
+      const result = await deleteDoctor(doctorId, authId);
+      console.log("🚀 ~ result:", result);
+      if (result.success) {
+        toast(`Doctor ${name} deleted successfully.`);
+        setLoading(true);
+      }
+    } catch (error) {
+      toast(`Unable to delete doctor ${name}`);
+    }
+  }
 
   return (
     <>
@@ -116,13 +134,14 @@ export default function DoctorsPage() {
                             <UserPen className="h-4 w-4 sm:h-5 sm:w-5" />
                           </Link>
                         </Button>
-                        <Button variant="outline" className="sm:block">
-                          <Link
-                            href={`/admin/doctors/delete/${doctor.$id}`}
-                            className="flex items-center"
-                          >
-                            <Trash2 className="h-4 w-4 sm:h-5 sm:w-5" />
-                          </Link>
+                        <Button
+                          variant="outline"
+                          className="sm:block"
+                          onClick={() =>
+                            onDelete(doctor.name, doctor.$id, doctor.authId)
+                          }
+                        >
+                          <Trash2 className="h-4 w-4 sm:h-5 sm:w-5" />
                         </Button>
                       </TableCell>
                     </TableRow>

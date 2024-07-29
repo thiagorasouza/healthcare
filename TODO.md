@@ -20,7 +20,7 @@
 - [x] Refactor login form
 - [x] New Doctor and Update Doctor should be in a card
 - [x] Make doctors list responsive
-- [ ] Implement delete doctor action
+- [x] Implement delete doctor action
 - [ ] Add alert for deleting doctor
 - [ ] Add select boxes for bulk delete
 - [ ] Add app path in the page top
