@@ -13,7 +13,7 @@
 - [x] Implement upload file field
 - [x] Implement doctor create action
 
-- [ ] Fix pictures on doctor list
+- [x] Fix pictures on doctor list
 - [ ] Update action buttons on doctor list
 - [ ] Refactor DoctorsForm
 - [ ] Refactor login file structure
