@@ -72,7 +72,9 @@ export default async function DoctorsPage() {
                     <TableCell>{abbreviateText(doctor.bio, 50)}</TableCell>
                     <TableCell>
                       <Button variant="outline" className="mr-2">
-                        Update
+                        <Link href={`/admin/doctors/update/${doctor.$id}`}>
+                          Update
+                        </Link>
                       </Button>
                       <Button variant="destructive">Delete</Button>
                     </TableCell>
