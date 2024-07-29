@@ -10,5 +10,20 @@
 
 - [x] Define doctor create page design
 - [x] Create doctor create page
-- [ ] Implement upload file field
-- [ ] Implement doctor create action
+- [x] Implement upload file field
+- [x] Implement doctor create action
+
+- [ ] Fix pictures on doctor list
+- [ ] Update action buttons on doctor list
+- [ ] Refactor DoctorsForm
+- [ ] Refactor login file structure
+- [ ] New Doctor and Update Doctor should be in a card
+- [ ] Make doctors list responsive
+- [ ] Implement delete doctor action
+- [ ] Add alert for deleting doctor
+- [ ] Add select boxes for bulk delete
+- [ ] Add app path in the page top
+- [ ] Fix scrollbar layout shift
+- [ ] Make create and update doctor button label customizable
+- [ ] Implement LAB autofill on create doctor page
+- [ ] Add card preview on doctor create page
