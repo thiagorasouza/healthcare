@@ -23,7 +23,14 @@ import {
   DoctorDocumentSchema,
 } from "@/lib/schemas/appwriteSchema";
 import { abbreviateText, getRandomPictureURL } from "@/lib/utils";
-import { ImageIcon, PlusCircle, User } from "lucide-react";
+import {
+  ImageIcon,
+  PlusCircle,
+  Trash,
+  Trash2,
+  User,
+  UserPen,
+} from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";
@@ -104,11 +111,21 @@ export default function DoctorsPage() {
                       <TableCell>{abbreviateText(doctor.bio, 50)}</TableCell>
                       <TableCell>
                         <Button variant="outline" className="mr-2">
-                          <Link href={`/admin/doctors/update/${doctor.$id}`}>
-                            Update
+                          <Link
+                            href={`/admin/doctors/update/${doctor.$id}`}
+                            className="flex items-center"
+                          >
+                            <UserPen className="h-5 w-5" />
                           </Link>
                         </Button>
-                        <Button variant="destructive">Delete</Button>
+                        <Button variant="outline">
+                          <Link
+                            href={`/admin/doctors/delete/${doctor.$id}`}
+                            className="flex items-center"
+                          >
+                            <Trash2 className="h-5 w-5" />
+                          </Link>
+                        </Button>
                       </TableCell>
                     </TableRow>
                   );
