@@ -1,10 +1,10 @@
 "use client";
 
 import Image from "next/image";
-import LoginForm from "./loginForm";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { HomeIcon } from "@radix-ui/react-icons";
+import LoginForm from "@/components/forms/LoginForm";
 
 export default function LoginPage() {
   return (

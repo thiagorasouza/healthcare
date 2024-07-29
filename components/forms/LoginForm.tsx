@@ -10,16 +10,15 @@ import {
 import { Input } from "@/components/ui/input";
 import { unexpectedError } from "@/lib/results";
 import { ExclamationTriangleIcon } from "@radix-ui/react-icons";
-import { loginAdmin } from "./loginAdmin";
-import { LoginData } from "./loginData";
 import { useRouter } from "next/navigation";
 import { useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { loginSchema } from "./loginSchema";
 import { Button } from "@/components/ui/button";
 import { FlaskConicalIcon } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { LoginData, loginSchema } from "@/lib/schemas/loginSchema";
+import { loginAdmin } from "@/lib/actions/loginAdmin";
 
 export default function LoginForm() {
   const router = useRouter();
@@ -61,7 +60,7 @@ export default function LoginForm() {
       <Form {...form}>
         <Alert
           variant="destructive"
-          className={cn("leading-none text-sm", { hidden: message === "" })}
+          className={cn("text-sm leading-none", { hidden: message === "" })}
         >
           <ExclamationTriangleIcon className="h-4 w-4" />
           <AlertDescription>{message}</AlertDescription>
@@ -111,7 +110,7 @@ export default function LoginForm() {
           <Button
             type="submit"
             data-cy="submit"
-            className="w-full mt-4"
+            className="mt-4 w-full"
             disabled={form.formState.isSubmitting}
           >
             Submit
@@ -135,7 +134,7 @@ export default function LoginForm() {
           variant="outline"
           onClick={testLoginAsAdmin}
         >
-          <FlaskConicalIcon className="w-4 h-4 mr-2" /> Login as Admin
+          <FlaskConicalIcon className="mr-2 h-4 w-4" /> Login as Admin
         </Button>
       </div>
     </>

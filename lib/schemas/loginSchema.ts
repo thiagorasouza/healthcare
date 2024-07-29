@@ -13,3 +13,5 @@ export const loginSchema = z.object({
     .min(8)
     .max(32),
 });
+
+export type LoginData = z.infer<typeof loginSchema>;

@@ -1,4 +1,4 @@
-import DoctorsForm from "@/components/doctors/DoctorsForm";
+import DoctorsForm from "@/components/forms/DoctorsForm";
 import { Button } from "@/components/ui/button";
 import { createDoctor } from "@/lib/actions/createDoctor";
 import { ArrowLeft } from "lucide-react";

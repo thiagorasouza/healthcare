@@ -1,6 +1,6 @@
 "use server";
 
-import DoctorsForm from "@/components/doctors/DoctorsForm";
+import DoctorsForm from "@/components/forms/DoctorsForm";
 import { Button } from "@/components/ui/button";
 import { getDoctor } from "@/lib/actions/getDoctor";
 import { updateDoctor } from "@/lib/actions/updateDoctor";

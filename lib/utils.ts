@@ -2,7 +2,7 @@ import { type AppwriteException as NodeAppwriteException } from "node-appwrite";
 import { type AppwriteException as WebAppwriteException } from "appwrite";
 import { type ClassValue, clsx } from "clsx";
 import { twMerge } from "tailwind-merge";
-import { SafeParseError } from "zod";
+import { SafeParseError, ZodError } from "zod";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -58,6 +58,14 @@ export function isAppwriteException(error: any): error is AppwriteException {
     typeof error === "object" &&
     error !== null &&
     error.constructor.name === "AppwriteException"
+  );
+}
+
+export function isZodException(error: any): error is ZodError {
+  return (
+    typeof error === "object" &&
+    error !== null &&
+    error.constructor.name === "ZodError"
   );
 }
 

@@ -1,9 +1,9 @@
 import { expect, jest } from "@jest/globals";
-import "./zodMock";
-import "./cookiesMock";
-import "./appwriteMock";
+import "./mocks/zodMock";
+import "./mocks/cookiesMock";
+import "./mocks/appwriteMock";
 import { ZodError } from "zod";
-import { loginSchema } from "./loginSchema";
+import { loginSchema } from "../lib/schemas/loginSchema";
 
 import {
   invalidCredentialsError,
@@ -13,8 +13,8 @@ import {
 } from "@/lib/results";
 import { account, AppwriteException } from "@/lib/appwrite/adminClient";
 import { cookies } from "next/headers";
-import { sessionMock } from "./sessionMock";
-import { loginAdmin } from "./loginAdmin";
+import { sessionMock } from "./mocks/sessionMock";
+import { loginAdmin } from "../lib/actions/loginAdmin";
 
 const mockUserData = {
   email: "user@email.com",

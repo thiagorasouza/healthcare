@@ -1,5 +1,5 @@
+import { sessionMock } from "@/__tests__/mocks/sessionMock";
 import { jest } from "@jest/globals";
-import { sessionMock } from "./sessionMock";
 
 jest.mock("node-appwrite", () => {
   const actual = jest.requireActual("node-appwrite") as any;

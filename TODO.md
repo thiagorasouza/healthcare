@@ -17,6 +17,7 @@
 - [x] Update action buttons on doctor list
 - [x] Refactor DoctorsForm
 - [ ] Refactor login file structure
+- [ ] Refactor login form
 - [ ] New Doctor and Update Doctor should be in a card
 - [ ] Make doctors list responsive
 - [ ] Implement delete doctor action

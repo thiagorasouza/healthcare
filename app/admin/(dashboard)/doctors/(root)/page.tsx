@@ -18,19 +18,9 @@ import {
 } from "@/components/ui/table";
 import { getAllDoctors } from "@/lib/actions/getAllDoctors";
 import { getImageLink } from "@/lib/actions/getImageLink";
-import {
-  DoctorDocumentListSchema,
-  DoctorDocumentSchema,
-} from "@/lib/schemas/appwriteSchema";
-import { abbreviateText, getRandomPictureURL } from "@/lib/utils";
-import {
-  ImageIcon,
-  PlusCircle,
-  Trash,
-  Trash2,
-  User,
-  UserPen,
-} from "lucide-react";
+import { DoctorDocumentSchema } from "@/lib/schemas/appwriteSchema";
+import { abbreviateText } from "@/lib/utils";
+import { ImageIcon, PlusCircle, Trash2, UserPen } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";
