@@ -19,7 +19,7 @@
 - [x] Refactor login file structure
 - [x] Refactor login form
 - [x] New Doctor and Update Doctor should be in a card
-- [ ] Make doctors list responsive
+- [x] Make doctors list responsive
 - [ ] Implement delete doctor action
 - [ ] Add alert for deleting doctor
 - [ ] Add select boxes for bulk delete

@@ -54,24 +54,28 @@ export default function DoctorsPage() {
           <span className="sm:whitespace-nowrap">Add Doctor</span>
         </Link>
       </Button>
-      <Card x-chunk="dashboard-06-chunk-0">
-        <CardHeader>
+      <Card className="max-sm:p-0">
+        <CardHeader className="max-sm:px-4 max-sm:pt-5">
           <CardTitle>Doctors</CardTitle>
           <CardDescription>
             Manage doctors and adjust their availabilities.
           </CardDescription>
         </CardHeader>
-        <CardContent>
+        <CardContent className="max-sm:p-4 max-sm:pt-0">
           {loading ? (
             "Loading..."
           ) : doctors ? (
             <Table>
               <TableHeader>
                 <TableRow>
-                  <TableHead>Picture</TableHead>
+                  <TableHead className="hidden md:table-cell">
+                    Picture
+                  </TableHead>
                   <TableHead>Name</TableHead>
-                  <TableHead>Specialty</TableHead>
-                  <TableHead>Biography</TableHead>
+                  <TableHead className="max-sm:hidden">Specialty</TableHead>
+                  <TableHead className="hidden lg:table-cell">
+                    Biography
+                  </TableHead>
                   <TableHead>Actions</TableHead>
                 </TableRow>
               </TableHeader>
@@ -79,7 +83,7 @@ export default function DoctorsPage() {
                 {doctors.map((doctor: DoctorDocumentSchema, index: number) => {
                   return (
                     <TableRow key={index}>
-                      <TableCell className="">
+                      <TableCell className="hidden md:table-cell">
                         {doctor.pictureId ? (
                           <Image
                             alt={`${doctor.name} picture`}
@@ -97,23 +101,27 @@ export default function DoctorsPage() {
                       <TableCell className="font-medium">
                         {doctor.name}
                       </TableCell>
-                      <TableCell>{doctor.specialty}</TableCell>
-                      <TableCell>{abbreviateText(doctor.bio, 50)}</TableCell>
-                      <TableCell>
-                        <Button variant="outline" className="mr-2">
+                      <TableCell className="max-sm:hidden">
+                        {doctor.specialty}
+                      </TableCell>
+                      <TableCell className="hidden lg:table-cell">
+                        {abbreviateText(doctor.bio, 50)}
+                      </TableCell>
+                      <TableCell className="flex items-center">
+                        <Button variant="outline">
                           <Link
                             href={`/admin/doctors/update/${doctor.$id}`}
                             className="flex items-center"
                           >
-                            <UserPen className="h-5 w-5" />
+                            <UserPen className="h-4 w-4 sm:h-5 sm:w-5" />
                           </Link>
                         </Button>
-                        <Button variant="outline">
+                        <Button variant="outline" className="sm:block">
                           <Link
                             href={`/admin/doctors/delete/${doctor.$id}`}
                             className="flex items-center"
                           >
-                            <Trash2 className="h-5 w-5" />
+                            <Trash2 className="h-4 w-4 sm:h-5 sm:w-5" />
                           </Link>
                         </Button>
                       </TableCell>
