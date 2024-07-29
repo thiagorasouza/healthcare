@@ -16,7 +16,7 @@
 - [x] Fix pictures on doctor list
 - [x] Update action buttons on doctor list
 - [x] Refactor DoctorsForm
-- [ ] Refactor login file structure
+- [x] Refactor login file structure
 - [ ] Refactor login form
 - [ ] New Doctor and Update Doctor should be in a card
 - [ ] Make doctors list responsive
