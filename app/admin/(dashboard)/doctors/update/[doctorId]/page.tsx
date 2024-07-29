@@ -29,7 +29,7 @@ export default async function DoctorsUpdatePage({
         </Button>
       </div>
       {result.success && result.data ? (
-        <DoctorsForm data={result.data} action={updateDoctor} />
+        <DoctorsForm doctorData={result.data} action={updateDoctor} />
       ) : (
         <p>Doctor not found</p>
       )}
