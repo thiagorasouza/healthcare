@@ -1,12 +1,6 @@
 import { z } from "zod";
-import { AppwriteDocumentProperties } from "./appwriteSchema";
 
-export const allowedImageTypes = [
-  "image/png",
-  "image/jpeg",
-  "image/webp",
-  "image/gif",
-];
+export const allowedImageTypes = ["image/png", "image/jpeg", "image/gif"];
 export const maxImageSize = 5 * 1024 * 1024;
 
 export const doctorsSchema = z.object({
@@ -27,8 +21,11 @@ export const doctorsSchema = z.object({
 
 export type DoctorData = z.infer<typeof doctorsSchema>;
 
-export type AppwriteDoctorData = DoctorData &
-  AppwriteDocumentProperties & { authId: string };
+export type DoctorDataUpdate = Omit<DoctorData, "picture"> & {
+  pictureId: string;
+  doctorId: string;
+  authId: string;
+};
 
 export function getRawDoctorData(formData: FormData) {
   return {
@@ -38,5 +35,7 @@ export function getRawDoctorData(formData: FormData) {
     specialty: formData.get("specialty"),
     bio: formData.get("bio"),
     picture: formData.get("picture"),
+    doctorId: formData.get("doctorId"),
+    authId: formData.get("authId"),
   };
 }

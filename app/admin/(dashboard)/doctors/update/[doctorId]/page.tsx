@@ -1,15 +1,25 @@
+"use server";
+
 import DoctorsForm from "@/components/doctors/DoctorsForm";
 import { Button } from "@/components/ui/button";
-import { createDoctor } from "@/lib/actions/createDoctor";
+import { getDoctor } from "@/lib/actions/getDoctor";
+import { updateDoctor } from "@/lib/actions/updateDoctor";
 import { ArrowLeft } from "lucide-react";
 import Link from "next/link";
 
-export default function DoctorCreatePage() {
+export default async function DoctorsUpdatePage({
+  params,
+}: {
+  params: { doctorId: string };
+}) {
+  const { doctorId } = params;
+  const result = await getDoctor(doctorId);
+
   return (
     <div className="mx-auto w-full max-w-[600px]">
       <div className="flex">
         <h1 className="mb-8 w-fit border-b border-border pb-2 text-2xl font-semibold tracking-tight md:text-3xl">
-          New Doctor
+          Update Doctor
         </h1>
         <Button variant="outline" className="ml-auto">
           <Link href="/admin/doctors" className="flex items-center">
@@ -18,7 +28,11 @@ export default function DoctorCreatePage() {
           </Link>
         </Button>
       </div>
-      <DoctorsForm action={createDoctor} />
+      {result.success && result.data ? (
+        <DoctorsForm data={result.data} action={updateDoctor} />
+      ) : (
+        <p>Doctor not found</p>
+      )}
     </div>
   );
 }

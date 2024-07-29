@@ -13,7 +13,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { ExclamationTriangleIcon } from "@radix-ui/react-icons";
 import { useRouter } from "next/navigation";
-import { useCallback, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Button } from "@/components/ui/button";
@@ -21,37 +21,63 @@ import { cn, objectToFormData } from "@/lib/utils";
 import {
   allowedImageTypes,
   DoctorData,
+  DoctorDataUpdate,
   doctorsSchema,
 } from "@/lib/schemas/doctorsSchema";
 import { Textarea } from "@/components/ui/textarea";
 import { ImageUp } from "lucide-react";
 import { useDropzone } from "react-dropzone";
-import { createDoctor } from "@/lib/actions/createDoctor";
-import { unexpectedError } from "@/lib/results";
+import { Error, Result, unexpectedError } from "@/lib/results";
 import Image from "next/image";
+import { getImage } from "@/lib/actions/getImage";
 
-export default function DoctorsForm() {
+export default function DoctorsForm({
+  data: doctorData,
+  action,
+}: {
+  data?: DoctorDataUpdate;
+  action: (form: FormData) => Promise<Result<unknown> | Error<unknown>>;
+}) {
   const router = useRouter();
   const [message, setMessage] = useState("");
-  // const [picture, setPicture] = useState(null);
   const formRef = useRef<HTMLFormElement>(null);
 
   const form = useForm<DoctorData>({
     resolver: zodResolver(doctorsSchema),
     defaultValues: {
-      name: "",
-      email: "",
-      phone: "",
-      specialty: "",
-      bio: "",
+      name: doctorData?.name || "",
+      email: doctorData?.email || "",
+      phone: doctorData?.phone || "",
+      specialty: doctorData?.specialty || "",
+      bio: doctorData?.bio || "",
       picture: undefined,
     },
   });
 
+  useEffect(() => {
+    if (!doctorData?.pictureId) return;
+    getImage(doctorData.pictureId).then((result) => {
+      if (result.success) {
+        const imageUrl = result.data as URL;
+        fetch(imageUrl)
+          .then((response) => response.blob())
+          .then((blob) =>
+            form.setValue(
+              "picture",
+              new File([blob], "___current___.jpg", { type: "image/jpeg" }),
+              {
+                shouldValidate: true,
+              },
+            ),
+          );
+      }
+    });
+  }, [doctorData, form]);
+
   const onDrop = useCallback(
     (acceptedFiles: File[]) => {
-      const file = acceptedFiles[0];
-      form.setValue("picture", file, { shouldValidate: true });
+      // console.log("🚀 ~ acceptedFiles:", acceptedFiles);
+      form.setValue("picture", acceptedFiles[0], { shouldValidate: true });
     },
     [form],
   );
@@ -67,10 +93,15 @@ export default function DoctorsForm() {
     });
 
   async function onSubmit(data: any) {
+    console.log("Form submitted");
     setMessage("");
     try {
       const formData = objectToFormData(data);
-      const result = await createDoctor(formData);
+      if (doctorData?.doctorId && doctorData?.authId) {
+        formData.append("doctorId", doctorData.doctorId);
+        formData.append("authId", doctorData.authId);
+      }
+      const result = await action(formData);
       if (result.success) {
         router.push("/admin/doctors");
         return;
@@ -80,6 +111,10 @@ export default function DoctorsForm() {
       console.log("🚀 ~ error:", error);
       setMessage(unexpectedError().message);
     }
+  }
+
+  function onErrors(...args: any[]) {
+    console.log(args);
   }
 
   return (
@@ -95,7 +130,7 @@ export default function DoctorsForm() {
           <AlertDescription>{message}</AlertDescription>
         </Alert>
         <form
-          onSubmit={form.handleSubmit(onSubmit)}
+          onSubmit={form.handleSubmit(onSubmit, onErrors)}
           className="flex flex-col gap-3 md:gap-6"
           ref={formRef}
         >
