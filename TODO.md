@@ -24,7 +24,7 @@
 - [x] Add alert for deleting doctor
 - [x] Add select boxes for doctors list
 - [x] Add app path in the page top
-- [ ] Fix scrollbar layout shift
+- [x] Fix scrollbar layout shift
 - [ ] Make create and update doctor button label customizable
 - [ ] Implement LAB autofill on create doctor page
 - [ ] Implement mass delete action

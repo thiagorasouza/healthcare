@@ -19,7 +19,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={cn("min-h-screen w-full", inter.className)}>
+      <body className={cn(inter.className)}>
         {children}
         <Toaster />
       </body>
