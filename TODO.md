@@ -21,8 +21,8 @@
 - [x] New Doctor and Update Doctor should be in a card
 - [x] Make doctors list responsive
 - [x] Implement delete doctor action
-- [ ] Add alert for deleting doctor
-- [ ] Add select boxes for bulk delete
+- [x] Add alert for deleting doctor
+- [x] Add select boxes for bulk delete
 - [ ] Add app path in the page top
 - [ ] Fix scrollbar layout shift
 - [ ] Make create and update doctor button label customizable

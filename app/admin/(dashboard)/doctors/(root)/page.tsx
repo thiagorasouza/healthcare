@@ -1,5 +1,7 @@
 "use client";
 
+import { columns } from "@/app/admin/(dashboard)/doctors/(root)/columns";
+import { DataTable } from "@/app/admin/(dashboard)/doctors/(root)/data-table";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -83,73 +85,74 @@ export default function DoctorsPage() {
           {loading ? (
             "Loading..."
           ) : doctors ? (
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead className="hidden md:table-cell">
-                    Picture
-                  </TableHead>
-                  <TableHead>Name</TableHead>
-                  <TableHead className="max-sm:hidden">Specialty</TableHead>
-                  <TableHead className="hidden lg:table-cell">
-                    Biography
-                  </TableHead>
-                  <TableHead>Actions</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {doctors.map((doctor: DoctorDocumentSchema, index: number) => {
-                  return (
-                    <TableRow key={index}>
-                      <TableCell className="hidden md:table-cell">
-                        {doctor.pictureId ? (
-                          <Image
-                            alt={`${doctor.name} picture`}
-                            className="aspect-square rounded-md object-cover"
-                            height="64"
-                            src={getImageLink(doctor.pictureId)}
-                            width="64"
-                          />
-                        ) : (
-                          <div className="flex h-16 w-16 items-center justify-center">
-                            <ImageIcon className="h-10 w-10" />
-                          </div>
-                        )}
-                      </TableCell>
-                      <TableCell className="font-medium">
-                        {doctor.name}
-                      </TableCell>
-                      <TableCell className="max-sm:hidden">
-                        {doctor.specialty}
-                      </TableCell>
-                      <TableCell className="hidden lg:table-cell">
-                        {abbreviateText(doctor.bio, 50)}
-                      </TableCell>
-                      <TableCell className="flex items-center">
-                        <Button variant="outline">
-                          <Link
-                            href={`/admin/doctors/update/${doctor.$id}`}
-                            className="flex items-center"
-                          >
-                            <UserPen className="h-4 w-4 sm:h-5 sm:w-5" />
-                          </Link>
-                        </Button>
-                        <Button
-                          variant="outline"
-                          className="sm:block"
-                          onClick={() =>
-                            onDelete(doctor.name, doctor.$id, doctor.authId)
-                          }
-                        >
-                          <Trash2 className="h-4 w-4 sm:h-5 sm:w-5" />
-                        </Button>
-                      </TableCell>
-                    </TableRow>
-                  );
-                })}
-              </TableBody>
-            </Table>
+            <DataTable columns={columns(onDelete)} data={doctors} />
           ) : (
+            // <Table>
+            //   <TableHeader>
+            //     <TableRow>
+            //       <TableHead className="hidden md:table-cell">
+            //         Picture
+            //       </TableHead>
+            //       <TableHead>Name</TableHead>
+            //       <TableHead className="max-sm:hidden">Specialty</TableHead>
+            //       <TableHead className="hidden lg:table-cell">
+            //         Biography
+            //       </TableHead>
+            //       <TableHead>Actions</TableHead>
+            //     </TableRow>
+            //   </TableHeader>
+            //   <TableBody>
+            //     {doctors.map((doctor: DoctorDocumentSchema, index: number) => {
+            //       return (
+            //         <TableRow key={index}>
+            //           <TableCell className="hidden md:table-cell">
+            //             {doctor.pictureId ? (
+            //               <Image
+            //                 alt={`${doctor.name} picture`}
+            //                 className="aspect-square rounded-md object-cover"
+            //                 height="64"
+            //                 src={getImageLink(doctor.pictureId)}
+            //                 width="64"
+            //               />
+            //             ) : (
+            //               <div className="flex h-16 w-16 items-center justify-center">
+            //                 <ImageIcon className="h-10 w-10" />
+            //               </div>
+            //             )}
+            //           </TableCell>
+            //           <TableCell className="font-medium">
+            //             {doctor.name}
+            //           </TableCell>
+            //           <TableCell className="max-sm:hidden">
+            //             {doctor.specialty}
+            //           </TableCell>
+            //           <TableCell className="hidden lg:table-cell">
+            //             {abbreviateText(doctor.bio, 50)}
+            //           </TableCell>
+            //           <TableCell className="flex items-center">
+            //             <Button variant="outline">
+            //               <Link
+            //                 href={`/admin/doctors/update/${doctor.$id}`}
+            //                 className="flex items-center"
+            //               >
+            //                 <UserPen className="h-4 w-4 sm:h-5 sm:w-5" />
+            //               </Link>
+            //             </Button>
+            //             <Button
+            //               variant="outline"
+            //               className="sm:block"
+            //               onClick={() =>
+            //                 onDelete(doctor.name, doctor.$id, doctor.authId)
+            //               }
+            //             >
+            //               <Trash2 className="h-4 w-4 sm:h-5 sm:w-5" />
+            //             </Button>
+            //           </TableCell>
+            //         </TableRow>
+            //       );
+            //     })}
+            //   </TableBody>
+            // </Table>
             "Not doctors found"
           )}
         </CardContent>
