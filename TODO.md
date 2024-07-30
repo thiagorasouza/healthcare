@@ -22,9 +22,9 @@
 - [x] Make doctors list responsive
 - [x] Implement delete doctor action
 - [x] Add alert for deleting doctor
-- [x] Add select boxes for bulk delete
-- [ ] Add app path in the page top
+- [x] Add select boxes for doctors list
+- [x] Add app path in the page top
 - [ ] Fix scrollbar layout shift
 - [ ] Make create and update doctor button label customizable
 - [ ] Implement LAB autofill on create doctor page
-- [ ] Add card preview on doctor create page
+- [ ] Implement mass delete action

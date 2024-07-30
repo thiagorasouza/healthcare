@@ -2,6 +2,7 @@
 
 import { columns } from "@/app/admin/(dashboard)/doctors/(root)/columns";
 import { DataTable } from "@/app/admin/(dashboard)/doctors/(root)/data-table";
+import AdminBreadcrumb from "@/components/admin/AdminBreadcrumb";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -68,12 +69,18 @@ export default function DoctorsPage() {
 
   return (
     <>
-      <Button size="sm" className="ml-auto h-8 w-fit">
-        <Link href="/admin/doctors/create" className="flex items-center gap-2">
-          <PlusCircle className="h-3.5 w-3.5" />
-          <span className="sm:whitespace-nowrap">Add Doctor</span>
-        </Link>
-      </Button>
+      <div className="flex items-center justify-between">
+        <AdminBreadcrumb />
+        <Button size="sm" className="ml-auto h-8 w-fit">
+          <Link
+            href="/admin/doctors/create"
+            className="flex items-center gap-2"
+          >
+            <PlusCircle className="h-3.5 w-3.5" />
+            <span className="sm:whitespace-nowrap">Add Doctor</span>
+          </Link>
+        </Button>
+      </div>
       <Card className="max-sm:p-0">
         <CardHeader className="max-sm:px-4 max-sm:pt-5">
           <CardTitle>Doctors</CardTitle>
