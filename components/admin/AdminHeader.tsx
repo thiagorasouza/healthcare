@@ -18,10 +18,7 @@ export function AdminHeader() {
   return (
     <header className="sticky top-0 z-10 flex h-16 items-center gap-4 border-b bg-background px-4 md:px-6">
       <nav className="hidden shrink-0 font-medium md:flex md:flex-row md:items-center md:gap-5 md:text-sm lg:gap-6">
-        <Link
-          href="/"
-          className="flex items-center gap-2 text-base font-semibold"
-        >
+        <Link href="/" className="flex items-center gap-2 text-base font-semibold">
           <Image
             src="/images/logo.svg"
             alt="Mednow logo"
@@ -69,38 +66,19 @@ export function AdminHeader() {
             </Link>
             <Separator orientation="horizontal" />
             <ul className="flex flex-col gap-6">
-              <li>
-                <Link
-                  href="#"
-                  className="text-foreground transition-colors hover:text-foreground"
-                >
-                  Dashboard
-                </Link>
-              </li>
-              <li>
-                <Link
-                  href="#"
-                  className="text-muted-foreground transition-colors hover:text-foreground"
-                >
-                  Doctors
-                </Link>
-              </li>
-              <li>
-                <Link
-                  href="#"
-                  className="text-muted-foreground transition-colors hover:text-foreground"
-                >
-                  Patients
-                </Link>
-              </li>
-              <li>
-                <Link
-                  href="#"
-                  className="text-muted-foreground transition-colors hover:text-foreground"
-                >
-                  Appointments
-                </Link>
-              </li>
+              {adminNavbarLinks.map((link, index) => (
+                <li key={index}>
+                  <Link
+                    href={link.href}
+                    className={cn(
+                      "text-muted-foreground transition-colors hover:text-foreground",
+                      pathname === link.href && "text-foreground",
+                    )}
+                  >
+                    {link.label}
+                  </Link>
+                </li>
+              ))}
             </ul>
           </nav>
         </SheetContent>

@@ -1,4 +1,4 @@
-## Login & Authentication
+## TODO
 
 - [x] Create admin login page (email and password)
 - [x] Test login page with Cypress
@@ -26,5 +26,4 @@
 - [x] Add app path in the page top
 - [x] Fix scrollbar layout shift
 - [x] Implement LAB autofill on create doctor page
-- [ ] Implement mass delete action
-- [ ] Implement links on breadcrumbs
+- [x] Implement links on breadcrumbs

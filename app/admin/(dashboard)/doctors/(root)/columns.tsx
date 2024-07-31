@@ -17,15 +17,9 @@ import { ImageIcon, MoreHorizontal } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 
-type onDeleteFunction = (
-  name: string,
-  doctorId: string,
-  authId: string,
-) => void;
+type onDeleteFunction = (name: string, doctorId: string, authId: string) => void;
 
-export function columns(
-  onDelete: onDeleteFunction,
-): ColumnDef<DoctorDocumentSchema>[] {
+export function columns(onDelete: onDeleteFunction): ColumnDef<DoctorDocumentSchema>[] {
   return [
     {
       id: "select",
@@ -36,9 +30,7 @@ export function columns(
               table.getIsAllPageRowsSelected() ||
               (table.getIsSomePageRowsSelected() && "indeterminate")
             }
-            onCheckedChange={(value) =>
-              table.toggleAllPageRowsSelected(!!value)
-            }
+            onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
             aria-label="Select all"
           />
         </div>
@@ -108,24 +100,20 @@ export function columns(
               <DropdownMenuLabel>Actions</DropdownMenuLabel>
               <DropdownMenuSeparator />
               <DropdownMenuItem className="cursor-pointer">
-                <Link
-                  target="_blank"
-                  href={`/admin/doctors/update/${row.original.$id}`}
-                >
+                <Link target="_blank" href={`/admin/doctors/update/${row.original.$id}`}>
                   Edit
                 </Link>
               </DropdownMenuItem>
               <DropdownMenuItem
                 className="cursor-pointer"
-                onClick={() =>
-                  onDelete(
-                    row.original.name,
-                    row.original.$id,
-                    row.original.authId,
-                  )
-                }
+                onClick={() => onDelete(row.original.name, row.original.$id, row.original.authId)}
               >
                 Delete
+              </DropdownMenuItem>
+              <DropdownMenuItem className="cursor-pointer">
+                <Link target="_blank" href={`/admin/doctors/${row.original.$id}/availabilities`}>
+                  Availabilities
+                </Link>
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
