@@ -11,11 +11,11 @@ import {
 import { usePathname } from "next/navigation";
 
 // Necessary due to key={} errors when using empty JSX tag
-const BreadcrumbItemWithSeparator = ({ path }: { path: string }) => (
+const BreadcrumbItemWithSeparator = ({ name, link }: { name: string; link: string }) => (
   <>
     <BreadcrumbItem>
-      <BreadcrumbLink href="#" className="capitalize">
-        {path === "admin" ? "Dashboard" : path}
+      <BreadcrumbLink href={link} className="capitalize">
+        {name === "admin" ? "Dashboard" : name}
       </BreadcrumbLink>
     </BreadcrumbItem>
     <BreadcrumbSeparator />
@@ -35,7 +35,11 @@ const AdminBreadcrumb = () => {
     <Breadcrumb>
       <BreadcrumbList>
         {pathParts.map((path, index) => (
-          <BreadcrumbItemWithSeparator path={path} key={index} />
+          <BreadcrumbItemWithSeparator
+            name={path}
+            link={"/" + pathParts.slice(0, index + 1).join("/")}
+            key={index}
+          />
         ))}
         <BreadcrumbItem key="page">
           <BreadcrumbPage key="page" className="capitalize">
