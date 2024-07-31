@@ -51,6 +51,37 @@ export function generateRandomPassword(pwdLength: number) {
   return password;
 }
 
+export function getRandomDoctorSpecialty(): string {
+  const specialties: string[] = [
+    "Cardiology",
+    "Dermatology",
+    "Emergency Medicine",
+    "Endocrinology",
+    "Family Medicine",
+    "Gastroenterology",
+    "Geriatrics",
+    "Hematology",
+    "Infectious Disease",
+    "Nephrology",
+    "Neurology",
+    "Obstetrics and Gynecology",
+    "Oncology",
+    "Ophthalmology",
+    "Orthopedics",
+    "Otolaryngology",
+    "Pediatrics",
+    "Psychiatry",
+    "Pulmonology",
+    "Radiology",
+    "Rheumatology",
+    "Surgery",
+    "Urology",
+  ];
+
+  const randomIndex = Math.floor(Math.random() * specialties.length);
+  return specialties[randomIndex];
+}
+
 export type AppwriteException = NodeAppwriteException | WebAppwriteException;
 
 export function isAppwriteException(error: any): error is AppwriteException {

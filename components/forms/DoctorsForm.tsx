@@ -6,11 +6,7 @@ import { useEffect, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { objectToFormData } from "@/lib/utils";
-import {
-  DoctorData,
-  DoctorDataUpdate,
-  doctorsSchema,
-} from "@/lib/schemas/doctorsSchema";
+import { DoctorData, DoctorDataUpdate, doctorsSchema } from "@/lib/schemas/doctorsSchema";
 import { Error, Result, unexpectedError } from "@/lib/results";
 import PictureField from "@/components/forms/PictureField";
 import TextField from "@/components/forms/TextField";
@@ -19,14 +15,8 @@ import SubmitButton from "@/components/forms/SubmitButton";
 import { getImageLink } from "@/lib/actions/getImageLink";
 import { currentPictureName } from "@/lib/constants";
 import AlertMessage from "@/components/forms/AlertMessage";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import TestDoctorFillWithRandomData from "@/components/testing/TestDoctorFillWithRandomData";
 
 interface DoctorsFormProps {
   title: string;
@@ -35,15 +25,11 @@ interface DoctorsFormProps {
   action: (form: FormData) => Promise<Result<unknown> | Error<unknown>>;
 }
 
-export default function DoctorsForm({
-  title,
-  description,
-  doctorData,
-  action,
-}: DoctorsFormProps) {
+export default function DoctorsForm({ title, description, doctorData, action }: DoctorsFormProps) {
   const router = useRouter();
   const [message, setMessage] = useState("");
   const formRef = useRef<HTMLFormElement>(null);
+
   const form = useForm<DoctorData>({
     resolver: zodResolver(doctorsSchema),
     defaultValues: {
@@ -63,13 +49,9 @@ export default function DoctorsForm({
       const pictureUrl = getImageLink(doctorData?.pictureId);
       const response = await fetch(pictureUrl);
       const blob = await response.blob();
-      form.setValue(
-        "picture",
-        new File([blob], currentPictureName, { type: "image/jpeg" }),
-        {
-          shouldValidate: true,
-        },
-      );
+      form.setValue("picture", new File([blob], currentPictureName, { type: "image/jpeg" }), {
+        shouldValidate: true,
+      });
     };
 
     asyncEffect();
@@ -106,7 +88,7 @@ export default function DoctorsForm({
         <Form {...form}>
           <AlertMessage message={message} />
           <form
-            onSubmit={form.handleSubmit(onSubmit)}
+            onSubmit={form.handleSubmit(onSubmit, () => console.log(form.formState.errors))}
             className="flex flex-col gap-3 md:gap-6"
             ref={formRef}
           >
@@ -134,9 +116,7 @@ export default function DoctorsForm({
               placeholder="Short medical experience and training description"
             />
             <fieldset className="rounded-lg border p-5 pt-3">
-              <legend className="-ml-1 px-1 text-sm font-medium text-muted-foreground">
-                User
-              </legend>
+              <legend className="-ml-1 px-1 text-sm font-medium text-muted-foreground">User</legend>
               <div className="flex flex-col gap-3 md:flex-row md:gap-6">
                 <TextField
                   form={form}
@@ -155,6 +135,7 @@ export default function DoctorsForm({
               </div>
             </fieldset>
             <SubmitButton form={form} label="Submit" />
+            <TestDoctorFillWithRandomData form={form} formRef={formRef} />
           </form>
         </Form>
       </CardContent>

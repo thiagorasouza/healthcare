@@ -16,15 +16,14 @@ const PictureField = ({ form }: { form: UseFormReturn<any> }) => {
     [form],
   );
 
-  const { getRootProps, getInputProps, isDragActive, isDragReject } =
-    useDropzone({
-      onDrop,
-      accept: allowedImageTypes.reduce((obj: any, type: string) => {
-        obj[type] = [];
-        return obj;
-      }, {}),
-      multiple: false,
-    });
+  const { getRootProps, getInputProps, isDragActive, isDragReject } = useDropzone({
+    onDrop,
+    accept: allowedImageTypes.reduce((obj: any, type: string) => {
+      obj[type] = [];
+      return obj;
+    }, {}),
+    multiple: false,
+  });
 
   return (
     <FormField
@@ -37,7 +36,6 @@ const PictureField = ({ form }: { form: UseFormReturn<any> }) => {
               className={cn(
                 "flex h-32 w-32 cursor-pointer flex-col items-center justify-center gap-1 overflow-hidden rounded-md border-2 border-dashed border-border bg-background text-foreground",
                 form.formState.errors.picture && "border-red-400 text-red-400",
-                field.value && "border-none",
               )}
               {...getRootProps()}
             >
