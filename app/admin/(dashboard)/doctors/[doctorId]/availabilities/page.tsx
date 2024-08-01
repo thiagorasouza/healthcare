@@ -7,7 +7,6 @@ import { getDoctor } from "@/lib/actions/getDoctor";
 
 export default async function AvailabilitiesPage({ params }: { params: { doctorId: string } }) {
   const { doctorId } = params;
-  // console.log("🚀 ~ doctorId:", doctorId);
 
   const result = await getDoctor(doctorId);
   if (!result.success || !result.data) {
@@ -15,7 +14,6 @@ export default async function AvailabilitiesPage({ params }: { params: { doctorI
   }
 
   const doctor = result.data;
-  // console.log("🚀 ~ result:", result);
 
   return (
     <div className="mx-auto space-y-4">
@@ -32,6 +30,7 @@ export default async function AvailabilitiesPage({ params }: { params: { doctorI
       <AvailabilityForm
         title="Insert Slots"
         description="Make this doctor available on specific dates and time periods"
+        doctorId={doctorId}
         action={createAvailability}
       />
     </div>

@@ -9,16 +9,10 @@ import { isAppwriteException } from "@/lib/utils";
 export async function updateDoctor(formData: FormData) {
   try {
     const rawData = getRawDoctorData(formData);
-    console.log("🚀 ~ rawData:", rawData);
 
     const doctorId = rawData.doctorId;
     const authId = rawData.authId;
-    if (
-      !doctorId ||
-      typeof doctorId !== "string" ||
-      !authId ||
-      typeof authId !== "string"
-    ) {
+    if (!doctorId || typeof doctorId !== "string" || !authId || typeof authId !== "string") {
       return invalidFieldsError();
     }
 
@@ -33,25 +27,17 @@ export async function updateDoctor(formData: FormData) {
 
     if (name !== user.name) {
       const nameUpdated = await users.updateName(authId, name);
-      console.log("🚀 ~ nameUpdated:", nameUpdated);
     }
     if (email !== user.email) {
       const emailUpdated = await users.updateEmail(authId, email);
-      console.log("🚀 ~ emailUpdated:", emailUpdated);
     }
     if (phone !== user.phone) {
       const phoneUpdated = await users.updatePhone(authId, phone);
-      console.log("🚀 ~ phoneUpdated:", phoneUpdated);
     }
 
     let fileUploaded;
     if (picture.name !== "___current___.jpg") {
-      fileUploaded = await storage.createFile(
-        process.env.IMAGES_BUCKET_ID!,
-        ID.unique(),
-        picture,
-      );
-      console.log("🚀 ~ fileUploaded:", fileUploaded);
+      fileUploaded = await storage.createFile(process.env.IMAGES_BUCKET_ID!, ID.unique(), picture);
     }
 
     const doctorUpdated = await databases.updateDocument(

@@ -1,21 +1,10 @@
 "use server";
 
-import {
-  databases,
-  ID,
-  Permission,
-  Role,
-  storage,
-  users,
-} from "@/lib/appwrite/adminClient";
+import { databases, ID, Permission, Role, storage, users } from "@/lib/appwrite/adminClient";
 import { invalidFieldsError, success, unexpectedError } from "@/lib/results";
 import { userAlreadyRegisteredError } from "@/lib/results/errors/userAlreadyRegisteredError";
 import { doctorsSchema, getRawDoctorData } from "@/lib/schemas/doctorsSchema";
-import {
-  generateRandomPassword,
-  getInvalidFieldsList,
-  isAppwriteException,
-} from "@/lib/utils";
+import { generateRandomPassword, getInvalidFieldsList, isAppwriteException } from "@/lib/utils";
 
 export async function createDoctor(formData: FormData) {
   try {
@@ -37,7 +26,6 @@ export async function createDoctor(formData: FormData) {
       randomPassword,
       validData.name,
     );
-    console.log("🚀 ~ userCreated:", userCreated);
 
     const authId = userCreated.$id;
 
@@ -46,11 +34,9 @@ export async function createDoctor(formData: FormData) {
       ID.unique(),
       validData.picture,
     );
-    console.log("🚀 ~ fileUploaded:", fileUploaded);
     const pictureId = fileUploaded.$id;
 
     const labelUpdated = await users.updateLabels(authId, ["doctor"]);
-    console.log("🚀 ~ labelUpdated:", labelUpdated);
 
     const doctorCreated = await databases.createDocument(
       process.env.DATABASE_ID!,
@@ -70,10 +56,8 @@ export async function createDoctor(formData: FormData) {
         Permission.delete(Role.user(authId)),
       ],
     );
-    console.log("🚀 ~ doctorCreated:", doctorCreated);
 
     const result = { user: labelUpdated, doctor: doctorCreated };
-    console.log("🚀 ~ result:", result);
 
     return success(result);
   } catch (error) {

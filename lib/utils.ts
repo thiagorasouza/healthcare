@@ -15,15 +15,14 @@ export function objectToFormData(obj: object) {
       continue;
     }
     // @ts-ignore
-    formData.append(property, obj[property]);
+    const value = obj[property];
+    formData.append(property, value instanceof Date ? value.toISOString() : value);
   }
 
   return formData;
 }
 
-export function getInvalidFieldsList<Input>(
-  validationError: SafeParseError<Input>,
-): string[] {
+export function getInvalidFieldsList<Input>(validationError: SafeParseError<Input>): string[] {
   const fieldErrors = validationError.error?.flatten().fieldErrors;
   return fieldErrors ? Object.keys(fieldErrors) : [];
 }
@@ -86,18 +85,12 @@ export type AppwriteException = NodeAppwriteException | WebAppwriteException;
 
 export function isAppwriteException(error: any): error is AppwriteException {
   return (
-    typeof error === "object" &&
-    error !== null &&
-    error.constructor.name === "AppwriteException"
+    typeof error === "object" && error !== null && error.constructor.name === "AppwriteException"
   );
 }
 
 export function isZodException(error: any): error is ZodError {
-  return (
-    typeof error === "object" &&
-    error !== null &&
-    error.constructor.name === "ZodError"
-  );
+  return typeof error === "object" && error !== null && error.constructor.name === "ZodError";
 }
 
 export function abbreviateText(text: string, maxLength: number): string {
@@ -120,4 +113,16 @@ export function getRandomPictureURL() {
   const gender = gendersList[Math.floor(Math.random() * gendersList.length)];
   const number = Math.floor(Math.random() * 91);
   return `https://randomuser.me/api/portraits/${gender}/${number}.jpg`;
+}
+
+export function setDateWithOriginalTime(originalDate: Date, newDate: Date) {
+  if (!originalDate) return newDate;
+
+  const hours = originalDate.getHours();
+  const minutes = originalDate.getMinutes();
+  const seconds = originalDate.getSeconds();
+  const milliseconds = originalDate.getMilliseconds();
+
+  newDate.setHours(hours, minutes, seconds, milliseconds);
+  return newDate;
 }

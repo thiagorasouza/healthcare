@@ -4,13 +4,7 @@ import { columns } from "@/app/admin/(dashboard)/doctors/(root)/columns";
 import { DataTable } from "@/app/admin/(dashboard)/doctors/(root)/data-table";
 import AdminBreadcrumb from "@/components/admin/AdminBreadcrumb";
 import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import {
   Table,
   TableBody,
@@ -40,7 +34,6 @@ export default function DoctorsPage() {
     const asyncEffect = async () => {
       try {
         const result = await getAllDoctors();
-        // console.log("🚀 ~ result:", result);
         if (result.success && result.data) {
           setDoctors(result.data);
         }
@@ -57,7 +50,7 @@ export default function DoctorsPage() {
   async function onDelete(name: string, doctorId: string, authId: string) {
     try {
       const result = await deleteDoctor(doctorId, authId);
-      console.log("🚀 ~ result:", result);
+      // console.log("🚀 ~ result:", result);
       if (result.success) {
         toast(`Doctor ${name} deleted successfully.`);
         setLoading(true);
@@ -72,10 +65,7 @@ export default function DoctorsPage() {
       <div className="flex items-center justify-between">
         <AdminBreadcrumb />
         <Button size="sm" className="ml-auto h-8 w-fit">
-          <Link
-            href="/admin/doctors/create"
-            className="flex items-center gap-2"
-          >
+          <Link href="/admin/doctors/create" className="flex items-center gap-2">
             <PlusCircle className="h-3.5 w-3.5" />
             <span className="sm:whitespace-nowrap">Add Doctor</span>
           </Link>
@@ -84,9 +74,7 @@ export default function DoctorsPage() {
       <Card className="max-sm:p-0">
         <CardHeader className="max-sm:px-4 max-sm:pt-5">
           <CardTitle>Doctors</CardTitle>
-          <CardDescription>
-            Manage doctors and adjust their availabilities.
-          </CardDescription>
+          <CardDescription>Manage doctors and adjust their availabilities.</CardDescription>
         </CardHeader>
         <CardContent className="max-sm:p-4 max-sm:pt-0">
           {loading ? (

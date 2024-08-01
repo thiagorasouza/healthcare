@@ -32,22 +32,18 @@ describe("loginAdmin", () => {
   });
 
   it("returns an error for invalid credentials", async () => {
-    jest
-      .spyOn(account, "createEmailPasswordSession")
-      .mockImplementationOnce(() => {
-        throw new AppwriteException("", 401, "user_invalid_credentials");
-      });
+    jest.spyOn(account, "createEmailPasswordSession").mockImplementationOnce(() => {
+      throw new AppwriteException("", 401, "user_invalid_credentials");
+    });
 
     const result = await loginAdmin(mockUserData);
     expect(result).toStrictEqual(invalidCredentialsError());
   });
 
   it("returns unexpected error if appwrite throws", async () => {
-    jest
-      .spyOn(account, "createEmailPasswordSession")
-      .mockImplementationOnce(() => {
-        throw new AppwriteException("");
-      });
+    jest.spyOn(account, "createEmailPasswordSession").mockImplementationOnce(() => {
+      throw new AppwriteException("");
+    });
 
     const result = await loginAdmin(mockUserData);
 
@@ -60,19 +56,14 @@ describe("loginAdmin", () => {
     cookies.mockImplementationOnce(() => cookiesMock);
 
     const result = await loginAdmin(mockUserData);
-    // console.log("🚀 ~ result:", result);
 
-    expect(cookiesMock.set).toHaveBeenCalledWith(
-      "session",
-      sessionMock.secret,
-      {
-        httpOnly: true,
-        secure: true,
-        sameSite: "none",
-        maxAge: Number(sessionMock.expire),
-        path: "/",
-      },
-    );
+    expect(cookiesMock.set).toHaveBeenCalledWith("session", sessionMock.secret, {
+      httpOnly: true,
+      secure: true,
+      sameSite: "none",
+      maxAge: Number(sessionMock.expire),
+      path: "/",
+    });
   });
 
   it("returns success for valid data", async () => {

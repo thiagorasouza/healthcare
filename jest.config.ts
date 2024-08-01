@@ -14,6 +14,5 @@ const config: Config = {
 };
 
 const jestConfig = createJestConfig(config);
-console.log("🚀 ~ jestConfig:", jestConfig);
 
 export default jestConfig;

@@ -13,13 +13,13 @@ export function TimePickerField({ date, setDate }: TimePickerDemoProps) {
   const hourRef = React.useRef<HTMLInputElement>(null);
 
   return (
-    <div className="flex items-center gap-1 rounded-md border">
+    <div className="flex w-fit items-center gap-1 rounded-md border">
       <TimePickerInput
         picker="hours"
         date={date}
         setDate={setDate}
         ref={hourRef}
-        className="border-none caret-current"
+        className="border-none"
         onRightFocus={() => minuteRef.current?.focus()}
       />
       :
@@ -28,7 +28,7 @@ export function TimePickerField({ date, setDate }: TimePickerDemoProps) {
         date={date}
         setDate={setDate}
         ref={minuteRef}
-        className="border-none caret-current"
+        className="border-none"
         onLeftFocus={() => hourRef.current?.focus()}
       />
     </div>

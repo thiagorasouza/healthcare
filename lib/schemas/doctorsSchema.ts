@@ -10,8 +10,6 @@ export const doctorsSchema = z.object({
   specialty: z.string().min(2).max(100),
   bio: z.string().min(2).max(500),
   picture: z.instanceof(File).refine((file) => {
-    console.log("🚀 ~ file:", file);
-
     return (
       file.name !== "" && file.size <= maxImageSize && allowedImageTypes.includes(file.type.trim())
     );
