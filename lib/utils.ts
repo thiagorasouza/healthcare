@@ -3,6 +3,8 @@ import { type AppwriteException as WebAppwriteException } from "appwrite";
 import { type ClassValue, clsx } from "clsx";
 import { twMerge } from "tailwind-merge";
 import { SafeParseError, ZodError } from "zod";
+import { addDays, Day, isBefore, nextDay } from "date-fns";
+import { Weekday, weekdays } from "@/lib/schemas/availabilitySchema";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -125,4 +127,25 @@ export function setDateWithOriginalTime(originalDate: Date, newDate: Date) {
 
   newDate.setHours(hours, minutes, seconds, milliseconds);
   return newDate;
+}
+
+export function capitalize(str: string): string {
+  if (str.length === 0) return str;
+  return str.charAt(0).toUpperCase() + str.slice(1);
+}
+
+export function getFirstWeekdayAfter(startDate: Date, targetWeekday: Weekday): Date {
+  const targetWeekdayNumber = weekdays.indexOf(targetWeekday) as Day;
+  console.log("🚀 ~ targetWeekdayNumber:", targetWeekdayNumber);
+  const nextTargetDate = nextDay(startDate, targetWeekdayNumber);
+
+  if (!isBefore(startDate, nextTargetDate)) {
+    return addDays(nextTargetDate, 7);
+  }
+
+  return nextTargetDate;
+}
+
+export function strToBoolean(str: string): boolean {
+  return str.toLowerCase() === "true";
 }

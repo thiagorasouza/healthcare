@@ -1,5 +1,8 @@
 import { z } from "zod";
 
+export const weekdays = ["sun", "mon", "tue", "wed", "thu", "fri", "sat"];
+export type Weekday = "mon" | "tue" | "wed" | "thu" | "fri" | "sat" | "sun";
+
 const isMultipleOf = (num: number, divisor: number) => num % divisor === 0;
 
 export const availabilitySchema = z
@@ -12,6 +15,15 @@ export const availabilitySchema = z
       .refine((val) => !isNaN(Number(val)), {
         message: "Only numbers allowed",
       }),
+    recurring: z.boolean(),
+    mon: z.boolean(),
+    tue: z.boolean(),
+    wed: z.boolean(),
+    thu: z.boolean(),
+    fri: z.boolean(),
+    sat: z.boolean(),
+    sun: z.boolean(),
+    endDate: z.date(),
   })
   .superRefine(({ startTime, endTime }, ctx) => {
     if (startTime >= endTime) {
@@ -33,14 +45,14 @@ export const availabilitySchema = z
         path: ["duration"],
       });
     }
+  })
+  .superRefine(({ startTime, endTime, endDate }, ctx) => {
+    if (endDate <= startTime || endDate <= endTime) {
+      ctx.addIssue({
+        code: "custom",
+        message: "End date should be before available date",
+        path: ["endDate"],
+      });
+    }
   });
 export type AvailabilityData = z.infer<typeof availabilitySchema>;
-
-export function getRawAvailabilityData(formData: FormData) {
-  return {
-    startTime: formData.get("startTime"),
-    endTime: formData.get("endTime"),
-    duration: formData.get("duration"),
-    doctorId: formData.get("doctorId"),
-  };
-}
