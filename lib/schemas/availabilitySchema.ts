@@ -1,6 +1,6 @@
 import { z } from "zod";
 
-export const weekdays = ["sun", "mon", "tue", "wed", "thu", "fri", "sat"];
+export const weekdays: Weekday[] = ["sun", "mon", "tue", "wed", "thu", "fri", "sat"];
 export type Weekday = "mon" | "tue" | "wed" | "thu" | "fri" | "sat" | "sun";
 
 const isMultipleOf = (num: number, divisor: number) => num % divisor === 0;

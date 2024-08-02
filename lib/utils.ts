@@ -136,7 +136,6 @@ export function capitalize(str: string): string {
 
 export function getFirstWeekdayAfter(startDate: Date, targetWeekday: Weekday): Date {
   const targetWeekdayNumber = weekdays.indexOf(targetWeekday) as Day;
-  console.log("🚀 ~ targetWeekdayNumber:", targetWeekdayNumber);
   const nextTargetDate = nextDay(startDate, targetWeekdayNumber);
 
   if (!isBefore(startDate, nextTargetDate)) {
@@ -148,4 +147,20 @@ export function getFirstWeekdayAfter(startDate: Date, targetWeekday: Weekday): D
 
 export function strToBoolean(str: string): boolean {
   return str.toLowerCase() === "true";
+}
+
+export function transposeTime(sourceDate: Date, targetDate: Date): Date {
+  const resultDate = new Date(targetDate);
+
+  const hours = sourceDate.getHours();
+  const minutes = sourceDate.getMinutes();
+  const seconds = sourceDate.getSeconds();
+  const milliseconds = sourceDate.getMilliseconds();
+
+  resultDate.setHours(hours);
+  resultDate.setMinutes(minutes);
+  resultDate.setSeconds(seconds);
+  resultDate.setMilliseconds(milliseconds);
+
+  return resultDate;
 }

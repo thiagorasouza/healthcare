@@ -23,7 +23,7 @@ import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { CalendarIcon } from "lucide-react";
-import { format } from "date-fns";
+import { endOfDay, format } from "date-fns";
 import { TimePickerField } from "@/components/forms/TimePickerField";
 import { Input } from "@/components/ui/input";
 import { createAvailability } from "@/lib/actions/createAvailability";
@@ -268,7 +268,7 @@ export default function AvailabilityForm({
                         <Calendar
                           mode="single"
                           selected={field.value}
-                          onSelect={field.onChange}
+                          onSelect={(date) => field.onChange(endOfDay(date!))}
                           disabled={(date) => date <= new Date()}
                           initialFocus
                         />
