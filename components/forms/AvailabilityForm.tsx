@@ -1,35 +1,26 @@
 "use client";
 
 import { Error, Result, unexpectedError } from "@/lib/results";
-import { weekdays, AvailabilityData, availabilitySchema } from "@/lib/schemas/availabilitySchema";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useEffect, useState } from "react";
-import { useForm, useWatch } from "react-hook-form";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import {
-  Form,
-  FormControl,
-  FormDescription,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form";
-import { Switch } from "@/components/ui/switch";
+  AvailabilityData,
+  availabilitySchema,
+  avDefaultValues,
+} from "@/lib/schemas/availabilitySchema";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useState } from "react";
+import { useForm } from "react-hook-form";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Form } from "@/components/ui/form";
 import AlertMessage from "@/components/forms/AlertMessage";
 import SubmitButton from "@/components/forms/SubmitButton";
-import { capitalize, cn, objectToFormData, setDateWithOriginalTime } from "@/lib/utils";
-import { Button } from "@/components/ui/button";
-import { Calendar } from "@/components/ui/calendar";
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import { CalendarIcon } from "lucide-react";
-import { endOfDay, format } from "date-fns";
-import { TimePickerField } from "@/components/forms/TimePickerField";
-import { Input } from "@/components/ui/input";
+import { objectToFormData, setDateWithOriginalTime } from "@/lib/utils";
+import { endOfDay } from "date-fns";
 import { createAvailability } from "@/lib/actions/createAvailability";
-
-import Link from "next/link";
-import { Checkbox } from "@/components/ui/checkbox";
+import { WeekdaysField } from "@/components/forms/WeekdaysField";
+import TimeField from "@/components/forms/TimeField";
+import DurationField from "@/components/forms/DurationField";
+import ToggleField from "@/components/forms/ToggleField";
+import DateField from "@/components/forms/DateField";
 
 interface AvailabilityFormProps {
   title: string;
@@ -44,34 +35,12 @@ export default function AvailabilityForm({
   doctorId,
   action,
 }: AvailabilityFormProps) {
-  const [isOpen, setIsOpen] = useState(false);
-
-  const [date, setDate] = useState<Date>(new Date());
   const [message, setMessage] = useState("");
 
   const form = useForm<AvailabilityData>({
     resolver: zodResolver(availabilitySchema),
-    defaultValues: {
-      startTime: undefined,
-      endTime: undefined,
-      duration: "",
-      recurring: false,
-      mon: false,
-      tue: false,
-      wed: false,
-      thu: false,
-      fri: false,
-      sat: false,
-      sun: false,
-      endDate: undefined,
-    },
+    defaultValues: avDefaultValues,
   });
-
-  const recurring = form.watch("recurring");
-
-  useEffect(() => {
-    console.log("🚀 ~ recurring:", recurring);
-  }, [recurring]);
 
   async function onSubmit(data: any) {
     console.log("🚀 ~ data:", data);
@@ -87,6 +56,20 @@ export default function AvailabilityForm({
     }
   }
 
+  function onError() {
+    console.error("onError");
+    console.log("errors", form.formState.errors);
+    console.log("values", form.getValues());
+  }
+
+  function onStartDate(date?: Date) {
+    if (date) {
+      form.setValue("startTime", setDateWithOriginalTime(form.getValues("startTime"), date));
+      form.setValue("endTime", setDateWithOriginalTime(form.getValues("endTime"), date));
+    }
+    return date;
+  }
+
   return (
     <Card className="max-w-[600px] shadow">
       <CardHeader>
@@ -97,192 +80,55 @@ export default function AvailabilityForm({
         <Form {...form}>
           <AlertMessage message={message} />
           <form
-            onSubmit={form.handleSubmit(onSubmit, () => {
-              console.log("errors", form.formState.errors);
-              console.log("values", form.getValues());
-            })}
+            onSubmit={form.handleSubmit(onSubmit, onError)}
             className="flex flex-col gap-3 md:gap-6"
           >
-            <Popover open={isOpen} onOpenChange={setIsOpen}>
-              <PopoverTrigger asChild>
-                <div>
-                  <div className="mb-3 text-sm font-medium">Available Date</div>
-                  <Button
-                    type="button"
-                    variant={"outline"}
-                    className={cn(
-                      "w-[280px] justify-start text-left font-normal",
-                      !date && "text-muted-foreground",
-                    )}
-                  >
-                    <CalendarIcon className="mr-2 h-4 w-4" />
-                    {date ? format(date, "PPP") : <span>Pick a date</span>}
-                  </Button>
-                </div>
-              </PopoverTrigger>
-              <PopoverContent className="w-auto p-0">
-                <Calendar
-                  mode="single"
-                  selected={date}
-                  onSelect={(date) => {
-                    if (date) {
-                      form.setValue(
-                        "startTime",
-                        setDateWithOriginalTime(form.getValues("startTime"), date),
-                      );
-                      form.setValue(
-                        "endTime",
-                        setDateWithOriginalTime(form.getValues("endTime"), date),
-                      );
-                      setDate(date);
-                      setIsOpen(false);
-                    }
-                  }}
-                  required={true}
-                  initialFocus
-                />
-              </PopoverContent>
-            </Popover>
+            <DateField
+              name="startDate"
+              label="Available Date"
+              placeholder="Pick a date"
+              form={form}
+              onSelect={onStartDate}
+              disabled={(date) => date <= new Date()}
+            />
             <div className="flex flex-col gap-3 md:flex-row md:gap-6">
-              <FormField
-                control={form.control}
+              <TimeField
                 name="startTime"
-                render={({ field }) => (
-                  <FormItem className="w-[120px]">
-                    <FormLabel>Start Time</FormLabel>
-                    <FormControl>
-                      <TimePickerField date={field.value} setDate={field.onChange} />
-                    </FormControl>
-                    <FormDescription className="text-xs">First available hour</FormDescription>
-                    <FormMessage data-cy={`startTimeError`} />
-                  </FormItem>
-                )}
+                label="Start time"
+                description="First available hour"
+                form={form}
               />
-              <FormField
-                control={form.control}
+              <TimeField
                 name="endTime"
-                render={({ field }) => (
-                  <FormItem className="w-[120px]">
-                    <FormLabel>End Time</FormLabel>
-                    <FormControl>
-                      <TimePickerField date={field.value} setDate={field.onChange} />
-                    </FormControl>
-                    <FormDescription className="text-xs">Last available hour</FormDescription>
-                    <FormMessage data-cy={`endTimeError`} />
-                  </FormItem>
-                )}
+                label="End Time"
+                description="Last available hour"
+                form={form}
               />
-              <FormField
-                control={form.control}
+              <DurationField
                 name="duration"
-                render={({ field }) => (
-                  <FormItem className="w-[200px]">
-                    <FormLabel>Duration</FormLabel>
-                    <FormControl>
-                      <div className="flex w-fit gap-2 rounded-md border">
-                        <Input
-                          name="duration"
-                          type="text"
-                          className="w-[64px] grow-0 border-none text-center font-mono text-base tabular-nums focus:bg-accent focus:text-accent-foreground [&::-webkit-inner-spin-button]:appearance-none"
-                          value={field.value}
-                          onChange={(e) => {
-                            if (isNaN(Number(e.target.value))) return;
-                            field.onChange(e);
-                          }}
-                          maxLength={3}
-                        />
-                        <div className="flex items-end py-2 pr-6 text-sm">minutes</div>
-                      </div>
-                    </FormControl>
-                    <FormDescription className="text-xs">Mind the available hours</FormDescription>
-                    <FormMessage data-cy={`durationError`} />
-                  </FormItem>
-                )}
+                label="Duration"
+                description="Mind the available hours"
+                form={form}
               />
             </div>
-            <FormField
-              control={form.control}
+            <ToggleField
               name="recurring"
-              render={({ field }) => (
-                <FormItem className="flex flex-row items-center justify-between">
-                  <div className="space-y-0.5">
-                    <FormLabel>Recurring?</FormLabel>
-                    <FormDescription className="text-xs">
-                      Repeat this slots at selected weekdays
-                    </FormDescription>
-                  </div>
-                  <FormControl>
-                    <Switch checked={field.value} onCheckedChange={field.onChange} />
-                  </FormControl>
-                </FormItem>
-              )}
+              label="Recurring?"
+              description="Repeat this slots at selected weekdays"
+              form={form}
             />
             <fieldset className="rounded-lg border p-5" hidden={!form.watch("recurring")}>
-              {/* <legend className="-ml-1 px-1 text-sm font-medium text-muted-foreground">User</legend> */}
-              <div className="mb-9">
-                <div className="mb-3 text-sm font-medium">Weekdays</div>
-                <div className="flex gap-5">
-                  {weekdays.map((weekday, index) => {
-                    return (
-                      <FormField
-                        key={index}
-                        control={form.control}
-                        name={weekday as any}
-                        render={({ field }) => (
-                          <FormItem className="flex w-fit flex-col items-center">
-                            <FormControl>
-                              <Checkbox checked={field.value} onCheckedChange={field.onChange} />
-                            </FormControl>
-                            <FormLabel className="cursor-pointer text-xs">
-                              {capitalize(weekday)}
-                            </FormLabel>
-                          </FormItem>
-                        )}
-                      />
-                    );
-                  })}
-                </div>
-              </div>
-              <FormField
-                control={form.control}
+              <WeekdaysField form={form} />
+              <DateField
                 name="endDate"
-                render={({ field }) => (
-                  <FormItem className="flex flex-col">
-                    <FormLabel className="mb-1">End Date</FormLabel>
-                    <Popover>
-                      <PopoverTrigger asChild>
-                        <FormControl>
-                          <Button
-                            variant={"outline"}
-                            className={cn(
-                              "w-[240px] pl-3 text-left font-normal",
-                              !field.value && "text-muted-foreground",
-                            )}
-                          >
-                            {field.value ? format(field.value, "PPP") : <span>Pick a date</span>}
-                            <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
-                          </Button>
-                        </FormControl>
-                      </PopoverTrigger>
-                      <PopoverContent className="w-auto p-0" align="start">
-                        <Calendar
-                          mode="single"
-                          selected={field.value}
-                          onSelect={(date) => field.onChange(endOfDay(date!))}
-                          disabled={(date) => date <= new Date()}
-                          initialFocus
-                        />
-                      </PopoverContent>
-                    </Popover>
-                    <FormDescription className="text-xs">
-                      The last day you want this pattern to repeat
-                    </FormDescription>
-                    <FormMessage />
-                  </FormItem>
-                )}
+                label="End Date"
+                placeholder="Pick a date"
+                form={form}
+                onSelect={(date) => (date ? endOfDay(date) : date)}
+                disabled={(date) => date <= form.getValues("startDate")}
+                description="The last day you want this pattern to repeat"
               />
             </fieldset>
-
             <SubmitButton form={form} label="Submit" />
           </form>
         </Form>

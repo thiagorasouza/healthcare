@@ -9,6 +9,8 @@ export const availabilitySchema = z
   .object({
     startTime: z.date(),
     endTime: z.date(),
+    startDate: z.date(),
+    endDate: z.date(),
     duration: z
       .string()
       .min(1)
@@ -16,14 +18,9 @@ export const availabilitySchema = z
         message: "Only numbers allowed",
       }),
     recurring: z.boolean(),
-    mon: z.boolean(),
-    tue: z.boolean(),
-    wed: z.boolean(),
-    thu: z.boolean(),
-    fri: z.boolean(),
-    sat: z.boolean(),
-    sun: z.boolean(),
-    endDate: z.date(),
+    weekdays: z.array(z.string()).refine((value) => value.some((item) => item), {
+      message: "You have to select at least one day.",
+    }),
   })
   .superRefine(({ startTime, endTime }, ctx) => {
     if (startTime >= endTime) {
@@ -55,4 +52,15 @@ export const availabilitySchema = z
       });
     }
   });
+
+export const avDefaultValues = {
+  startDate: undefined,
+  endDate: undefined,
+  startTime: undefined,
+  endTime: undefined,
+  duration: "",
+  recurring: false,
+  weekdays: [],
+};
+
 export type AvailabilityData = z.infer<typeof availabilitySchema>;
