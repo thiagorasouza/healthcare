@@ -1,7 +1,7 @@
-"use client";
+import { env } from "@/lib/env";
 
 export function getImageLink(imageId: string) {
-  const projectId = process.env.NEXT_PUBLIC_PROJECT_ID!;
-  const bucketId = process.env.NEXT_PUBLIC_IMAGES_BUCKET_ID!;
+  const projectId = env.projectId;
+  const bucketId = env.imageBucketId;
   return `https://cloud.appwrite.io/v1/storage/buckets/${bucketId}/files/${imageId}/view?project=${projectId}`;
 }

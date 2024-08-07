@@ -170,3 +170,8 @@ export function getMinutesSinceMidnight(date: Date) {
   const minutes = getMinutes(date);
   return hours * 60 + minutes;
 }
+
+export function getInitials(name: string) {
+  const [first, second, ...other] = name.split(" ");
+  return first.charAt(0).toUpperCase() + second.charAt(0).toUpperCase();
+}

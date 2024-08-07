@@ -71,7 +71,7 @@ export default function AvailabilityForm({
   }
 
   return (
-    <Card className="max-w-[600px] shadow">
+    <Card className="shadow">
       <CardHeader>
         <CardTitle>{title}</CardTitle>
         <CardDescription>{description}</CardDescription>
