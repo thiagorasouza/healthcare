@@ -3,7 +3,7 @@ import { type AppwriteException as WebAppwriteException } from "appwrite";
 import { type ClassValue, clsx } from "clsx";
 import { twMerge } from "tailwind-merge";
 import { SafeParseError, ZodError } from "zod";
-import { addDays, Day, isBefore, nextDay } from "date-fns";
+import { addDays, Day, getHours, getMinutes, isBefore, nextDay } from "date-fns";
 import { Weekday, weekdays } from "@/lib/schemas/availabilitySchema";
 
 export function cn(...inputs: ClassValue[]) {
@@ -163,4 +163,10 @@ export function transposeTime(sourceDate: Date, targetDate: Date): Date {
   resultDate.setMilliseconds(milliseconds);
 
   return resultDate;
+}
+
+export function getMinutesSinceMidnight(date: Date) {
+  const hours = getHours(date);
+  const minutes = getMinutes(date);
+  return hours * 60 + minutes;
 }

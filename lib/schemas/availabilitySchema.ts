@@ -1,3 +1,4 @@
+import { AvDocumentSchema } from "@/lib/schemas/appwriteSchema";
 import { differenceInMonths } from "date-fns";
 import { z } from "zod";
 
@@ -60,6 +61,16 @@ export const availabilitySchema = z
       });
     }
   });
+
+export function parseDbData(dbData: AvDocumentSchema) {
+  return {
+    ...dbData,
+    startTime: new Date(dbData.startTime),
+    endTime: new Date(dbData.endTime),
+    startDate: new Date(dbData.startDate),
+    endDate: new Date(dbData.endDate),
+  };
+}
 
 export const avDefaultValues = {
   startDate: undefined,

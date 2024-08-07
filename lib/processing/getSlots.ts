@@ -15,7 +15,6 @@ export function getSlots(data: AvailabilityData, limit?: LimitOptions) {
       ? data.weekdays.filter((weekday) => limit.weekdays.includes(weekday as Weekday))
       : data.weekdays
   ) as Weekday[];
-  // console.log("🚀 ~ weekdaysToLoop:", weekdaysToLoop);
 
   const startTimeMs = startTime.getTime();
   const endTimeMs = endTime.getTime();
@@ -29,7 +28,6 @@ export function getSlots(data: AvailabilityData, limit?: LimitOptions) {
     const slotEndMs = slotStartMs + durationMs;
     slotsToTranspose.push([new Date(slotStartMs), new Date(slotEndMs)]);
   }
-  // console.log("🚀 ~ slotsToTranspose:", slotsToTranspose);
 
   const result = [];
   const weeksNum = differenceInWeeks(endDate, startDate) + 1;
@@ -65,23 +63,3 @@ export function getSlots(data: AvailabilityData, limit?: LimitOptions) {
 
   return result;
 }
-
-// const mockData = {
-//   startTime: new Date("2024-08-08T11:00:00.000+00:00"),
-//   endTime: new Date("2024-08-08T18:00:00.000+00:00"),
-//   startDate: new Date("2024-08-08T05:00:00.000+00:00"),
-//   endDate: new Date("2024-08-30T04:59:59.999+00:00"),
-//   weekdays: ["mon", "wed"],
-//   duration: 60,
-//   recurring: true,
-//   $id: "66b03555001d2713ff95",
-//   $tenant: "165330",
-//   $createdAt: "2024-08-05T02:13:41.830+00:00",
-//   $updatedAt: "2024-08-05T02:13:41.830+00:00",
-//   $permissions: [],
-//   doctorId: {},
-//   $databaseId: "6695bc47003220037191",
-//   $collectionId: "6695bd4c00204c0df0aa",
-// };
-
-// getSlots(mockData);
