@@ -1,3 +1,4 @@
+import { differenceInMonths } from "date-fns";
 import { z } from "zod";
 
 export const weekdays: Weekday[] = ["sun", "mon", "tue", "wed", "thu", "fri", "sat"];
@@ -7,20 +8,18 @@ const isMultipleOf = (num: number, divisor: number) => num % divisor === 0;
 
 export const availabilitySchema = z
   .object({
-    startTime: z.date(),
-    endTime: z.date(),
-    startDate: z.date(),
-    endDate: z.date(),
-    duration: z
-      .string()
-      .min(1)
-      .refine((val) => !isNaN(Number(val)), {
-        message: "Only numbers allowed",
+    startTime: z.coerce.date(),
+    endTime: z.coerce.date(),
+    startDate: z.coerce.date(),
+    endDate: z.coerce.date(),
+    duration: z.coerce.number({ message: "Only number allowed " }).min(1),
+    recurring: z.coerce.boolean(),
+    weekdays: z.preprocess(
+      (val) => (typeof val === "string" ? val.split(",") : val),
+      z.array(z.string()).refine((value) => value.some((item) => item), {
+        message: "You have to select at least one day.",
       }),
-    recurring: z.boolean(),
-    weekdays: z.array(z.string()).refine((value) => value.some((item) => item), {
-      message: "You have to select at least one day.",
-    }),
+    ),
   })
   .superRefine(({ startTime, endTime }, ctx) => {
     if (startTime >= endTime) {
@@ -51,6 +50,15 @@ export const availabilitySchema = z
         path: ["endDate"],
       });
     }
+  })
+  .superRefine(({ startDate, endDate }, ctx) => {
+    if (differenceInMonths(endDate, startDate) > 3) {
+      ctx.addIssue({
+        code: "custom",
+        message: "Please schedule a maximum of 3 months at a time",
+        path: ["endDate"],
+      });
+    }
   });
 
 export const avDefaultValues = {
@@ -58,7 +66,7 @@ export const avDefaultValues = {
   endDate: undefined,
   startTime: undefined,
   endTime: undefined,
-  duration: "",
+  duration: 0,
   recurring: false,
   weekdays: [],
 };
