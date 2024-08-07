@@ -13,7 +13,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Form } from "@/components/ui/form";
 import AlertMessage from "@/components/forms/AlertMessage";
 import SubmitButton from "@/components/forms/SubmitButton";
-import { objectToFormData, setDateWithOriginalTime } from "@/lib/utils";
+import { cn, objectToFormData, setDateWithOriginalTime } from "@/lib/utils";
 import { endOfDay } from "date-fns";
 import { createAvailability } from "@/lib/actions/createAvailability";
 import { WeekdaysField } from "@/components/forms/WeekdaysField";
@@ -26,6 +26,7 @@ interface AvailabilityFormProps {
   title: string;
   description: string;
   doctorId: string;
+  className?: string;
   action: (form: FormData) => Promise<Result<unknown> | Error<unknown>>;
 }
 
@@ -34,6 +35,7 @@ export default function AvailabilityForm({
   description,
   doctorId,
   action,
+  className,
 }: AvailabilityFormProps) {
   const [message, setMessage] = useState("");
 
@@ -48,7 +50,7 @@ export default function AvailabilityForm({
     try {
       const formData = objectToFormData(data);
       formData.append("doctorId", doctorId);
-      const result = await createAvailability(formData);
+      const result = await action(formData);
       setMessage(result.message);
     } catch (error) {
       console.log("🚀 ~ error:", error);
@@ -71,7 +73,7 @@ export default function AvailabilityForm({
   }
 
   return (
-    <Card className="shadow">
+    <Card className={cn("shadow", className)}>
       <CardHeader>
         <CardTitle>{title}</CardTitle>
         <CardDescription>{description}</CardDescription>

@@ -175,3 +175,11 @@ export function getInitials(name: string) {
   const [first, second, ...other] = name.split(" ");
   return first.charAt(0).toUpperCase() + second.charAt(0).toUpperCase();
 }
+
+export function getTimeFromDate(date: Date) {
+  return date.toLocaleTimeString("en-US", {
+    hour: "2-digit",
+    minute: "2-digit",
+    hour12: false,
+  });
+}
