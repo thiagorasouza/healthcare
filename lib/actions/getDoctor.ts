@@ -2,10 +2,7 @@
 
 import { databases, users } from "@/lib/appwrite/adminClient";
 import { success, unexpectedError } from "@/lib/results";
-import {
-  DoctorDocumentSchema,
-  UserDocumentSchema,
-} from "@/lib/schemas/appwriteSchema";
+import { DoctorDocumentSchema, UserDocumentSchema } from "@/lib/schemas/appwriteSchema";
 
 export async function getDoctor(doctorId: string) {
   try {
@@ -15,9 +12,7 @@ export async function getDoctor(doctorId: string) {
       doctorId,
     );
 
-    const userDocument: UserDocumentSchema = await users.get(
-      doctorDocument.authId,
-    );
+    const userDocument: UserDocumentSchema = await users.get(doctorDocument.authId);
 
     const doctor = {
       doctorId: doctorDocument.$id,
