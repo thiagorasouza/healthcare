@@ -3,6 +3,15 @@ import { differenceInMonths } from "date-fns";
 import { z } from "zod";
 
 export const weekdays: Weekday[] = ["sun", "mon", "tue", "wed", "thu", "fri", "sat"];
+export const fullWeekdays = {
+  sun: "Sunday",
+  mon: "Monday",
+  tue: "Tuesday",
+  wed: "Wednesday",
+  thu: "Thursday",
+  fri: "Friday",
+  sat: "Saturday",
+};
 export type Weekday = "mon" | "tue" | "wed" | "thu" | "fri" | "sat" | "sun";
 
 const isMultipleOf = (num: number, divisor: number) => num % divisor === 0;
