@@ -3,10 +3,10 @@
 import { UseFormReturn } from "react-hook-form";
 import { Checkbox } from "@/components/ui/checkbox";
 import { FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
-import { AvailabilityData, weekdays } from "@/lib/schemas/availabilitySchema";
+import { SlotData, weekdays } from "@/lib/schemas/slotsSchema";
 import { capitalize } from "@/lib/utils";
 
-export function WeekdaysField({ form }: { form: UseFormReturn<AvailabilityData> }) {
+export function WeekdaysField({ form }: { form: UseFormReturn<SlotData> }) {
   return (
     <FormField
       control={form.control}

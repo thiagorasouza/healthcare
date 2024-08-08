@@ -3,5 +3,5 @@ export const env = {
   imageBucketId: process.env.NEXT_PUBLIC_IMAGES_BUCKET_ID! || process.env.PROJECT_ID!,
   databaseId: process.env.DATABASE_ID!,
   doctorsCollectionId: process.env.DOCTORS_COLLECTION_ID!,
-  avCollectionId: process.env.AVAILABILITIES_COLLECTION_ID!,
+  slotsCollectionId: process.env.SLOTS_COLLECTION_ID!,
 };

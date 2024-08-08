@@ -1,11 +1,7 @@
 "use client";
 
 import { Error, Result, unexpectedError } from "@/lib/results";
-import {
-  AvailabilityData,
-  availabilitySchema,
-  avDefaultValues,
-} from "@/lib/schemas/availabilitySchema";
+import { SlotData, slotSchema, slotDefaultValues } from "@/lib/schemas/slotsSchema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
@@ -15,14 +11,13 @@ import AlertMessage from "@/components/forms/AlertMessage";
 import SubmitButton from "@/components/forms/SubmitButton";
 import { cn, objectToFormData, setDateWithOriginalTime } from "@/lib/utils";
 import { endOfDay } from "date-fns";
-import { createAvailability } from "@/lib/actions/createAvailability";
 import { WeekdaysField } from "@/components/forms/WeekdaysField";
 import TimeField from "@/components/forms/TimeField";
 import DurationField from "@/components/forms/DurationField";
 import ToggleField from "@/components/forms/ToggleField";
 import DateField from "@/components/forms/DateField";
 
-interface AvailabilityFormProps {
+interface SlotsFormProps {
   title: string;
   description: string;
   doctorId: string;
@@ -30,18 +25,18 @@ interface AvailabilityFormProps {
   action: (form: FormData) => Promise<Result<unknown> | Error<unknown>>;
 }
 
-export default function AvailabilityForm({
+export default function SlotsForm({
   title,
   description,
   doctorId,
   action,
   className,
-}: AvailabilityFormProps) {
+}: SlotsFormProps) {
   const [message, setMessage] = useState("");
 
-  const form = useForm<AvailabilityData>({
-    resolver: zodResolver(availabilitySchema),
-    defaultValues: avDefaultValues,
+  const form = useForm<SlotData>({
+    resolver: zodResolver(slotSchema),
+    defaultValues: slotDefaultValues,
   });
 
   async function onSubmit(data: any) {

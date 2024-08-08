@@ -1,4 +1,4 @@
-import { AvDocumentSchema } from "@/lib/schemas/appwriteSchema";
+import { SlotDocumentSchema } from "@/lib/schemas/appwriteSchema";
 import { differenceInMonths } from "date-fns";
 import { z } from "zod";
 
@@ -16,7 +16,7 @@ export type Weekday = "mon" | "tue" | "wed" | "thu" | "fri" | "sat" | "sun";
 
 const isMultipleOf = (num: number, divisor: number) => num % divisor === 0;
 
-export const availabilitySchema = z
+export const slotSchema = z
   .object({
     startTime: z.coerce.date(),
     endTime: z.coerce.date(),
@@ -71,7 +71,7 @@ export const availabilitySchema = z
     }
   });
 
-export function parseDbData(dbData: AvDocumentSchema) {
+export function parseDbData(dbData: SlotDocumentSchema) {
   return {
     ...dbData,
     startTime: new Date(dbData.startTime),
@@ -81,7 +81,7 @@ export function parseDbData(dbData: AvDocumentSchema) {
   };
 }
 
-export const avDefaultValues = {
+export const slotDefaultValues = {
   startDate: undefined,
   endDate: undefined,
   startTime: undefined,
@@ -91,4 +91,4 @@ export const avDefaultValues = {
   weekdays: [],
 };
 
-export type AvailabilityData = z.infer<typeof availabilitySchema>;
+export type SlotData = z.infer<typeof slotSchema>;

@@ -8,7 +8,7 @@ interface LimitOptions {
   weekdays: Weekday[];
 }
 
-export function getSlots(data: AvailabilityData, limit?: LimitOptions) {
+export function processSlots(data: AvailabilityData, limit?: LimitOptions) {
   const { startDate, endDate, startTime, endTime, duration: durationMin } = data;
   const weekdaysToLoop = (
     limit

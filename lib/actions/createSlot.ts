@@ -1,22 +1,20 @@
 "use server";
 
-import { getAvailabilities } from "@/lib/actions/getAvailabilities";
+import { getSlots } from "@/lib/actions/getSlots";
 import { databases, ID } from "@/lib/appwrite/adminClient";
 import { env } from "@/lib/env";
 import { hasConflictingSlots } from "@/lib/processing/hasConflictingSlots";
 import { type Error, invalidFieldsError, Success, success, unexpectedError } from "@/lib/results";
 import { conflictingSlotError } from "@/lib/results/errors/conflictingSlotError";
-import { availabilitySchema, parseDbData } from "@/lib/schemas/availabilitySchema";
+import { slotSchema, parseDbData } from "@/lib/schemas/slotsSchema";
 import { getInvalidFieldsList } from "@/lib/utils";
 
-export async function createAvailability(
-  formData: FormData,
-): Promise<Success<unknown> | Error<unknown>> {
+export async function createSlot(formData: FormData): Promise<Success<unknown> | Error<unknown>> {
   try {
     const rawData = Object.fromEntries(formData);
     const doctorId = rawData.doctorId as string;
 
-    const validation = availabilitySchema.safeParse(rawData);
+    const validation = slotSchema.safeParse(rawData);
     if (!validation.success) {
       const fieldsList = getInvalidFieldsList(validation);
       return invalidFieldsError(fieldsList);
@@ -24,7 +22,7 @@ export async function createAvailability(
 
     const userData = validation.data;
 
-    const result = await getAvailabilities(doctorId);
+    const result = await getSlots(doctorId);
     if (!result.success || !result.data) {
       throw new Error("Unable to query for stored availability data");
     }
@@ -37,9 +35,9 @@ export async function createAvailability(
       }
     }
 
-    const avCreated = await databases.createDocument(
+    const slotCreated = await databases.createDocument(
       env.databaseId,
-      env.avCollectionId,
+      env.slotsCollectionId,
       ID.unique(),
       {
         ...userData,
@@ -47,7 +45,7 @@ export async function createAvailability(
       },
     );
 
-    return success(avCreated);
+    return success(slotCreated);
   } catch (error) {
     console.log(error);
     return unexpectedError();

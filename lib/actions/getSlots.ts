@@ -3,18 +3,18 @@
 import { databases } from "@/lib/appwrite/adminClient";
 import { env } from "@/lib/env";
 import { success, unexpectedError } from "@/lib/results";
-import { AvDocumentListSchema } from "@/lib/schemas/appwriteSchema";
+import { SlotDocumentListSchema } from "@/lib/schemas/appwriteSchema";
 import { Query } from "node-appwrite";
 
-export async function getAvailabilities(doctorId: string) {
+export async function getSlots(doctorId: string) {
   try {
-    const avDocuments: AvDocumentListSchema = await databases.listDocuments(
+    const slotsDocuments: SlotDocumentListSchema = await databases.listDocuments(
       env.databaseId,
-      env.avCollectionId,
+      env.slotsCollectionId,
       [Query.equal("doctorId", doctorId)],
     );
 
-    return success(avDocuments);
+    return success(slotsDocuments);
   } catch (error) {
     console.log(error);
     return unexpectedError();

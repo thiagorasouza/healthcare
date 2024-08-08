@@ -111,7 +111,7 @@ export function columns(onDelete: onDeleteFunction): ColumnDef<DoctorDocumentSch
                 Delete
               </DropdownMenuItem>
               <DropdownMenuItem className="cursor-pointer">
-                <Link target="_blank" href={`/admin/doctors/${row.original.$id}/availabilities`}>
+                <Link target="_blank" href={`/admin/doctors/${row.original.$id}/slots`}>
                   Availabilities
                 </Link>
               </DropdownMenuItem>
