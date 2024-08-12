@@ -1,19 +1,22 @@
-import SlotsList from "@/components/slots/SlotsList";
 import DefaultCard from "@/components/shared/DefaultCard";
-import { SlotDocumentSchema } from "@/lib/schemas/appwriteSchema";
-import { fullWeekdays, Weekday } from "@/lib/schemas/slotsSchema";
+import { PatternDocumentSchema } from "@/lib/schemas/appwriteSchema";
+import { fullWeekdays, Weekday } from "@/lib/schemas/patternsSchema";
 import { cn, getTimeFromDate, semanticJoin } from "@/lib/utils";
 import { format } from "date-fns";
-import { CalendarDays, Clock, Fingerprint, Hourglass, Repeat2, Target } from "lucide-react";
+import { CalendarDays, Clock, Fingerprint, Hourglass, Repeat2, Target, Trash2 } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import SlotsButtonList from "@/components/slots/SlotsButtonList";
 
 export default function PatternCard({
   data,
   className,
   onCloseClick,
+  onDeleteClick,
 }: {
-  data: SlotDocumentSchema | undefined;
+  data: PatternDocumentSchema | undefined;
   className?: string;
   onCloseClick: () => void;
+  onDeleteClick: (patternId: string) => void;
 }) {
   if (!data) return null;
 
@@ -52,7 +55,17 @@ export default function PatternCard({
         </div>
       </div>
       <div className="my-6 flex flex-col gap-3">
-        <SlotsList data={data} onClick={() => null} />
+        <SlotsButtonList data={data} onClick={() => null} />
+      </div>
+      <div>
+        <Button
+          variant="destructive"
+          className="flex items-center gap-2"
+          onClick={() => onDeleteClick(data.$id)}
+        >
+          <Trash2 className="h-4 w-4" />
+          Delete
+        </Button>
       </div>
     </DefaultCard>
   );

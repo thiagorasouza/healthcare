@@ -1,35 +1,38 @@
-import { Button } from "@/components/ui/button";
-import { processSlots } from "@/lib/processing/processSlots";
+"use client";
 
-import { SlotDocumentSchema } from "@/lib/schemas/appwriteSchema";
-import { parseDbData } from "@/lib/schemas/slotsSchema";
-import { getTimeFromDate } from "@/lib/utils";
-import { format } from "date-fns";
+import ErrorCard from "@/components/shared/ErrorCard";
+import SlotsCard from "@/components/slots/SlotsCard";
+import SlotsButtonList from "@/components/slots/SlotsButtonList";
+import { Spinner } from "@/components/ui/spinner";
+import { PatternDocumentListSchema, PatternDocumentSchema } from "@/lib/schemas/appwriteSchema";
 
-export default function SlotsList({
-  data,
-  onClick,
-}: {
-  data: SlotDocumentSchema;
-  onClick: (data: SlotDocumentSchema) => void;
-}) {
-  const slots = processSlots(parseDbData(data));
-  return slots.map((slotsData) => {
-    const day = format(new Date(slotsData.date), "PPP");
+interface SlotsListProps {
+  data: PatternDocumentListSchema | undefined;
+  loading: boolean;
+  onSlotClick: (pattern: PatternDocumentSchema) => void;
+}
+
+export default function SlotsList({ data, loading, onSlotClick }: SlotsListProps) {
+  if (loading) {
     return (
-      <div className="space-y-2" key={slotsData.date}>
-        <p className="font-semibold">{day}</p>
-        <ul className="flex flex-wrap gap-2 text-sm">
-          {slotsData.slots.map((slot) => (
-            <li key={slot[0].toString()}>
-              <Button
-                variant="outline"
-                onClick={() => onClick(data)}
-              >{`${getTimeFromDate(slot[0])} - ${getTimeFromDate(slot[1])}`}</Button>
-            </li>
-          ))}
-        </ul>
-      </div>
+      <SlotsCard>
+        <Spinner>Loading...</Spinner>
+      </SlotsCard>
     );
-  });
+  }
+
+  if (!data) {
+    return <ErrorCard text="Unable to load slots at this time." />;
+  }
+
+  return (
+    <SlotsCard>
+      <div className="flex flex-col gap-3">
+        {data.total > 0 &&
+          data.documents.map((pattern, index) => (
+            <SlotsButtonList key={index} data={pattern} onClick={() => onSlotClick(pattern)} />
+          ))}
+      </div>
+    </SlotsCard>
+  );
 }
