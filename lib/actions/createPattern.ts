@@ -1,20 +1,22 @@
 "use server";
 
-import { getSlots } from "@/lib/actions/getSlots";
+import { getPatterns } from "@/lib/actions/getPatterns";
 import { databases, ID } from "@/lib/appwrite/adminClient";
 import { env } from "@/lib/env";
 import { hasConflictingSlots } from "@/lib/processing/hasConflictingSlots";
 import { type Error, invalidFieldsError, Success, success, unexpectedError } from "@/lib/results";
 import { conflictingSlotError } from "@/lib/results/errors/conflictingSlotError";
-import { slotSchema, parseDbData } from "@/lib/schemas/slotsSchema";
+import { patternSchema, parseDbData } from "@/lib/schemas/patternsSchema";
 import { getInvalidFieldsList } from "@/lib/utils";
 
-export async function createSlot(formData: FormData): Promise<Success<unknown> | Error<unknown>> {
+export async function createPattern(
+  formData: FormData,
+): Promise<Success<unknown> | Error<unknown>> {
   try {
     const rawData = Object.fromEntries(formData);
     const doctorId = rawData.doctorId as string;
 
-    const validation = slotSchema.safeParse(rawData);
+    const validation = patternSchema.safeParse(rawData);
     if (!validation.success) {
       const fieldsList = getInvalidFieldsList(validation);
       return invalidFieldsError(fieldsList);
@@ -22,7 +24,7 @@ export async function createSlot(formData: FormData): Promise<Success<unknown> |
 
     const userData = validation.data;
 
-    const result = await getSlots(doctorId);
+    const result = await getPatterns(doctorId);
     if (!result.success || !result.data) {
       throw new Error("Unable to query for stored availability data");
     }
@@ -37,7 +39,7 @@ export async function createSlot(formData: FormData): Promise<Success<unknown> |
 
     const slotCreated = await databases.createDocument(
       env.databaseId,
-      env.slotsCollectionId,
+      env.patternsCollectionId,
       ID.unique(),
       {
         ...userData,

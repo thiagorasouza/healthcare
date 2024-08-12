@@ -1,4 +1,4 @@
-import { SlotDocumentSchema } from "@/lib/schemas/appwriteSchema";
+import { PatternDocumentSchema } from "@/lib/schemas/appwriteSchema";
 import { differenceInMonths } from "date-fns";
 import { z } from "zod";
 
@@ -16,7 +16,7 @@ export type Weekday = "mon" | "tue" | "wed" | "thu" | "fri" | "sat" | "sun";
 
 const isMultipleOf = (num: number, divisor: number) => num % divisor === 0;
 
-export const slotSchema = z
+export const patternSchema = z
   .object({
     startTime: z.coerce.date(),
     endTime: z.coerce.date(),
@@ -71,7 +71,7 @@ export const slotSchema = z
     }
   });
 
-export function parseDbData(dbData: SlotDocumentSchema) {
+export function parseDbData(dbData: PatternDocumentSchema) {
   return {
     ...dbData,
     startTime: new Date(dbData.startTime),
@@ -81,7 +81,7 @@ export function parseDbData(dbData: SlotDocumentSchema) {
   };
 }
 
-export const slotDefaultValues = {
+export const patternDefaultValues = {
   startDate: undefined,
   endDate: undefined,
   startTime: undefined,
@@ -91,4 +91,4 @@ export const slotDefaultValues = {
   weekdays: [],
 };
 
-export type SlotData = z.infer<typeof slotSchema>;
+export type PatternData = z.infer<typeof patternSchema>;

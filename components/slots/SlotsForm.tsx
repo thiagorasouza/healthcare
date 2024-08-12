@@ -1,7 +1,7 @@
 "use client";
 
 import { Error, Result, unexpectedError } from "@/lib/results";
-import { SlotData, slotSchema, slotDefaultValues } from "@/lib/schemas/slotsSchema";
+import { PatternData, patternSchema, patternDefaultValues } from "@/lib/schemas/patternsSchema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
@@ -34,9 +34,9 @@ export default function SlotsForm({
 }: SlotsFormProps) {
   const [message, setMessage] = useState("");
 
-  const form = useForm<SlotData>({
-    resolver: zodResolver(slotSchema),
-    defaultValues: slotDefaultValues,
+  const form = useForm<PatternData>({
+    resolver: zodResolver(patternSchema),
+    defaultValues: patternDefaultValues,
   });
 
   async function onSubmit(data: any) {
