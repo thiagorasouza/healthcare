@@ -58,11 +58,13 @@ export default function SlotsPage({ params }: { params: { doctorId: string } }) 
         <SlotsList data={slots} loading={slotsLoading} onSlotClick={setSelectedPattern} />
       </div>
       <div>
-        <PatternCard
-          data={selectedPattern}
-          onCloseClick={() => setSelectedPattern(undefined)}
-          onDeleteClick={deleteSelectedPattern}
-        />
+        {selectedPattern && (
+          <PatternCard
+            data={selectedPattern}
+            onCloseClick={() => setSelectedPattern(undefined)}
+            onDeleteClick={deleteSelectedPattern}
+          />
+        )}
       </div>
       {/* <SlotsForm
         title="Insert Slots"
