@@ -4,7 +4,16 @@ import { PatternDocumentSchema } from "@/lib/schemas/appwriteSchema";
 import { fullWeekdays, Weekday } from "@/lib/schemas/patternsSchema";
 import { getTimeFromDate, semanticJoin } from "@/lib/utils";
 import { format } from "date-fns";
-import { CalendarDays, Clock, Fingerprint, Hourglass, Repeat2, Target, Trash2 } from "lucide-react";
+import {
+  CalendarDays,
+  Clock,
+  Fingerprint,
+  Hourglass,
+  Repeat2,
+  SquarePen,
+  Target,
+  Trash2,
+} from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { motion } from "framer-motion";
 
@@ -12,7 +21,8 @@ interface PatternCardProps {
   data: PatternDocumentSchema;
   className?: string;
   onCloseClick: () => void;
-  onDeleteClick: (patternId: string) => void;
+  onDeleteClick: () => void;
+  onEditClick: () => void;
 }
 
 export default function PatternCard({
@@ -20,6 +30,7 @@ export default function PatternCard({
   className,
   onCloseClick,
   onDeleteClick,
+  onEditClick,
 }: PatternCardProps) {
   return (
     <motion.div
@@ -64,14 +75,14 @@ export default function PatternCard({
         <div className="my-6 flex flex-col gap-3">
           <SlotsButtonList data={data} onClick={() => null} />
         </div>
-        <div>
-          <Button
-            variant="destructive"
-            className="flex items-center gap-2"
-            onClick={() => onDeleteClick(data.$id)}
-          >
+        <div className="flex gap-3">
+          <Button variant="destructive" className="flex items-center gap-2" onClick={onDeleteClick}>
             <Trash2 className="h-4 w-4" />
             Delete
+          </Button>
+          <Button className="flex items-center gap-2" onClick={() => onEditClick(data)}>
+            <SquarePen className="h-4 w-4" />
+            Edit
           </Button>
         </div>
       </DefaultCard>

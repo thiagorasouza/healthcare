@@ -6,18 +6,18 @@ import { format } from "date-fns";
 import { CalendarIcon } from "lucide-react";
 import { UseFormReturn } from "react-hook-form";
 import { FormDescription, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
-import { AvailabilityData } from "@/lib/schemas/availabilitySchema";
+import { PatternData } from "@/lib/schemas/patternsSchema";
 
 type DateKeys = {
-  [K in keyof AvailabilityData]: AvailabilityData[K] extends Date ? K : never;
-}[keyof AvailabilityData];
+  [K in keyof PatternData]: PatternData[K] extends Date ? K : never;
+}[keyof PatternData];
 
 interface DateFieldProps<T> {
   name: DateKeys;
   label: string;
   placeholder: string;
   description?: string;
-  form: UseFormReturn<AvailabilityData>;
+  form: UseFormReturn<PatternData>;
   onSelect: (date?: Date) => Date | undefined;
   disabled: (date: Date) => boolean;
 }

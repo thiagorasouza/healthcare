@@ -1,19 +1,20 @@
 import { Button } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
 import React from "react";
 import { UseFormReturn } from "react-hook-form";
 
-const SubmitButton = ({
-  form,
-  label,
-}: {
+interface SubmitButtonProps {
   form: UseFormReturn<any>;
   label: string;
-}) => {
+  className?: string;
+}
+
+const SubmitButton = ({ form, label, className }: SubmitButtonProps) => {
   return (
     <Button
       type="submit"
       data-cy="submit"
-      className="mt-2 w-full md:mt-4"
+      className={cn("w-full", className)}
       disabled={form.formState.isSubmitting}
     >
       {label}

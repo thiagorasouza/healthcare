@@ -10,6 +10,8 @@ import { PatternDocumentListSchema, PatternDocumentSchema } from "@/lib/schemas/
 import PatternCard from "@/components/slots/PatternCard";
 import { deletePattern } from "@/lib/actions/deletePattern";
 import { toast } from "sonner";
+import { EditPatternDialog } from "@/components/slots/EditPatternDialog";
+import { updatePattern } from "@/lib/actions/updatePattern";
 
 export default function SlotsPage({ params }: { params: { doctorId: string } }) {
   const [selectedPattern, setSelectedPattern] = useState<PatternDocumentSchema>();
@@ -17,6 +19,7 @@ export default function SlotsPage({ params }: { params: { doctorId: string } }) 
   const [doctorLoading, setDoctorLoading] = useState(true);
   const [slots, setSlots] = useState<PatternDocumentListSchema>();
   const [slotsLoading, setSlotsLoading] = useState(true);
+  const [editDialogOpen, setEditDialogOpen] = useState(false);
 
   const { doctorId } = params;
 
@@ -41,7 +44,10 @@ export default function SlotsPage({ params }: { params: { doctorId: string } }) 
     asyncFetch();
   }, [doctorId]);
 
-  async function deleteSelectedPattern(patternId: string) {
+  async function deleteSelectedPattern() {
+    if (!selectedPattern) return;
+
+    const patternId = selectedPattern.$id;
     const result = await deletePattern(patternId);
     if (!result.success) {
       toast(`Unable to delete pattern ${patternId} at this time`);
@@ -51,6 +57,8 @@ export default function SlotsPage({ params }: { params: { doctorId: string } }) 
     setSelectedPattern(undefined);
   }
 
+  console.log("🚀 ~ editDialogOpen:", editDialogOpen);
+
   return (
     <div className="grid grid-cols-2 gap-8">
       <div className="flex flex-col gap-8 self-start">
@@ -59,11 +67,21 @@ export default function SlotsPage({ params }: { params: { doctorId: string } }) 
       </div>
       <div>
         {selectedPattern && (
-          <PatternCard
-            data={selectedPattern}
-            onCloseClick={() => setSelectedPattern(undefined)}
-            onDeleteClick={deleteSelectedPattern}
-          />
+          <>
+            <PatternCard
+              data={selectedPattern}
+              onCloseClick={() => setSelectedPattern(undefined)}
+              onDeleteClick={deleteSelectedPattern}
+              onEditClick={() => setEditDialogOpen(true)}
+            />
+            <EditPatternDialog
+              doctorId={doctorId}
+              data={selectedPattern}
+              open={editDialogOpen}
+              onCloseClick={() => setEditDialogOpen(false)}
+              onSaveClick={updatePattern}
+            />
+          </>
         )}
       </div>
       {/* <SlotsForm
