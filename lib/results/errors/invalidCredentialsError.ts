@@ -1,3 +1,3 @@
 import { error } from "../error";
 
-export const invalidCredentialsError = () => error("Invalid credentials");
+export const invalidCredentialsError = () => error("Invalid credentials", undefined);
