@@ -1,6 +1,6 @@
 "use client";
 
-import { Error, Result, unexpectedError } from "@/lib/results";
+import { unexpectedError } from "@/lib/results";
 import {
   PatternData,
   patternSchema,
@@ -21,34 +21,52 @@ import DurationField from "@/components/forms/DurationField";
 import ToggleField from "@/components/forms/ToggleField";
 import DateField from "@/components/forms/DateField";
 import { PatternDocumentSchema } from "@/lib/schemas/appwriteSchema";
-import { AnimatePresence, motion } from "framer-motion";
 import DrawerAnimation from "@/components/shared/DrawerAnimation";
+import { CreatePatternResult } from "@/lib/actions/createPattern";
+import { UpdatePatternResult } from "@/lib/actions/updatePattern";
 
 interface PatternFormProps {
   doctorId: string;
-  data?: PatternDocumentSchema;
-  action: (form: FormData) => Promise<Result<unknown> | Error<unknown>>;
+  patternData?: PatternDocumentSchema;
+  action: (form: FormData) => Promise<CreatePatternResult | UpdatePatternResult>;
+  onSuccess: (patternData: PatternDocumentSchema) => void;
   submitLabel?: string;
 }
 
-export default function PatternForm({ data, doctorId, action, submitLabel }: PatternFormProps) {
+export default function PatternForm({
+  doctorId,
+  patternData,
+  action,
+  onSuccess,
+  submitLabel,
+}: PatternFormProps) {
   const [message, setMessage] = useState("");
 
   const form = useForm<PatternData>({
     resolver: zodResolver(patternSchema),
-    defaultValues: data ? parseDbData(data) : patternDefaultValues,
+    defaultValues: patternData ? parseDbData(patternData) : patternDefaultValues,
   });
 
   async function onSubmit(data: any) {
-    console.log("🚀 ~ data:", data);
+    // console.log("🚀 ~ data:", data);
     setMessage("");
     try {
       const formData = objectToFormData(data);
+
       formData.append("doctorId", doctorId);
+      if (patternData) {
+        formData.append("patternId", patternData.$id);
+      }
+
       const result = await action(formData);
+      if (result.success && result.data) {
+        onSuccess(parseDbData(result.data));
+        return;
+      }
+
       setMessage(result.message);
     } catch (error) {
-      console.log("🚀 ~ error:", error);
+      // console.log("🚀 ~ error:", error);
       setMessage(unexpectedError().message);
     }
   }

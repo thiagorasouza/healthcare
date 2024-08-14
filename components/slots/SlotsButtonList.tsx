@@ -1,8 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { processSlots } from "@/lib/processing/processSlots";
-
 import { PatternDocumentSchema } from "@/lib/schemas/appwriteSchema";
-import { parseDbData } from "@/lib/schemas/patternsSchema";
 import { getTimeFromDate } from "@/lib/utils";
 import { format } from "date-fns";
 
@@ -13,7 +11,7 @@ export default function SlotsButtonList({
   data: PatternDocumentSchema;
   onClick: (data: PatternDocumentSchema) => void;
 }) {
-  const slots = processSlots(parseDbData(data));
+  const slots = processSlots(data);
   return slots.map((slotsData) => {
     const day = format(new Date(slotsData.date), "PPP");
     return (

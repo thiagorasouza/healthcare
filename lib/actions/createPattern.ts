@@ -6,12 +6,13 @@ import { env } from "@/lib/env";
 import { hasConflictingSlots } from "@/lib/processing/hasConflictingSlots";
 import { type Error, invalidFieldsError, Success, success, unexpectedError } from "@/lib/results";
 import { conflictingSlotError } from "@/lib/results/errors/conflictingSlotError";
+import { PatternDocumentSchema } from "@/lib/schemas/appwriteSchema";
 import { patternSchema, parseDbData } from "@/lib/schemas/patternsSchema";
 import { getInvalidFieldsList } from "@/lib/utils";
 
-export async function createPattern(
-  formData: FormData,
-): Promise<Success<unknown> | Error<unknown>> {
+export type CreatePatternResult = Success<PatternDocumentSchema> | Error<string[] | undefined>;
+
+export async function createPattern(formData: FormData): Promise<CreatePatternResult> {
   try {
     const rawData = Object.fromEntries(formData);
     const doctorId = rawData.doctorId as string;
@@ -37,7 +38,7 @@ export async function createPattern(
       }
     }
 
-    const slotCreated = await databases.createDocument(
+    const slotCreated = (await databases.createDocument(
       env.databaseId,
       env.patternsCollectionId,
       ID.unique(),
@@ -45,9 +46,9 @@ export async function createPattern(
         ...userData,
         doctorId,
       },
-    );
+    )) as PatternDocumentSchema;
 
-    return success(slotCreated);
+    return success(parseDbData(slotCreated));
   } catch (error) {
     console.log(error);
     return unexpectedError();

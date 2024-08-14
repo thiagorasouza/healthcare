@@ -6,16 +6,17 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { Error, Result } from "@/lib/results";
+import { CreatePatternResult } from "@/lib/actions/createPattern";
+import { UpdatePatternResult } from "@/lib/actions/updatePattern";
 import { PatternDocumentSchema } from "@/lib/schemas/appwriteSchema";
-import { PatternData } from "@/lib/schemas/patternsSchema";
 
 interface EditPatternDialogProps {
   doctorId: string;
   data: PatternDocumentSchema;
   open: boolean;
   onCloseClick: () => void;
-  onSaveClick: (form: FormData) => Promise<Result<unknown> | Error<unknown>>;
+  onSaveClick: (form: FormData) => Promise<CreatePatternResult | UpdatePatternResult>;
+  onSuccess: (patternData: PatternDocumentSchema) => void;
 }
 
 export function EditPatternDialog({
@@ -24,7 +25,7 @@ export function EditPatternDialog({
   open,
   onCloseClick,
   onSaveClick,
-  submitLabel,
+  onSuccess,
 }: EditPatternDialogProps) {
   return (
     <Dialog open={open} onOpenChange={onCloseClick}>
@@ -33,7 +34,13 @@ export function EditPatternDialog({
           <DialogTitle>Edit Pattern</DialogTitle>
           <DialogDescription>Modify current pattern details</DialogDescription>
         </DialogHeader>
-        <PatternForm data={data} doctorId={doctorId} action={onSaveClick} submitLabel="Save" />
+        <PatternForm
+          patternData={data}
+          doctorId={doctorId}
+          action={onSaveClick}
+          onSuccess={onSuccess}
+          submitLabel="Save"
+        />
       </DialogContent>
     </Dialog>
   );

@@ -1,4 +1,4 @@
-import { AvailabilityData, Weekday } from "@/lib/schemas/availabilitySchema";
+import { PatternData, Weekday } from "@/lib/schemas/patternsSchema";
 import { getFirstWeekdayAfter, transposeTime } from "@/lib/utils";
 import { addWeeks, differenceInWeeks, format, isAfter, isBefore } from "date-fns";
 
@@ -8,7 +8,7 @@ interface LimitOptions {
   weekdays: Weekday[];
 }
 
-export function processSlots(data: AvailabilityData, limit?: LimitOptions) {
+export function processSlots(data: PatternData, limit?: LimitOptions) {
   const { startDate, endDate, startTime, endTime, duration: durationMin } = data;
   const weekdaysToLoop = (
     limit

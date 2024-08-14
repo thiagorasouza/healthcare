@@ -7,13 +7,13 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { AvailabilityData } from "@/lib/schemas/availabilitySchema";
+import { PatternData } from "@/lib/schemas/patternsSchema";
 import { UseFormReturn } from "react-hook-form";
 
 interface DurationFieldProps {
-  form: UseFormReturn<AvailabilityData>;
+  form: UseFormReturn<PatternData>;
   label: string;
-  name: keyof AvailabilityData;
+  name: keyof PatternData;
   description: string;
 }
 
@@ -31,7 +31,7 @@ export default function DurationField({ form, label, name, description }: Durati
                 name="duration"
                 type="text"
                 className="w-[64px] grow-0 border-none text-center font-mono text-base tabular-nums focus:bg-accent focus:text-accent-foreground [&::-webkit-inner-spin-button]:appearance-none"
-                value={field.value as string}
+                value={String(field.value)}
                 onChange={(e) => {
                   if (isNaN(Number(e.target.value))) return;
                   field.onChange(e);

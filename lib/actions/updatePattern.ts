@@ -1,15 +1,18 @@
 "use server";
 
 import { getPatterns } from "@/lib/actions/getPatterns";
-import { databases, ID } from "@/lib/appwrite/adminClient";
+import { databases } from "@/lib/appwrite/adminClient";
 import { env } from "@/lib/env";
 import { hasConflictingSlots } from "@/lib/processing/hasConflictingSlots";
 import { type Error, invalidFieldsError, Success, success, unexpectedError } from "@/lib/results";
 import { conflictingSlotError } from "@/lib/results/errors/conflictingSlotError";
+import { PatternDocumentSchema } from "@/lib/schemas/appwriteSchema";
 import { patternSchema, parseDbData } from "@/lib/schemas/patternsSchema";
 import { getInvalidFieldsList } from "@/lib/utils";
 
-export async function updatePattern(formData: FormData) {
+export type UpdatePatternResult = Success<PatternDocumentSchema> | Error<string[] | undefined>;
+
+export async function updatePattern(formData: FormData): Promise<UpdatePatternResult> {
   try {
     const rawData = Object.fromEntries(formData);
     const doctorId = rawData.doctorId as string;
@@ -23,7 +26,7 @@ export async function updatePattern(formData: FormData) {
 
     const userPattern = validation.data;
 
-    const dbQuery = await getPatterns(doctorId);
+    const dbQuery = await getPatterns(doctorId, patternId);
     if (!dbQuery.success || !dbQuery.data) {
       throw new Error("Unable to query for stored patterns data");
     }
@@ -36,7 +39,7 @@ export async function updatePattern(formData: FormData) {
       }
     }
 
-    const slotUpdated = await databases.updateDocument(
+    const slotUpdated = (await databases.updateDocument(
       env.databaseId,
       env.patternsCollectionId,
       patternId,
@@ -44,7 +47,7 @@ export async function updatePattern(formData: FormData) {
         ...userPattern,
         doctorId,
       },
-    );
+    )) as PatternDocumentSchema;
 
     return success(slotUpdated);
   } catch (error) {

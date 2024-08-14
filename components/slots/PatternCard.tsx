@@ -16,6 +16,7 @@ import {
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { motion } from "framer-motion";
+import { countSlotsInTimespan } from "@/lib/processing/countSlotsInTimespan";
 
 interface PatternCardProps {
   data: PatternDocumentSchema;
@@ -32,6 +33,8 @@ export default function PatternCard({
   onDeleteClick,
   onEditClick,
 }: PatternCardProps) {
+  const slotsNum = countSlotsInTimespan(data.startTime, data.endTime, data.duration);
+
   return (
     <motion.div
       initial={{ height: 0, opacity: 0 }}
@@ -51,21 +54,21 @@ export default function PatternCard({
             {data.recurring ? "Recurring" : "Non recurring"}
           </div>
           <div>
-            <Clock />
-            {getTimeFromDate(new Date(data.startTime))} &rarr;{" "}
-            {getTimeFromDate(new Date(data.endTime))}
-          </div>
-          <div>
             <Hourglass />
             {data.duration} minutes each
           </div>
           <div>
-            <CalendarDays />
-            {format(data.startDate, "PPP")} &rarr; {format(data.endDate, "PPP")}
+            <Clock />
+            {getTimeFromDate(new Date(data.startTime))} &rarr;{" "}
+            {getTimeFromDate(new Date(data.endTime))} ({slotsNum} slots)
           </div>
           <div>
             <Target />
             {semanticJoin((data.weekdays as Weekday[]).map((w) => fullWeekdays[w]))}
+          </div>
+          <div>
+            <CalendarDays />
+            {format(data.startDate, "PPP")} &rarr; {format(data.endDate, "PPP")}
           </div>
           <div>
             <Fingerprint />
@@ -80,7 +83,7 @@ export default function PatternCard({
             <Trash2 className="h-4 w-4" />
             Delete
           </Button>
-          <Button className="flex items-center gap-2" onClick={() => onEditClick(data)}>
+          <Button className="flex items-center gap-2" onClick={() => onEditClick()}>
             <SquarePen className="h-4 w-4" />
             Edit
           </Button>

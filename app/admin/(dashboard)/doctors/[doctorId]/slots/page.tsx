@@ -20,29 +20,30 @@ export default function SlotsPage({ params }: { params: { doctorId: string } }) 
   const [slots, setSlots] = useState<PatternDocumentListSchema>();
   const [slotsLoading, setSlotsLoading] = useState(true);
   const [editDialogOpen, setEditDialogOpen] = useState(false);
-
   const { doctorId } = params;
 
   useEffect(() => {
-    const asyncFetch = async () => {
-      const doctorResult = await getDoctor(doctorId);
-      if (doctorResult.success && doctorResult.data) {
-        setDoctor(doctorResult.data);
-        setDoctorLoading(false);
-      } else {
-        setDoctorLoading(false);
-        return;
-      }
+    loadDoctors();
+    loadSlots();
+  }, []);
 
-      const slotsResult = await getPatterns(doctorResult.data.doctorId);
-      if (slotsResult.success && slotsResult.data) {
-        setSlots(slotsResult.data);
-      }
-      setSlotsLoading(false);
-    };
+  async function loadDoctors() {
+    setDoctorLoading(true);
+    const doctorResult = await getDoctor(doctorId);
+    if (doctorResult.success && doctorResult.data) {
+      setDoctor(doctorResult.data);
+    }
+    setDoctorLoading(false);
+  }
 
-    asyncFetch();
-  }, [doctorId]);
+  async function loadSlots() {
+    setSlotsLoading(true);
+    const slotsResult = await getPatterns(doctorId);
+    if (slotsResult.success && slotsResult.data) {
+      setSlots(slotsResult.data);
+    }
+    setSlotsLoading(false);
+  }
 
   async function deleteSelectedPattern() {
     if (!selectedPattern) return;
@@ -57,7 +58,11 @@ export default function SlotsPage({ params }: { params: { doctorId: string } }) 
     setSelectedPattern(undefined);
   }
 
-  console.log("🚀 ~ editDialogOpen:", editDialogOpen);
+  function onEditSuccess(patternData: PatternDocumentSchema) {
+    loadSlots();
+    setSelectedPattern(patternData);
+    setEditDialogOpen(false);
+  }
 
   return (
     <div className="grid grid-cols-2 gap-8">
@@ -80,6 +85,7 @@ export default function SlotsPage({ params }: { params: { doctorId: string } }) 
               open={editDialogOpen}
               onCloseClick={() => setEditDialogOpen(false)}
               onSaveClick={updatePattern}
+              onSuccess={onEditSuccess}
             />
           </>
         )}
