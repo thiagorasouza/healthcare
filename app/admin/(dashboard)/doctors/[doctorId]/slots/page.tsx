@@ -16,6 +16,8 @@ import AdminBreadcrumb from "@/components/admin/AdminBreadcrumb";
 import { Button } from "@/components/ui/button";
 import { PlusCircle } from "lucide-react";
 import DrawerAnimation from "@/components/shared/DrawerAnimation";
+import { CreatePatternDialog } from "@/components/slots/CreatePatternDialog";
+import { createPattern } from "@/lib/actions/createPattern";
 
 export default function SlotsPage({ params }: { params: { doctorId: string } }) {
   const [selectedPattern, setSelectedPattern] = useState<PatternDocumentSchema>();
@@ -63,10 +65,11 @@ export default function SlotsPage({ params }: { params: { doctorId: string } }) 
     setSelectedPattern(undefined);
   }
 
-  function onEditSuccess(patternData: PatternDocumentSchema) {
+  function onSuccess(patternData: PatternDocumentSchema) {
     loadSlots();
     setSelectedPattern(patternData);
     setEditDialogOpen(false);
+    setCreateDialogOpen(false);
   }
 
   return (
@@ -104,17 +107,16 @@ export default function SlotsPage({ params }: { params: { doctorId: string } }) 
             open={editDialogOpen}
             onCloseClick={() => setEditDialogOpen(false)}
             onSaveClick={updatePattern}
-            onSuccess={onEditSuccess}
+            onSuccess={onSuccess}
           />
         )}
-
-        {/* <SlotsForm
-          title="Insert Slots"
-          description="Make this doctor available on specific dates and time periods"
+        <CreatePatternDialog
           doctorId={doctorId}
-          action={createSlot}
-          className="self-start"
-        /> */}
+          open={createDialogOpen}
+          onCloseClick={() => setCreateDialogOpen(false)}
+          onSaveClick={createPattern}
+          onSuccess={onSuccess}
+        />
       </div>
     </div>
   );

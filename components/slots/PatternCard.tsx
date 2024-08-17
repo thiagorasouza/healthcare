@@ -39,7 +39,9 @@ export default function PatternCard({
   return (
     <DefaultCard
       title={recurring ? "Pattern" : "Single Date"}
-      description="Edit to make this a recurring pattern"
+      description={
+        recurring ? "Edit to make this a single date" : "Edit to make this a recurring pattern"
+      }
       className={className}
       onCloseClick={onCloseClick}
     >
