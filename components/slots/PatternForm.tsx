@@ -8,13 +8,13 @@ import {
   parseDbData,
 } from "@/lib/schemas/patternsSchema";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { Form } from "@/components/ui/form";
 import AlertMessage from "@/components/forms/AlertMessage";
 import SubmitButton from "@/components/forms/SubmitButton";
 import { objectToFormData, setDateWithOriginalTime } from "@/lib/utils";
-import { endOfDay } from "date-fns";
+import { endOfDay, isBefore } from "date-fns";
 import { WeekdaysField } from "@/components/forms/WeekdaysField";
 import TimeField from "@/components/forms/TimeField";
 import DurationField from "@/components/forms/DurationField";
@@ -42,13 +42,40 @@ export default function PatternForm({
 }: PatternFormProps) {
   const [message, setMessage] = useState("");
 
+  let storedValues;
+  if (patternData) {
+    const parsedData = parseDbData(patternData);
+    storedValues = {
+      startDate: parsedData.startDate,
+      endDate: parsedData.endDate,
+      startTime: parsedData.startTime,
+      endTime: parsedData.endTime,
+      duration: parsedData.duration,
+      recurring: parsedData.recurring,
+      weekdays: parsedData.weekdays[0] !== "" ? parsedData.weekdays : [],
+    };
+  }
+
   const form = useForm<PatternData>({
     resolver: zodResolver(patternSchema),
-    defaultValues: patternData ? parseDbData(patternData) : patternDefaultValues,
+    defaultValues: storedValues || patternDefaultValues,
   });
 
+  const recurring = form.watch("recurring");
+  const startDate = form.watch("startDate");
+
+  useEffect(() => {
+    const endDate = form.getValues("endDate");
+    if (!recurring && !endDate && startDate) {
+      form.setValue("endDate", startDate);
+    }
+
+    if (endDate && isBefore(endDate, startDate)) {
+      form.setValue("endDate", startDate);
+    }
+  }, [startDate]);
+
   async function onSubmit(data: any) {
-    // console.log("🚀 ~ data:", data);
     setMessage("");
     try {
       const formData = objectToFormData(data);
@@ -72,9 +99,9 @@ export default function PatternForm({
   }
 
   function onError() {
-    console.error("onError");
-    console.log("errors", form.formState.errors);
-    console.log("values", form.getValues());
+    // console.error("onError");
+    console.log("❌ errors", { ...form.formState.errors });
+    console.log("✏️ values", form.getValues());
   }
 
   function onStartDate(date?: Date) {
@@ -85,7 +112,6 @@ export default function PatternForm({
     return date;
   }
 
-  const recurring = form.watch("recurring");
   return (
     <Form {...form}>
       <AlertMessage message={message} />

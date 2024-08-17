@@ -4,8 +4,10 @@ import { getPatterns } from "@/lib/actions/getPatterns";
 import { databases } from "@/lib/appwrite/adminClient";
 import { env } from "@/lib/env";
 import { hasConflictingSlots } from "@/lib/processing/hasConflictingSlots";
+import { hasSlots } from "@/lib/processing/hasSlots";
 import { type Error, invalidFieldsError, Success, success, unexpectedError } from "@/lib/results";
 import { conflictingSlotError } from "@/lib/results/errors/conflictingSlotError";
+import { noPossibleSlotsError } from "@/lib/results/errors/noPossibleSlotsError";
 import { PatternDocumentSchema } from "@/lib/schemas/appwriteSchema";
 import { patternSchema, parseDbData } from "@/lib/schemas/patternsSchema";
 import { getInvalidFieldsList } from "@/lib/utils";
@@ -25,6 +27,11 @@ export async function updatePattern(formData: FormData): Promise<UpdatePatternRe
     }
 
     const userPattern = validation.data;
+    console.log("🚀 ~ hasSlots(userPattern):", hasSlots(userPattern));
+
+    if (userPattern.recurring && !hasSlots(userPattern)) {
+      return noPossibleSlotsError();
+    }
 
     const dbQuery = await getPatterns(doctorId, patternId);
     if (!dbQuery.success || !dbQuery.data) {

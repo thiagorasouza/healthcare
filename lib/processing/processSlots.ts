@@ -9,11 +9,20 @@ interface LimitOptions {
 }
 
 export function processSlots(data: PatternData, limit?: LimitOptions) {
-  const { startDate, endDate, startTime, endTime, duration: durationMin, recurring } = data;
+  const {
+    startDate,
+    endDate,
+    startTime,
+    endTime,
+    duration: durationMin,
+    weekdays,
+    recurring,
+  } = data;
+  // console.log("🚀 ~ endDate:", endDate);
+  // console.log("🚀 ~ startDate:", startDate);
+  // console.log("🚀 ~ weekdays:", weekdays);
   const weekdaysToLoop = (
-    limit
-      ? data.weekdays.filter((weekday) => limit.weekdays.includes(weekday as Weekday))
-      : data.weekdays
+    limit ? weekdays.filter((weekday) => limit.weekdays.includes(weekday as Weekday)) : weekdays
   ) as Weekday[];
 
   const startTimeMs = startTime.getTime();
@@ -42,6 +51,7 @@ export function processSlots(data: PatternData, limit?: LimitOptions) {
 
   const result = [];
   const weeksNum = differenceInWeeks(endDate, startDate) + 1;
+  // console.log("🚀 ~ weeksNum:", weeksNum);
   weeksLoop: for (let i = 0; i < weeksNum; i++) {
     for (const weekday of weekdaysToLoop) {
       const start = addWeeks(startDate, i);
@@ -62,10 +72,9 @@ export function processSlots(data: PatternData, limit?: LimitOptions) {
       const transposedSlots = slotsToTranspose.map(([slotStart, slotEnd]) => {
         return [transposeTime(slotStart, date), transposeTime(slotEnd, date)];
       });
-      const formattedDate = format(date, "yyyy-MM-dd");
 
       result.push({
-        date: formattedDate,
+        date: date.toISOString(),
         duration: durationMin,
         slots: transposedSlots,
       });

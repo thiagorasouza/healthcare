@@ -16,13 +16,21 @@ export type Weekday = "mon" | "tue" | "wed" | "thu" | "fri" | "sat" | "sun";
 
 const isMultipleOf = (num: number, divisor: number) => num % divisor === 0;
 
+const defaultCoercedDate = z.coerce.date({
+  errorMap: (issue, { defaultError }) => ({
+    message: issue.code === "invalid_date" ? "Required" : defaultError,
+  }),
+});
+
 export const patternSchema = z
   .object({
-    startTime: z.coerce.date(),
-    endTime: z.coerce.date(),
-    startDate: z.coerce.date(),
-    endDate: z.coerce.date(),
-    duration: z.coerce.number({ message: "Only number allowed " }).min(1),
+    startDate: defaultCoercedDate,
+    endDate: defaultCoercedDate,
+    startTime: defaultCoercedDate,
+    endTime: defaultCoercedDate,
+    duration: z.coerce.number().min(15, {
+      message: "At least 15 minutes",
+    }),
     recurring: z.preprocess((val) => {
       if (typeof val === "boolean") {
         return val;
@@ -30,18 +38,32 @@ export const patternSchema = z
         return typeof val === "string" && val.toLowerCase() === "true";
       }
     }, z.boolean()),
+    // [] | Weekday[] if recurring = false
     weekdays: z.preprocess(
       (val) => (typeof val === "string" ? val.split(",") : val),
-      z.array(z.string()).refine((value) => value.some((item) => item), {
-        message: "You have to select at least one day.",
-      }),
+      z.array(z.string()),
     ),
   })
+  .refine(
+    ({ recurring, weekdays: weekdaysInput }) => {
+      // console.log("🚀 ~ weekdaysInput:", weekdaysInput);
+      if (!recurring) return true;
+      return (
+        Array.isArray(weekdaysInput) &&
+        weekdaysInput.length > 0 &&
+        weekdaysInput?.every((item: any) => weekdays.includes(item))
+      );
+    },
+    {
+      message: "Required for a recurring pattern",
+      path: ["weekdays"],
+    },
+  )
   .superRefine(({ startTime, endTime }, ctx) => {
     if (startTime >= endTime) {
       ctx.addIssue({
         code: "custom",
-        message: "Start time should be before end time",
+        message: "Must be before end time",
         path: ["startTime"],
       });
     }
@@ -53,25 +75,27 @@ export const patternSchema = z
     if (duration > diff || !isMultipleOf(diff, duration)) {
       ctx.addIssue({
         code: "custom",
-        message: "Duration should be a multiple of the available hours",
+        message: "Must be a multiple of the available hours",
         path: ["duration"],
       });
     }
   })
-  .superRefine(({ startTime, endTime, endDate }, ctx) => {
+  .superRefine(({ startTime, endTime, endDate, recurring }, ctx) => {
+    if (!recurring) return;
     if (endDate <= startTime || endDate <= endTime) {
       ctx.addIssue({
         code: "custom",
-        message: "End date should be before available date",
+        message: "Should be after start date",
         path: ["endDate"],
       });
     }
   })
-  .superRefine(({ startDate, endDate }, ctx) => {
+  .superRefine(({ startDate, endDate, recurring }, ctx) => {
+    if (!recurring) return;
     if (differenceInMonths(endDate, startDate) > 3) {
       ctx.addIssue({
         code: "custom",
-        message: "Please schedule a maximum of 3 months at a time",
+        message: "Max of 3 months ahead",
         path: ["endDate"],
       });
     }

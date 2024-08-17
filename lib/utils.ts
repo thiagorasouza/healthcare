@@ -3,7 +3,7 @@ import { type AppwriteException as WebAppwriteException } from "appwrite";
 import { type ClassValue, clsx } from "clsx";
 import { twMerge } from "tailwind-merge";
 import { SafeParseError, ZodError } from "zod";
-import { addDays, Day, getHours, getMinutes, isBefore, nextDay } from "date-fns";
+import { Day, getHours, getMinutes, nextDay, subDays } from "date-fns";
 import { Weekday, weekdays } from "@/lib/schemas/patternsSchema";
 
 export function cn(...inputs: ClassValue[]) {
@@ -136,11 +136,11 @@ export function capitalize(str: string): string {
 
 export function getFirstWeekdayAfter(startDate: Date, targetWeekday: Weekday): Date {
   const targetWeekdayNumber = weekdays.indexOf(targetWeekday) as Day;
-  const nextTargetDate = nextDay(startDate, targetWeekdayNumber);
-
-  if (!isBefore(startDate, nextTargetDate)) {
-    return addDays(nextTargetDate, 7);
-  }
+  const nextTargetDate = nextDay(subDays(startDate, 1), targetWeekdayNumber);
+  // console.log("-----------");
+  // console.log("🚀 ~ nextTargetDate:", nextTargetDate);
+  // console.log("🚀 ~ startDate:", startDate);
+  // console.log("🚀 ~ isBefore:", isBefore(startDate, nextTargetDate));
 
   return nextTargetDate;
 }

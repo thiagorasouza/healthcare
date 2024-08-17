@@ -12,6 +12,7 @@ export default function SlotsButtonList({
   onClick: (data: PatternDocumentSchema) => void;
 }) {
   const slots = processSlots(data);
+  // console.log("🚀 ~ slots:", slots);
   return slots.map((slotsData) => {
     const day = format(new Date(slotsData.date), "PPP");
     return (
