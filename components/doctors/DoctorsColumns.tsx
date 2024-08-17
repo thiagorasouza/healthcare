@@ -19,7 +19,7 @@ import Link from "next/link";
 
 type onDeleteFunction = (name: string, doctorId: string, authId: string) => void;
 
-export function columns(onDelete: onDeleteFunction): ColumnDef<DoctorDocumentSchema>[] {
+export function DoctorsColumns(onDelete: onDeleteFunction): ColumnDef<DoctorDocumentSchema>[] {
   return [
     {
       id: "select",

@@ -1,18 +1,15 @@
 "use server";
 
 import AdminBreadcrumb from "@/components/admin/AdminBreadcrumb";
-import DoctorsForm from "@/components/forms/DoctorsForm";
+import DoctorsForm from "@/components/doctors/DoctorsForm";
+
 import { Button } from "@/components/ui/button";
 import { getDoctor } from "@/lib/actions/getDoctor";
 import { updateDoctor } from "@/lib/actions/updateDoctor";
 import { ArrowLeft } from "lucide-react";
 import Link from "next/link";
 
-export default async function DoctorsUpdatePage({
-  params,
-}: {
-  params: { doctorId: string };
-}) {
+export default async function DoctorsUpdatePage({ params }: { params: { doctorId: string } }) {
   const { doctorId } = params;
   const result = await getDoctor(doctorId);
 

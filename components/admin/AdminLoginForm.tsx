@@ -12,7 +12,7 @@ import PasswordField from "@/components/forms/PasswordField";
 import SubmitButton from "@/components/forms/SubmitButton";
 import TestLoginAsAdmin from "@/components/testing/TestLoginAsAdmin";
 
-export default function LoginForm() {
+export default function AdminLoginForm() {
   const router = useRouter();
   const [message, setMessage] = useState("");
   const formRef = useRef<HTMLFormElement>(null);
@@ -45,17 +45,8 @@ export default function LoginForm() {
     <>
       <Form {...form}>
         <AlertMessage message={message} />
-        <form
-          onSubmit={form.handleSubmit(onSubmit)}
-          className="flex flex-col gap-3"
-          ref={formRef}
-        >
-          <TextField
-            form={form}
-            name="email"
-            label="Email"
-            placeholder="name@example.com"
-          />
+        <form onSubmit={form.handleSubmit(onSubmit)} className="flex flex-col gap-3" ref={formRef}>
+          <TextField form={form} name="email" label="Email" placeholder="name@example.com" />
           <PasswordField form={form} name="password" label="Password" />
           <SubmitButton form={form} label="Submit" />
         </form>

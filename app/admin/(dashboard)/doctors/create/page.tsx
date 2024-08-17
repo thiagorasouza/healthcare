@@ -1,5 +1,5 @@
 import AdminBreadcrumb from "@/components/admin/AdminBreadcrumb";
-import DoctorsForm from "@/components/forms/DoctorsForm";
+import DoctorsForm from "@/components/doctors/DoctorsForm";
 import { Button } from "@/components/ui/button";
 import { createDoctor } from "@/lib/actions/createDoctor";
 import { ArrowLeft } from "lucide-react";

@@ -8,13 +8,13 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Button } from "./ui/button";
+import { Button } from "@/components/ui/button";
 import { CircleUser } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { logout } from "@/lib/actions/logout";
 import { toast } from "sonner";
 
-export default function AccountDropdown() {
+export default function AdminAccountDropdown() {
   const router = useRouter();
 
   async function handleLogout() {
@@ -41,10 +41,7 @@ export default function AccountDropdown() {
           Change Password
         </DropdownMenuItem>
         <DropdownMenuSeparator />
-        <DropdownMenuItem
-          className="cursor-pointer hover:bg-muted"
-          onClick={handleLogout}
-        >
+        <DropdownMenuItem className="cursor-pointer hover:bg-muted" onClick={handleLogout}>
           Logout
         </DropdownMenuItem>
       </DropdownMenuContent>

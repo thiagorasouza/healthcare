@@ -2,7 +2,7 @@ import DoctorCardSkeleton from "@/components/doctors/DoctorCardSkeleton";
 import ErrorCard from "@/components/shared/ErrorCard";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { getImageLink } from "@/lib/actions/getImageLink";
 import { DoctorDataUpdate } from "@/lib/schemas/doctorsSchema";
 import { cn, getInitials } from "@/lib/utils";

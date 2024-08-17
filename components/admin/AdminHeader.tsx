@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import { Separator } from "@/components/ui/separator";
-import AccountDropdown from "@/components/accountDropdown";
+import AccountDropdown from "@/components/admin/AdminAccountDropdown";
 import { Input } from "@/components/ui/input";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { Menu, Search } from "lucide-react";
