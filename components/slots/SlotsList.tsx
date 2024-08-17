@@ -10,28 +10,30 @@ interface SlotsListProps {
   data: PatternDocumentListSchema | undefined;
   loading: boolean;
   onSlotClick: (pattern: PatternDocumentSchema) => void;
+  className?: string;
 }
 
-export default function SlotsList({ data, loading, onSlotClick }: SlotsListProps) {
+export default function SlotsList({ data, loading, onSlotClick, className }: SlotsListProps) {
   if (loading) {
     return (
-      <SlotsCard>
+      <SlotsCard className={className}>
         <Spinner>Loading...</Spinner>
       </SlotsCard>
     );
   }
 
   if (!data) {
-    return <ErrorCard text="Unable to load slots at this time." />;
+    return <ErrorCard className={className} text="Unable to load slots at this time." />;
   }
 
   return (
-    <SlotsCard>
-      <div className="flex flex-col gap-3">
-        {data.total > 0 &&
-          data.documents.map((pattern, index) => (
-            <SlotsButtonList key={index} data={pattern} onClick={() => onSlotClick(pattern)} />
-          ))}
+    <SlotsCard className={className}>
+      <div className="flex flex-col gap-6">
+        {data.total > 0
+          ? data.documents.map((pattern, index) => (
+              <SlotsButtonList key={index} data={pattern} onClick={() => onSlotClick(pattern)} />
+            ))
+          : "No slots yet."}
       </div>
     </SlotsCard>
   );

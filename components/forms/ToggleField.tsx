@@ -35,7 +35,7 @@ export default function ToggleField({
             </FormDescription>
           </div>
           <FormControl>
-            <Switch checked={on} onCheckedChange={field.onChange} />
+            <Switch checked={field.value as boolean} onCheckedChange={field.onChange} />
           </FormControl>
         </FormItem>
       )}

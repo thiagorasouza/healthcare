@@ -1,5 +1,4 @@
 import DefaultCard from "@/components/shared/DefaultCard";
-import SlotsButtonList from "@/components/slots/SlotsButtonList";
 import { PatternDocumentSchema } from "@/lib/schemas/appwriteSchema";
 import { fullWeekdays, Weekday } from "@/lib/schemas/patternsSchema";
 import { getTimeFromDate, semanticJoin } from "@/lib/utils";
@@ -15,11 +14,10 @@ import {
   Trash2,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { motion } from "framer-motion";
 import { countSlotsInTimespan } from "@/lib/processing/countSlotsInTimespan";
 
 interface PatternCardProps {
-  data: PatternDocumentSchema;
+  data: PatternDocumentSchema | undefined;
   className?: string;
   onCloseClick: () => void;
   onDeleteClick: () => void;
@@ -33,62 +31,64 @@ export default function PatternCard({
   onDeleteClick,
   onEditClick,
 }: PatternCardProps) {
+  if (!data) return null;
+
+  const recurring = data.recurring;
   const slotsNum = countSlotsInTimespan(data.startTime, data.endTime, data.duration);
 
   return (
-    <motion.div
-      initial={{ height: 0, opacity: 0 }}
-      animate={{ height: "auto", opacity: 1 }}
-      transition={{ duration: 0.3 }}
-      className="relative overflow-hidden"
+    <DefaultCard
+      title={recurring ? "Pattern" : "Single Date"}
+      description="Edit to make this a recurring pattern"
+      className={className}
+      onCloseClick={onCloseClick}
     >
-      <DefaultCard
-        title="Manage Availableness"
-        description="Edit or delele this pattern"
-        className={className}
-        onCloseClick={onCloseClick}
-      >
-        <div className="flex flex-col gap-2 text-sm [&>div]:flex [&>div]:items-center [&_svg]:mr-3 [&_svg]:h-4 [&_svg]:w-4">
-          <div className="font-semibold">
-            <Repeat2 />
-            {data.recurring ? "Recurring" : "Non recurring"}
-          </div>
-          <div>
-            <Hourglass />
-            {data.duration} minutes each
-          </div>
-          <div>
-            <Clock />
-            {getTimeFromDate(new Date(data.startTime))} &rarr;{" "}
-            {getTimeFromDate(new Date(data.endTime))} ({slotsNum} slots)
-          </div>
+      <div className="flex flex-col gap-2 text-sm [&>div]:flex [&>div]:items-center [&_svg]:mr-3 [&_svg]:h-4 [&_svg]:w-4">
+        <div className="font-semibold">
+          <Repeat2 />
+          {recurring ? "Recurring" : "Non recurring"}
+        </div>
+        <div>
+          <Hourglass />
+          {data.duration} minutes each
+        </div>
+        <div>
+          <Clock />
+          {getTimeFromDate(new Date(data.startTime))} &rarr;{" "}
+          {getTimeFromDate(new Date(data.endTime))} ({slotsNum} slots)
+        </div>
+        {recurring && (
           <div>
             <Target />
             {semanticJoin((data.weekdays as Weekday[]).map((w) => fullWeekdays[w]))}
           </div>
+        )}
+        {recurring ? (
           <div>
             <CalendarDays />
             {format(data.startDate, "PPP")} &rarr; {format(data.endDate, "PPP")}
           </div>
+        ) : (
           <div>
-            <Fingerprint />
-            ID: {data.$id}
+            <CalendarDays />
+            {format(data.startDate, "PPP")}
           </div>
+        )}
+        <div>
+          <Fingerprint />
+          ID: {data.$id}
         </div>
-        <div className="my-6 flex flex-col gap-3">
-          <SlotsButtonList data={data} onClick={() => null} />
-        </div>
-        <div className="flex gap-3">
-          <Button variant="destructive" className="flex items-center gap-2" onClick={onDeleteClick}>
-            <Trash2 className="h-4 w-4" />
-            Delete
-          </Button>
-          <Button className="flex items-center gap-2" onClick={() => onEditClick()}>
-            <SquarePen className="h-4 w-4" />
-            Edit
-          </Button>
-        </div>
-      </DefaultCard>
-    </motion.div>
+      </div>
+      <div className="mt-6 flex gap-3">
+        <Button variant="destructive" className="flex items-center gap-2" onClick={onDeleteClick}>
+          <Trash2 className="h-4 w-4" />
+          Delete
+        </Button>
+        <Button className="flex items-center gap-2" onClick={() => onEditClick()}>
+          <SquarePen className="h-4 w-4" />
+          Edit
+        </Button>
+      </div>
+    </DefaultCard>
   );
 }

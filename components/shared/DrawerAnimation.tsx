@@ -16,11 +16,11 @@ export default function DrawerAnimation({ toggle, children }: DrawerAnimationPro
           exit={{ height: 0 }}
           transition={{ duration: 0.2 }}
         >
-          <div className="relative overflow-hidden">
+          <div className="relative -m-1 overflow-hidden p-1">
             <motion.div
-              initial={{ y: "-100%" }}
-              animate={{ y: 0 }}
-              exit={{ y: "-100%" }}
+              initial={{ opacity: 0, y: "-100%" }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: "-100%" }}
               transition={{ duration: 0.2 }}
             >
               {children}

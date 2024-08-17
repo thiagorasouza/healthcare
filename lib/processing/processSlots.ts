@@ -9,7 +9,7 @@ interface LimitOptions {
 }
 
 export function processSlots(data: PatternData, limit?: LimitOptions) {
-  const { startDate, endDate, startTime, endTime, duration: durationMin } = data;
+  const { startDate, endDate, startTime, endTime, duration: durationMin, recurring } = data;
   const weekdaysToLoop = (
     limit
       ? data.weekdays.filter((weekday) => limit.weekdays.includes(weekday as Weekday))
@@ -23,10 +23,21 @@ export function processSlots(data: PatternData, limit?: LimitOptions) {
   const slotsNum = diffMs / durationMs;
 
   const slotsToTranspose = [];
+  // console.log("🚀 ~ slotsToTranspose:", slotsToTranspose);
   for (let i = 0; i < slotsNum; i++) {
     const slotStartMs = startTimeMs + durationMs * i;
     const slotEndMs = slotStartMs + durationMs;
     slotsToTranspose.push([new Date(slotStartMs), new Date(slotEndMs)]);
+  }
+
+  if (!recurring) {
+    return [
+      {
+        date: format(startDate, "yyyy-MM-dd"),
+        duration: durationMin,
+        slots: slotsToTranspose,
+      },
+    ];
   }
 
   const result = [];

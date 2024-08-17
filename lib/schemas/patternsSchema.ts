@@ -23,7 +23,13 @@ export const patternSchema = z
     startDate: z.coerce.date(),
     endDate: z.coerce.date(),
     duration: z.coerce.number({ message: "Only number allowed " }).min(1),
-    recurring: z.coerce.boolean(),
+    recurring: z.preprocess((val) => {
+      if (typeof val === "boolean") {
+        return val;
+      } else {
+        return typeof val === "string" && val.toLowerCase() === "true";
+      }
+    }, z.boolean()),
     weekdays: z.preprocess(
       (val) => (typeof val === "string" ? val.split(",") : val),
       z.array(z.string()).refine((value) => value.some((item) => item), {

@@ -32,10 +32,10 @@ export default function DefaultCard({
             </div>
           </div>
         ) : (
-          <div>
+          <>
             <CardTitle>{title}</CardTitle>
             <CardDescription>{description}</CardDescription>
-          </div>
+          </>
         )}
       </CardHeader>
       <CardContent>{children}</CardContent>

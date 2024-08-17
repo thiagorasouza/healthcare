@@ -12,6 +12,10 @@ import { deletePattern } from "@/lib/actions/deletePattern";
 import { toast } from "sonner";
 import { EditPatternDialog } from "@/components/slots/EditPatternDialog";
 import { updatePattern } from "@/lib/actions/updatePattern";
+import AdminBreadcrumb from "@/components/admin/AdminBreadcrumb";
+import { Button } from "@/components/ui/button";
+import { PlusCircle } from "lucide-react";
+import DrawerAnimation from "@/components/shared/DrawerAnimation";
 
 export default function SlotsPage({ params }: { params: { doctorId: string } }) {
   const [selectedPattern, setSelectedPattern] = useState<PatternDocumentSchema>();
@@ -20,6 +24,7 @@ export default function SlotsPage({ params }: { params: { doctorId: string } }) 
   const [slots, setSlots] = useState<PatternDocumentListSchema>();
   const [slotsLoading, setSlotsLoading] = useState(true);
   const [editDialogOpen, setEditDialogOpen] = useState(false);
+  const [createDialogOpen, setCreateDialogOpen] = useState(false);
   const { doctorId } = params;
 
   useEffect(() => {
@@ -65,38 +70,52 @@ export default function SlotsPage({ params }: { params: { doctorId: string } }) 
   }
 
   return (
-    <div className="grid grid-cols-2 gap-8">
-      <div className="flex flex-col gap-8 self-start">
-        <DoctorCard data={doctor} loading={doctorLoading} />
-        <SlotsList data={slots} loading={slotsLoading} onSlotClick={setSelectedPattern} />
+    <div className="flex w-full max-w-6xl flex-col gap-6">
+      <div className="flex items-center justify-between">
+        {doctor && <AdminBreadcrumb replace={doctorId} replacement={doctor.name} />}
+        <Button
+          size="sm"
+          className="ml-auto flex h-8 w-fit items-center gap-2"
+          onClick={() => setCreateDialogOpen(true)}
+        >
+          <PlusCircle className="h-3.5 w-3.5" />
+          <span className="sm:whitespace-nowrap">Add Slot</span>
+        </Button>
       </div>
-      <div>
-        {selectedPattern && (
-          <>
+      <div className="grid grid-cols-3 items-start gap-8">
+        <div className="col-span-2 flex flex-col gap-8 self-start">
+          <DoctorCard data={doctor} loading={doctorLoading} />
+          <SlotsList data={slots} loading={slotsLoading} onSlotClick={setSelectedPattern} />
+        </div>
+        <div className="col-span-1">
+          <DrawerAnimation toggle={!!selectedPattern}>
             <PatternCard
               data={selectedPattern}
               onCloseClick={() => setSelectedPattern(undefined)}
               onDeleteClick={deleteSelectedPattern}
               onEditClick={() => setEditDialogOpen(true)}
             />
-            <EditPatternDialog
-              doctorId={doctorId}
-              data={selectedPattern}
-              open={editDialogOpen}
-              onCloseClick={() => setEditDialogOpen(false)}
-              onSaveClick={updatePattern}
-              onSuccess={onEditSuccess}
-            />
-          </>
+          </DrawerAnimation>
+        </div>
+        {selectedPattern && (
+          <EditPatternDialog
+            doctorId={doctorId}
+            data={selectedPattern}
+            open={editDialogOpen}
+            onCloseClick={() => setEditDialogOpen(false)}
+            onSaveClick={updatePattern}
+            onSuccess={onEditSuccess}
+          />
         )}
+
+        {/* <SlotsForm
+          title="Insert Slots"
+          description="Make this doctor available on specific dates and time periods"
+          doctorId={doctorId}
+          action={createSlot}
+          className="self-start"
+        /> */}
       </div>
-      {/* <SlotsForm
-        title="Insert Slots"
-        description="Make this doctor available on specific dates and time periods"
-        doctorId={doctorId}
-        action={createSlot}
-        className="self-start"
-      /> */}
     </div>
   );
 }

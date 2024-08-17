@@ -14,10 +14,10 @@ export default function DoctorCardSkeleton({ className }: { className?: string }
           </CardTitle>
         </div>
       </CardHeader>
-      <CardContent className="space-y-3">
+      {/* <CardContent className="space-y-3">
         <Skeleton className="h-4 w-full" />
         <Skeleton className="h-4 w-4/5" />
-      </CardContent>
+      </CardContent> */}
     </Card>
   );
 }
