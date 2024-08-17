@@ -42,7 +42,7 @@ export function processSlots(data: PatternData, limit?: LimitOptions) {
   if (!recurring) {
     return [
       {
-        date: format(startDate, "yyyy-MM-dd"),
+        date: startDate.toISOString(),
         duration: durationMin,
         slots: slotsToTranspose,
       },
