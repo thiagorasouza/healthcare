@@ -18,6 +18,7 @@ import { PlusCircle } from "lucide-react";
 import DrawerAnimation from "@/components/shared/DrawerAnimation";
 import { CreatePatternDialog } from "@/components/slots/CreatePatternDialog";
 import { createPattern } from "@/lib/actions/createPattern";
+import DeleteDialog from "@/components/shared/DeleteDialog";
 
 export default function SlotsPage({ params }: { params: { doctorId: string } }) {
   const [selectedPattern, setSelectedPattern] = useState<PatternDocumentSchema>();
@@ -27,6 +28,8 @@ export default function SlotsPage({ params }: { params: { doctorId: string } }) 
   const [slotsLoading, setSlotsLoading] = useState(true);
   const [editDialogOpen, setEditDialogOpen] = useState(false);
   const [createDialogOpen, setCreateDialogOpen] = useState(false);
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+
   const { doctorId } = params;
 
   useEffect(() => {
@@ -62,6 +65,7 @@ export default function SlotsPage({ params }: { params: { doctorId: string } }) 
       return;
     }
 
+    loadSlots();
     setSelectedPattern(undefined);
   }
 
@@ -88,14 +92,19 @@ export default function SlotsPage({ params }: { params: { doctorId: string } }) 
       <div className="grid grid-cols-3 items-start gap-8">
         <div className="col-span-2 flex flex-col gap-8 self-start">
           <DoctorCard data={doctor} loading={doctorLoading} />
-          <SlotsList data={slots} loading={slotsLoading} onSlotClick={setSelectedPattern} />
+          <SlotsList
+            data={slots}
+            loading={slotsLoading}
+            onSlotClick={setSelectedPattern}
+            onCreateClick={() => setCreateDialogOpen(true)}
+          />
         </div>
         <div className="col-span-1">
           <DrawerAnimation toggle={!!selectedPattern}>
             <PatternCard
               data={selectedPattern}
               onCloseClick={() => setSelectedPattern(undefined)}
-              onDeleteClick={deleteSelectedPattern}
+              onDeleteClick={() => setDeleteDialogOpen(true)}
               onEditClick={() => setEditDialogOpen(true)}
             />
           </DrawerAnimation>
@@ -116,6 +125,13 @@ export default function SlotsPage({ params }: { params: { doctorId: string } }) 
           onCloseClick={() => setCreateDialogOpen(false)}
           onSaveClick={createPattern}
           onSuccess={onSuccess}
+        />
+        <DeleteDialog
+          type="pattern"
+          item={selectedPattern?.$id}
+          open={deleteDialogOpen}
+          onCloseClick={() => setDeleteDialogOpen(false)}
+          onContinue={deleteSelectedPattern}
         />
       </div>
     </div>
