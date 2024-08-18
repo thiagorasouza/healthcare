@@ -5,7 +5,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { getImageLink } from "@/lib/actions/getImageLink";
 import { DoctorDocumentSchema } from "@/lib/schemas/appwriteSchema";
 import { ColumnDef } from "@tanstack/react-table";
-import { CalendarDays, ImageIcon, MoreHorizontal, Trash2 } from "lucide-react";
+import { CalendarDays, ImageIcon, SquarePen, Trash2 } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 
@@ -86,6 +86,12 @@ export function DoctorsColumns(onDeleteClick: onDeleteFunction): ColumnDef<Docto
               <Link target="_blank" href={`/admin/doctors/${row.original.$id}/slots`}>
                 <CalendarDays className="h-3.5 w-3.5 md:mr-2" />
                 <span className="hidden md:inline">Slots</span>
+              </Link>
+            </Button>
+            <Button size="sm" asChild>
+              <Link target="_blank" href={`/admin/doctors/${row.original.$id}/update`}>
+                <SquarePen className="h-3.5 w-3.5 md:mr-2" />
+                <span className="hidden md:inline">Edit</span>
               </Link>
             </Button>
             <Button variant="destructive" size="sm" onClick={() => onDeleteClick(row.original)}>
