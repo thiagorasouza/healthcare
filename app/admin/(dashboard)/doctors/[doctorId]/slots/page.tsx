@@ -77,7 +77,7 @@ export default function SlotsPage({ params }: { params: { doctorId: string } }) 
   }
 
   return (
-    <div className="flex w-full max-w-6xl flex-col gap-6">
+    <div className="mx-auto flex w-full max-w-6xl flex-col gap-6">
       <nav className="flex items-center justify-between">
         {doctor && <AdminBreadcrumb replace={doctorId} replacement={doctor.name} />}
         <Button
