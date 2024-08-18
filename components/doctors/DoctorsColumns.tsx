@@ -84,13 +84,13 @@ export function DoctorsColumns(onDeleteClick: onDeleteFunction): ColumnDef<Docto
           <div className="flex gap-3">
             <Button size="sm" variant="outline" asChild>
               <Link target="_blank" href={`/admin/doctors/${row.original.$id}/slots`}>
-                <CalendarDays className="mr-2 h-3.5 w-3.5" />
-                Slots
+                <CalendarDays className="h-3.5 w-3.5 md:mr-2" />
+                <span className="hidden md:inline">Slots</span>
               </Link>
             </Button>
             <Button variant="destructive" size="sm" onClick={() => onDeleteClick(row.original)}>
-              <Trash2 className="mr-2 h-3.5 w-3.5" />
-              Delete
+              <Trash2 className="h-3.5 w-3.5 md:mr-2" />
+              <span className="hidden md:inline">Delete</span>
             </Button>
           </div>
         );
