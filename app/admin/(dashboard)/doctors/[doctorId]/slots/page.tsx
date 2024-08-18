@@ -1,7 +1,7 @@
 "use client";
 
 import DoctorCard from "@/components/doctors/DoctorCard";
-import SlotsList from "@/components/slots/SlotsList";
+import SlotsCard from "@/components/slots/SlotsCard";
 import { getDoctor } from "@/lib/actions/getDoctor";
 import { getPatterns } from "@/lib/actions/getPatterns";
 import { useEffect, useState } from "react";
@@ -78,7 +78,7 @@ export default function SlotsPage({ params }: { params: { doctorId: string } }) 
 
   return (
     <div className="flex w-full max-w-6xl flex-col gap-6">
-      <div className="flex items-center justify-between">
+      <nav className="flex items-center justify-between">
         {doctor && <AdminBreadcrumb replace={doctorId} replacement={doctor.name} />}
         <Button
           size="sm"
@@ -88,11 +88,11 @@ export default function SlotsPage({ params }: { params: { doctorId: string } }) 
           <PlusCircle className="h-3.5 w-3.5" />
           <span className="sm:whitespace-nowrap">Add Slot</span>
         </Button>
-      </div>
+      </nav>
       <div className="grid grid-cols-3 items-start gap-8">
         <div className="col-span-2 flex flex-col gap-8 self-start">
           <DoctorCard data={doctor} loading={doctorLoading} />
-          <SlotsList
+          <SlotsCard
             data={slots}
             loading={slotsLoading}
             onSlotClick={setSelectedPattern}
