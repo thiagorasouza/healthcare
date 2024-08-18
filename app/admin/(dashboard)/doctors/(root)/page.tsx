@@ -3,6 +3,7 @@
 import AdminBreadcrumb from "@/components/admin/AdminBreadcrumb";
 import { DoctorsColumns } from "@/components/doctors/DoctorsColumns";
 import { DataTable } from "@/components/shared/DataTable";
+import DeleteDialog from "@/components/shared/DeleteDialog";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { deleteDoctor } from "@/lib/actions/deleteDoctor";
@@ -16,6 +17,8 @@ import { toast } from "sonner";
 export default function DoctorsPage() {
   const [loading, setLoading] = useState(true);
   const [doctors, setDoctors] = useState<DoctorDocumentSchema[]>();
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+  const [doctorToDelete, setDoctorToDelete] = useState<DoctorDocumentSchema | undefined>();
 
   useEffect(() => {
     if (!loading) return;
@@ -36,21 +39,30 @@ export default function DoctorsPage() {
     asyncEffect();
   }, [loading]);
 
-  async function onDelete(name: string, doctorId: string, authId: string) {
-    try {
-      const result = await deleteDoctor(doctorId, authId);
-      // console.log("🚀 ~ result:", result);
-      if (result.success) {
-        toast(`Doctor ${name} deleted successfully.`);
-        setLoading(true);
-      }
-    } catch (error) {
+  async function onDeleteClick(doctor: DoctorDocumentSchema) {
+    setDoctorToDelete(doctor);
+    setDeleteDialogOpen(true);
+  }
+
+  async function deleteSelectedDoctor() {
+    if (!doctorToDelete) return;
+
+    const { $id: doctorId, authId, name } = doctorToDelete;
+
+    const result = await deleteDoctor(doctorId, authId);
+
+    if (!result.success) {
       toast(`Unable to delete doctor ${name}`);
+      return;
     }
+
+    toast(`Doctor ${name} deleted successfully.`);
+    setDoctorToDelete(undefined);
+    setLoading(true);
   }
 
   return (
-    <>
+    <div className="space-y-6">
       <div className="flex items-center justify-between">
         <AdminBreadcrumb />
         <Button size="sm" className="ml-auto h-8 w-fit">
@@ -69,12 +81,19 @@ export default function DoctorsPage() {
           {loading ? (
             "Loading..."
           ) : doctors ? (
-            <DataTable columns={DoctorsColumns(onDelete)} data={doctors} />
+            <DataTable columns={DoctorsColumns(onDeleteClick)} data={doctors} />
           ) : (
             "Not doctors found"
           )}
         </CardContent>
       </Card>
-    </>
+      <DeleteDialog
+        open={deleteDialogOpen}
+        onCloseClick={() => setDeleteDialogOpen(false)}
+        type="doctor"
+        item={doctorToDelete?.name}
+        onContinue={deleteSelectedDoctor}
+      />
+    </div>
   );
 }

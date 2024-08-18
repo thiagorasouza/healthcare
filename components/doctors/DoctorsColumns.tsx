@@ -2,24 +2,16 @@
 
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
 import { getImageLink } from "@/lib/actions/getImageLink";
 import { DoctorDocumentSchema } from "@/lib/schemas/appwriteSchema";
 import { ColumnDef } from "@tanstack/react-table";
-import { ImageIcon, MoreHorizontal } from "lucide-react";
+import { CalendarDays, ImageIcon, MoreHorizontal, Trash2 } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 
-type onDeleteFunction = (name: string, doctorId: string, authId: string) => void;
+type onDeleteFunction = (doctor: DoctorDocumentSchema) => void;
 
-export function DoctorsColumns(onDelete: onDeleteFunction): ColumnDef<DoctorDocumentSchema>[] {
+export function DoctorsColumns(onDeleteClick: onDeleteFunction): ColumnDef<DoctorDocumentSchema>[] {
   return [
     {
       id: "select",
@@ -89,34 +81,18 @@ export function DoctorsColumns(onDelete: onDeleteFunction): ColumnDef<DoctorDocu
       id: "actions",
       cell: ({ row }) => {
         return (
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button variant="ghost" className="h-8 w-8 p-0">
-                <span className="sr-only">Open menu</span>
-                <MoreHorizontal className="h-4 w-4" />
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end">
-              <DropdownMenuLabel>Actions</DropdownMenuLabel>
-              <DropdownMenuSeparator />
-              <DropdownMenuItem className="cursor-pointer">
-                <Link target="_blank" href={`/admin/doctors/update/${row.original.$id}`}>
-                  Edit
-                </Link>
-              </DropdownMenuItem>
-              <DropdownMenuItem
-                className="cursor-pointer"
-                onClick={() => onDelete(row.original.name, row.original.$id, row.original.authId)}
-              >
-                Delete
-              </DropdownMenuItem>
-              <DropdownMenuItem className="cursor-pointer">
-                <Link target="_blank" href={`/admin/doctors/${row.original.$id}/slots`}>
-                  Availabilities
-                </Link>
-              </DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
+          <div className="flex gap-3">
+            <Button size="sm" variant="outline" asChild>
+              <Link target="_blank" href={`/admin/doctors/${row.original.$id}/slots`}>
+                <CalendarDays className="mr-2 h-3.5 w-3.5" />
+                Slots
+              </Link>
+            </Button>
+            <Button variant="destructive" size="sm" onClick={() => onDeleteClick(row.original)}>
+              <Trash2 className="mr-2 h-3.5 w-3.5" />
+              Delete
+            </Button>
+          </div>
         );
       },
     },

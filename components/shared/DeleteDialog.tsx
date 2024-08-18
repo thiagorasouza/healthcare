@@ -33,9 +33,8 @@ export default function DeleteDialog({
           <AlertDialogDescription>
             {item ? (
               <p>
-                This will permanently delete the following data from our servers:
-                <br />
-                <strong>{item ? `${type} ${item}` : `this ${type}`}</strong>
+                This will permanently delete{" "}
+                <strong>{item ? `${type} ${item}` : `this ${type}`}</strong> data from our servers.
               </p>
             ) : (
               <p>This will permanently delete this {type} from our servers</p>
