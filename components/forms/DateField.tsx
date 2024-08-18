@@ -8,16 +8,12 @@ import { UseFormReturn } from "react-hook-form";
 import { FormDescription, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { PatternData } from "@/lib/schemas/patternsSchema";
 
-type DateKeys = {
-  [K in keyof PatternData]: PatternData[K] extends Date ? K : never;
-}[keyof PatternData];
-
 interface DateFieldProps<T> {
-  name: DateKeys;
+  name: string;
   label: string;
   placeholder: string;
   description?: string;
-  form: UseFormReturn<PatternData>;
+  form: UseFormReturn<any>;
   onSelect: (date?: Date) => Date | undefined;
   disabled: (date: Date) => boolean;
 }
@@ -34,6 +30,7 @@ export default function DateField<T>({
   return (
     <FormField
       control={form.control}
+      // @ts-ignore
       name={name}
       render={({ field }) => (
         <FormItem className="flex flex-col">
@@ -49,13 +46,13 @@ export default function DateField<T>({
                 )}
               >
                 <CalendarIcon className="mr-2 h-4 w-4" />
-                {field.value ? format(field.value, "PPP") : <span>{placeholder}</span>}
+                {field.value ? format(field.value as Date, "PPP") : <span>{placeholder}</span>}
               </Button>
             </PopoverTrigger>
             <PopoverContent className="w-auto p-0">
               <Calendar
                 mode="single"
-                selected={field.value}
+                selected={field.value as Date}
                 onSelect={(date) => field.onChange(onSelect(date))}
                 required={true}
                 initialFocus
