@@ -35,17 +35,19 @@ export default function SlotsCard({
   className,
   onCreateClick,
 }: SlotsCardProps) {
+  console.log("🚀 ~ data:", data);
+
   const patterns = data?.documents;
 
   return (
     <DefaultCard title="Slots" description="Click a slot to edit or delete" className={className}>
       {loading ? (
         <Spinner>Loading...</Spinner>
-      ) : !data ? (
+      ) : !patterns ? (
         <ErrorCard className={className} text="Unable to load slots at this time." />
       ) : (
         <div className="flex flex-col gap-6">
-          {!patterns ? (
+          {patterns.length === 0 ? (
             <>
               <p>No slots yet</p>
               <Button className="w-fit" onClick={onCreateClick}>
