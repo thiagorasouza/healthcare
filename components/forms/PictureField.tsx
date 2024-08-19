@@ -16,7 +16,7 @@ const PictureField = ({ form }: { form: UseFormReturn<any> }) => {
     [form],
   );
 
-  const { getRootProps, getInputProps, isDragActive, isDragReject } = useDropzone({
+  const { getRootProps, getInputProps, isDragActive } = useDropzone({
     onDrop,
     accept: allowedImageTypes.reduce((obj: any, type: string) => {
       obj[type] = [];

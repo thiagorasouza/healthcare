@@ -15,7 +15,7 @@ interface DateFieldProps<T> {
   description?: string;
   form: UseFormReturn<any>;
   onSelect: (date?: Date) => Date | undefined;
-  disabled: (date: Date) => boolean;
+  disabled?: (date: Date) => boolean;
 }
 
 export default function DateField<T>({

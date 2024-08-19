@@ -18,3 +18,16 @@ export const adminNavbarLinks = [
     href: "/admin/appointments",
   },
 ];
+
+export const genderTypes = [
+  { value: "male", label: "Male" },
+  { value: "female", label: "Female" },
+  { value: "other", label: "Other" },
+];
+
+export const idTypes = [
+  { value: "identityCard", label: "Identity Card" },
+  { value: "driversLicense", label: "Driver's License" },
+  { value: "passport", label: "Passport" },
+  { value: "other", label: "Other" },
+];

@@ -7,6 +7,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { cn } from "@/lib/utils";
 import React from "react";
 import { UseFormReturn } from "react-hook-form";
 
@@ -16,21 +17,16 @@ interface TextFieldProps {
   placeholder?: string;
   description?: string;
   form: UseFormReturn<any>;
+  className?: string;
 }
 
-const TextField = ({
-  name,
-  label,
-  placeholder,
-  description,
-  form,
-}: TextFieldProps) => {
+const TextField = ({ name, label, placeholder, description, form, className }: TextFieldProps) => {
   return (
     <FormField
       control={form.control}
       name={name}
       render={({ field }) => (
-        <FormItem className="flex-1">
+        <FormItem className={cn("flex-1", className)}>
           <FormLabel>{label}</FormLabel>
           <FormControl>
             <Input
@@ -40,9 +36,7 @@ const TextField = ({
               {...field}
             />
           </FormControl>
-          {description && (
-            <FormDescription className="text-xs">{description}</FormDescription>
-          )}
+          {description && <FormDescription className="text-xs">{description}</FormDescription>}
           <FormMessage data-cy={`${name}Error`} />
         </FormItem>
       )}
