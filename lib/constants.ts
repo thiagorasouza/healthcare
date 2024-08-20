@@ -31,3 +31,7 @@ export const idTypes = [
   { value: "passport", label: "Passport" },
   { value: "other", label: "Other" },
 ];
+
+// TESTING
+export const testAdminEmail = "mednowadmin@email.com";
+export const testAdminPassword = "mednowadmin1234";
