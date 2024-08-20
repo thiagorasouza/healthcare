@@ -1,12 +1,13 @@
 "use client";
 
 import { ImageFormat, storage } from "@/lib/appwrite/webClient";
+import { env } from "@/lib/env";
 import { success, unexpectedError } from "@/lib/results";
 
 export async function getImageClient(imageId: string) {
   try {
     const imageUrl = await storage.getFilePreview(
-      process.env.NEXT_PUBLIC_IMAGES_BUCKET_ID!,
+      env.imagesBucketId,
       imageId,
       256, // width (optional)
       256, // height (optional)

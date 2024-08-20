@@ -1,8 +1,9 @@
+import { env } from "@/lib/env";
 import { Account, Client, Databases, Storage, Users } from "node-appwrite";
 
 const client = new Client()
   .setEndpoint("https://cloud.appwrite.io/v1")
-  .setProject(process.env.PROJECT_ID!)
+  .setProject(env.projectId)
   .setKey(process.env.API_KEY!);
 
 const account = new Account(client);

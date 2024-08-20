@@ -1,6 +1,7 @@
 "use server";
 
 import { databases, ID, storage, users } from "@/lib/appwrite/adminClient";
+import { env } from "@/lib/env";
 import { invalidFieldsError, success, unexpectedError } from "@/lib/results";
 import { userNotFoundError } from "@/lib/results/errors/userNotFoundError";
 import { doctorsSchema, getRawDoctorData } from "@/lib/schemas/doctorsSchema";
@@ -37,12 +38,12 @@ export async function updateDoctor(formData: FormData) {
 
     let fileUploaded;
     if (picture.name !== "___current___.jpg") {
-      fileUploaded = await storage.createFile(process.env.IMAGES_BUCKET_ID!, ID.unique(), picture);
+      fileUploaded = await storage.createFile(env.imagesBucketId, ID.unique(), picture);
     }
 
     const doctorUpdated = await databases.updateDocument(
-      process.env.DATABASE_ID!,
-      process.env.DOCTORS_COLLECTION_ID!,
+      env.databaseId,
+      env.doctorsCollectionId,
       doctorId,
       {
         name,

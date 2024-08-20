@@ -1,6 +1,7 @@
 "use server";
 
 import { databases, users } from "@/lib/appwrite/adminClient";
+import { env } from "@/lib/env";
 import { success, unexpectedError } from "@/lib/results";
 import { userNotFoundError } from "@/lib/results/errors/userNotFoundError";
 
@@ -8,11 +9,7 @@ import { isAppwriteException } from "@/lib/utils";
 
 export async function deleteDoctor(doctorId: string, authId: string) {
   try {
-    await databases.deleteDocument(
-      process.env.DATABASE_ID!,
-      process.env.DOCTORS_COLLECTION_ID!,
-      doctorId,
-    );
+    await databases.deleteDocument(env.databaseId, env.doctorsCollectionId, doctorId);
 
     await users.delete(authId);
 

@@ -1,10 +1,9 @@
+import { env } from "@/lib/env";
 import { cookies } from "next/headers";
 import { Account, Client } from "node-appwrite";
 
 export const getNodeSessionClient = () => {
-  const client = new Client()
-    .setEndpoint("https://cloud.appwrite.io/v1")
-    .setProject(process.env.PROJECT_ID!);
+  const client = new Client().setEndpoint("https://cloud.appwrite.io/v1").setProject(env.projectId);
 
   const sessionCookie = cookies().get("session");
   if (!sessionCookie) {

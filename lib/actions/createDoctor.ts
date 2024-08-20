@@ -1,6 +1,7 @@
 "use server";
 
 import { databases, ID, Permission, Role, storage, users } from "@/lib/appwrite/adminClient";
+import { env } from "@/lib/env";
 import { invalidFieldsError, success, unexpectedError } from "@/lib/results";
 import { userAlreadyRegisteredError } from "@/lib/results/errors/userAlreadyRegisteredError";
 import { doctorsSchema, getRawDoctorData } from "@/lib/schemas/doctorsSchema";
@@ -30,7 +31,7 @@ export async function createDoctor(formData: FormData) {
     const authId = userCreated.$id;
 
     const fileUploaded = await storage.createFile(
-      process.env.IMAGES_BUCKET_ID!,
+      env.imagesBucketId,
       ID.unique(),
       validData.picture,
     );
@@ -39,8 +40,8 @@ export async function createDoctor(formData: FormData) {
     const labelUpdated = await users.updateLabels(authId, ["doctor"]);
 
     const doctorCreated = await databases.createDocument(
-      process.env.DATABASE_ID!,
-      process.env.DOCTORS_COLLECTION_ID!,
+      env.databaseId,
+      env.doctorsCollectionId,
       ID.unique(),
       {
         name: validData.name,
