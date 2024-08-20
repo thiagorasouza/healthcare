@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { Models } from "node-appwrite";
 
 export const allowedFileTypes = ["application/pdf"];
 export const allowedFileTypesTextual = ["PDF"];
@@ -20,10 +21,10 @@ export const patientsSchema = z.object({
       file.name !== "" && file.size <= maxFileSize && allowedFileTypes.includes(file.type.trim())
     );
   }),
-  usageConsent: z
+  usageConsent: z.coerce
     .boolean()
     .refine((val) => val === true, { message: "You must agree to continue" }),
-  privacyConsent: z
+  privacyConsent: z.coerce
     .boolean()
     .refine((val) => val === true, { message: "You must agree to continue" }),
 });
@@ -44,4 +45,41 @@ export const patientDefaultValues = {
   privacyConsent: undefined,
 };
 
-export type PatientData = z.infer<typeof patientsSchema>;
+export type PatientFormData = z.infer<typeof patientsSchema>;
+
+export type PatientParsedData = {
+  name: string;
+  birthdate: Date;
+  gender: "male" | "female" | "other";
+  address: string;
+  insuranceProvider: string;
+  insuranceNumber: string;
+  identificationType: "passport" | "identityCard" | "driversLicense" | "other";
+  identificationNumber: string;
+  identificationId: string;
+  usageConsent: boolean;
+  privacyConsent: boolean;
+} & Models.Document;
+
+export type PatientStoredData = {
+  name: string;
+  birthdate: string;
+  gender: "male" | "female" | "other";
+  address: string;
+  insuranceProvider: string;
+  insuranceNumber: string;
+  identificationType: "passport" | "identityCard" | "driversLicense" | "other";
+  identificationNumber: string;
+  identificationId: string;
+  usageConsent: boolean;
+  privacyConsent: boolean;
+} & Models.Document;
+
+export type PatientsListStoredData = Models.DocumentList<PatientStoredData>;
+
+export function parsePatientData(dbData: PatientStoredData): PatientParsedData {
+  return {
+    ...dbData,
+    birthdate: new Date(dbData.birthdate),
+  };
+}

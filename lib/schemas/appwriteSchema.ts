@@ -15,4 +15,4 @@ export type DoctorDocumentListSchema = Models.DocumentList<DoctorDocumentSchema>
 export type PatternDocumentSchema = PatternData & Models.Document;
 export type PatternDocumentListSchema = Models.DocumentList<PatternDocumentSchema>;
 
-export type UserDocumentSchema = Models.User<Models.Preferences>;
+export type UserStoredData = Models.User<Models.Preferences>;

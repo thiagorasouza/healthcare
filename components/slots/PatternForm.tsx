@@ -19,11 +19,11 @@ import { WeekdaysField } from "@/components/forms/WeekdaysField";
 import TimeField from "@/components/forms/TimeField";
 import DurationField from "@/components/forms/DurationField";
 import ToggleField from "@/components/forms/ToggleField";
-import DateField from "@/components/forms/DateField";
 import { PatternDocumentSchema } from "@/lib/schemas/appwriteSchema";
 import DrawerAnimation from "@/components/shared/DrawerAnimation";
 import { CreatePatternResult } from "@/lib/actions/createPattern";
 import { UpdatePatternResult } from "@/lib/actions/updatePattern";
+import DateField from "@/components/forms/DateField";
 
 interface PatternFormProps {
   doctorId: string;
@@ -125,7 +125,7 @@ export default function PatternForm({
           placeholder="Pick a date"
           form={form}
           onSelect={onStartDate}
-          disabled={(date) => date <= new Date()}
+          disabledFn={(date) => date <= new Date()}
         />
         <div className="flex flex-col gap-3 md:flex-row md:gap-6">
           <TimeField
@@ -165,7 +165,7 @@ export default function PatternForm({
               placeholder="Pick a date"
               form={form}
               onSelect={(date) => (date ? endOfDay(date) : date)}
-              disabled={(date) => date <= form.getValues("startDate")}
+              disabledFn={(date) => date <= form.getValues("startDate")}
               description="The last day you want this pattern to repeat"
             />
           </fieldset>

@@ -238,8 +238,13 @@ function Calendar({
   showOutsideDays = true,
   yearRange = 50,
   type,
+  disabledFn,
   ...props
-}: CalendarProps & { yearRange?: number; type: "past" | "future" | "all" }) {
+}: CalendarProps & {
+  yearRange?: number;
+  type: "past" | "future" | "all";
+  disabledFn?: (date: Date) => boolean;
+}) {
   const MONTHS = React.useMemo(() => {
     let locale: Pick<Locale, "options" | "localize" | "formatLong"> = enUS;
     const { options, localize, formatLong } = props.locale || {};
@@ -259,6 +264,7 @@ function Calendar({
     <DayPicker
       showOutsideDays={showOutsideDays}
       className={cn("p-3", className)}
+      disabled={disabledFn}
       classNames={{
         months: "flex flex-col sm:flex-row space-y-4  sm:space-y-0 justify-center",
         month: "flex flex-col items-center space-y-4",
@@ -647,6 +653,8 @@ type DateTimePickerProps = {
   granularity?: Granularity;
   type?: "past" | "future" | "all";
   className: string;
+  disabledFn?: (date: Date) => boolean;
+  onSelect?: (date: Date | undefined) => void;
 } & Pick<CalendarProps, "locale" | "weekStartsOn" | "showWeekNumber" | "showOutsideDays">;
 
 type DateTimePickerRef = {
@@ -667,10 +675,13 @@ const DateTimePicker = React.forwardRef<DateTimePickerRef, DateTimePickerProps>(
       granularity = "second",
       placeholder = "Pick a date",
       className,
+      disabledFn,
+      onSelect,
       ...props
     },
     ref,
   ) => {
+    const [isOpen, setIsOpen] = React.useState(false);
     const [month, setMonth] = React.useState<Date>(value ?? new Date());
     const buttonRef = useRef<HTMLButtonElement>(null);
     /**
@@ -722,7 +733,7 @@ const DateTimePicker = React.forwardRef<DateTimePickerRef, DateTimePickerProps>(
     }
 
     return (
-      <Popover>
+      <Popover open={isOpen} onOpenChange={setIsOpen}>
         <PopoverTrigger asChild disabled={disabled}>
           <Button
             variant="outline"
@@ -748,11 +759,16 @@ const DateTimePicker = React.forwardRef<DateTimePickerRef, DateTimePickerProps>(
             mode="single"
             selected={value}
             month={month}
-            onSelect={(d) => handleSelect(d)}
+            onSelect={(date) => {
+              onSelect && onSelect(date);
+              setIsOpen(false);
+              handleSelect(date);
+            }}
             onMonthChange={handleSelect}
             type={type}
             yearRange={yearRange}
             locale={locale}
+            disabledFn={disabledFn}
             {...props}
           />
           {granularity !== "day" && (

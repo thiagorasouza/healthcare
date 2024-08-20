@@ -5,37 +5,69 @@ import { Form } from "@/components/ui/form";
 import {
   allowedFileTypes,
   maxFileSize,
-  PatientData,
+  PatientFormData,
   patientDefaultValues,
   patientsSchema,
 } from "@/lib/schemas/patientsSchema";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import BirthdatePicker from "@/components/forms/BirthdatePicker";
 import { RadioField } from "@/components/forms/RadioField";
 import SubmitButton from "@/components/forms/SubmitButton";
 import { SelectField } from "@/components/forms/SelectField";
 import { genderTypes, idTypes } from "@/lib/constants";
 import FileField from "@/components/forms/FileField";
 import { CheckboxField } from "@/components/forms/CheckboxField";
+import AlertMessage from "@/components/forms/AlertMessage";
+import { useState } from "react";
+import { objectToFormData } from "@/lib/utils";
+import { unexpectedError } from "@/lib/results";
+import { CreatePatientResult, CreatePatientSuccess } from "@/lib/actions/createPatient";
+import DateField from "@/components/forms/DateField";
 
-export default function PatientsForm() {
-  const form = useForm<PatientData>({
+interface PatientsFormProps {
+  action: (form: FormData) => Promise<CreatePatientResult>;
+  onSuccess: (data: CreatePatientSuccess) => void;
+  submitLabel?: string;
+}
+
+export default function PatientsForm({
+  action,
+  onSuccess,
+  submitLabel = "Submit",
+}: PatientsFormProps) {
+  const [message, setMessage] = useState("");
+
+  const form = useForm<PatientFormData>({
     resolver: zodResolver(patientsSchema),
     defaultValues: patientDefaultValues,
   });
 
-  function onSubmit(data: any) {
-    console.log("🚀 ~ data:", data);
-    console.log("🚀 ~ values:", form.getValues());
+  async function onSubmit(data: any) {
+    setMessage("");
+    // console.log("🚀 ~ data:", data);
+    // console.log("🚀 ~ values:", form.getValues());
+    try {
+      const formData = objectToFormData(data);
+
+      const result = await action(formData);
+      if (result.success && result.data) {
+        onSuccess(result.data);
+        return;
+      }
+
+      setMessage(result.message);
+    } catch (error) {
+      console.log(error);
+      setMessage(unexpectedError().message);
+    } finally {
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
   }
 
   return (
     <Form {...form}>
-      <form
-        onSubmit={form.handleSubmit(onSubmit, onSubmit)}
-        className="flex flex-col gap-3 md:gap-6"
-      >
+      <AlertMessage message={message} />
+      <form onSubmit={form.handleSubmit(onSubmit)} className="flex flex-col gap-3 md:gap-6">
         <TextField
           name="name"
           label="Name"
@@ -60,7 +92,7 @@ export default function PatientsForm() {
           />
         </div>
         <div className="flex gap-6">
-          <BirthdatePicker
+          <DateField
             name="birthdate"
             label="Birthdate"
             placeholder="Pick your birthdate"
@@ -135,7 +167,7 @@ export default function PatientsForm() {
           label="I have read and I accept the Terms & Conditions and the Privacy Policy"
           form={form}
         />
-        <SubmitButton label="Submit" form={form} />
+        <SubmitButton label={submitLabel} form={form} />
       </form>
     </Form>
   );
