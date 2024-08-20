@@ -5,7 +5,7 @@ import DefaultCard from "@/components/shared/DefaultCard";
 import { createPatient, CreatePatientSuccess } from "@/lib/actions/createPatient";
 import { toast } from "sonner";
 
-export default function PatientsPage() {
+export default function CreatePatientsPage() {
   function onSuccess(data: CreatePatientSuccess) {
     console.log("🚀 ~ result:", data);
     const name = data.patient.name;

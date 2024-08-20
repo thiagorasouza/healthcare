@@ -55,25 +55,17 @@ export async function createPatient(formData: FormData): Promise<CreatePatientRe
       validData.identification,
     );
     const identificationId = fileUploaded.$id;
-    // console.log("🚀 ~ userData:", userData);
+
+    Reflect.deleteProperty(validData, "identification");
 
     const patientCreated = (await databases.createDocument(
       env.databaseId,
       env.patientsCollectionId,
       ID.unique(),
       {
-        name: validData.name,
-        birthdate: validData.birthdate,
-        gender: validData.gender,
-        address: validData.address,
-        insuranceProvider: validData.insuranceProvider,
-        insuranceNumber: validData.insuranceNumber,
-        identificationType: validData.identificationType,
-        identificationNumber: validData.identificationNumber,
-        usageConsent: validData.usageConsent,
-        privacyConsent: validData.privacyConsent,
-        authId,
+        ...validData,
         identificationId,
+        authId,
       },
       [
         Permission.read(Role.user(authId)),
@@ -88,7 +80,6 @@ export async function createPatient(formData: FormData): Promise<CreatePatientRe
       patient: parsePatientData(patientCreated),
     };
 
-    // console.log("🚀 ~ result:", result);
     return success(result);
   } catch (error) {
     console.log(error);

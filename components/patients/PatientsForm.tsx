@@ -44,8 +44,6 @@ export default function PatientsForm({
 
   async function onSubmit(data: any) {
     setMessage("");
-    // console.log("🚀 ~ data:", data);
-    // console.log("🚀 ~ values:", form.getValues());
     try {
       const formData = objectToFormData(data);
 
