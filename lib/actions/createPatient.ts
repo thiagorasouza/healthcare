@@ -14,24 +14,21 @@ import { UserStoredData } from "@/lib/schemas/appwriteSchema";
 import {
   parsePatientData,
   PatientParsedData,
-  patientsSchema,
+  patientsZodSchema,
   PatientStoredData,
 } from "@/lib/schemas/patientsSchema";
 import { generateRandomPassword, getInvalidFieldsList, isAppwriteException } from "@/lib/utils";
 
-export type CreatePatientSuccess = { user: UserStoredData; patient: PatientParsedData };
-export type CreatePatientError = string[] | undefined;
-export type CreatePatientResult = Success<CreatePatientSuccess> | Error<CreatePatientError>;
+export type CreatePatientResult = Success<PatientParsedData> | Error<string[] | undefined>;
 
 export async function createPatient(formData: FormData): Promise<CreatePatientResult> {
   try {
     const rawData = Object.fromEntries(formData);
-    // console.log("🚀 ~ rawData:", rawData);
+    console.log("🚀 ~ rawData:", rawData);
 
-    const validation = patientsSchema.safeParse(rawData);
+    const validation = patientsZodSchema.safeParse(rawData);
     if (!validation.success) {
       const fieldsList = getInvalidFieldsList(validation);
-      // console.log("🚀 ~ fieldsList:", fieldsList);
       return invalidFieldsError(fieldsList);
     }
 
@@ -47,7 +44,7 @@ export async function createPatient(formData: FormData): Promise<CreatePatientRe
     );
 
     const authId = userCreated.$id;
-    const labelUpdated = await users.updateLabels(authId, ["patient"]);
+    await users.updateLabels(authId, ["patient"]);
 
     const fileUploaded = await storage.createFile(
       env.docsBucketId,
@@ -75,12 +72,7 @@ export async function createPatient(formData: FormData): Promise<CreatePatientRe
       ],
     )) as PatientStoredData;
 
-    const result = {
-      user: labelUpdated,
-      patient: parsePatientData(patientCreated),
-    };
-
-    return success(result);
+    return success(parsePatientData(patientCreated));
   } catch (error) {
     console.log(error);
 

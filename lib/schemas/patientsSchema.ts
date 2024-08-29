@@ -5,7 +5,7 @@ export const allowedFileTypes = ["application/pdf"];
 export const allowedFileTypesTextual = ["PDF"];
 export const maxFileSize = 5 * 1024 * 1024;
 
-export const patientsSchema = z.object({
+export const patientsZodSchema = z.object({
   name: z.string().min(2).max(50),
   email: z.string().email(),
   phone: z.string().refine((val) => /^\+[0-9]{5,15}$/.test(val)),
@@ -29,7 +29,7 @@ export const patientsSchema = z.object({
     .refine((val) => val === true, { message: "You must agree to continue" }),
 });
 
-export const patientDefaultValues = {
+export const patientZodDefaultValues = {
   name: "",
   email: "",
   phone: "",
@@ -45,24 +45,12 @@ export const patientDefaultValues = {
   privacyConsent: undefined,
 };
 
-export type PatientFormData = z.infer<typeof patientsSchema>;
-
-export type PatientParsedData = {
-  name: string;
-  birthdate: Date;
-  gender: "male" | "female" | "other";
-  address: string;
-  insuranceProvider: string;
-  insuranceNumber: string;
-  identificationType: "passport" | "identityCard" | "driversLicense" | "other";
-  identificationNumber: string;
-  identificationId: string;
-  usageConsent: boolean;
-  privacyConsent: boolean;
-} & Models.Document;
+export type PatientZodData = z.infer<typeof patientsZodSchema>;
 
 export type PatientStoredData = {
   name: string;
+  email: string;
+  phone: string;
   birthdate: string;
   gender: "male" | "female" | "other";
   address: string;
@@ -73,9 +61,27 @@ export type PatientStoredData = {
   identificationId: string;
   usageConsent: boolean;
   privacyConsent: boolean;
+  authId: string;
 } & Models.Document;
 
-export type PatientsListStoredData = Models.DocumentList<PatientStoredData>;
+export type PatientsStoredData = Models.DocumentList<PatientStoredData>;
+
+export type PatientParsedData = {
+  name: string;
+  email: string;
+  phone: string;
+  birthdate: Date;
+  gender: "male" | "female" | "other";
+  address: string;
+  insuranceProvider: string;
+  insuranceNumber: string;
+  identificationType: "passport" | "identityCard" | "driversLicense" | "other";
+  identificationNumber: string;
+  identificationId: string;
+  usageConsent: boolean;
+  privacyConsent: boolean;
+  authId: string;
+} & Models.Document;
 
 export function parsePatientData(dbData: PatientStoredData): PatientParsedData {
   return {

@@ -3,15 +3,15 @@
 import { databases } from "@/lib/appwrite/adminClient";
 import { env } from "@/lib/env";
 import { success, unexpectedError } from "@/lib/results";
-import { PatientsListStoredData } from "@/lib/schemas/patientsSchema";
+import { PatientsStoredData } from "@/lib/schemas/patientsSchema";
 
 export async function getAllPatients() {
   try {
     const allPatients = (await databases.listDocuments(
       env.databaseId,
       env.patientsCollectionId,
-    )) as PatientsListStoredData;
-    console.log("🚀 ~ allPatients:", allPatients);
+    )) as PatientsStoredData;
+    // console.log("🚀 ~ allPatients:", allPatients);
 
     return success(allPatients.documents);
   } catch (error) {
