@@ -2,7 +2,9 @@
 
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
-import { getImageLink } from "@/lib/actions/getImageLink";
+import { getFileLink } from "@/lib/actions/getFileLink";
+import { env } from "@/lib/env";
+
 import { DoctorDocumentSchema } from "@/lib/schemas/appwriteSchema";
 import { ColumnDef } from "@tanstack/react-table";
 import { CalendarDays, ImageIcon, SquarePen, Trash2 } from "lucide-react";
@@ -46,7 +48,7 @@ export function DoctorsColumns(onDeleteClick: onDeleteFunction): ColumnDef<Docto
               alt="doctor picture"
               className="aspect-square rounded-md object-cover"
               height="64"
-              src={getImageLink(pictureId)}
+              src={getFileLink(env.imagesBucketId, pictureId)}
               width="64"
             />
           );
