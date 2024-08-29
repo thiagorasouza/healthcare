@@ -3,17 +3,22 @@
 import AdminBreadcrumb from "@/components/admin/AdminBreadcrumb";
 import { PatientsColumns } from "@/components/patients/PatientsColumns";
 import { DataTable } from "@/components/shared/DataTable";
+import DeleteDialog from "@/components/shared/DeleteDialog";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { deletePatient } from "@/lib/actions/deletePatient";
 import { getAllPatients } from "@/lib/actions/getAllPatients";
 import { PatientStoredData } from "@/lib/schemas/patientsSchema";
 import { PlusCircle } from "lucide-react";
 import Link from "next/link";
 import { useEffect, useState } from "react";
+import { toast } from "sonner";
 
 export default function PatientsPage() {
   const [loading, setLoading] = useState(true);
   const [patients, setPatients] = useState<PatientStoredData[]>();
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+  const [patientToDelete, setPatientToDelete] = useState<PatientStoredData | undefined>();
 
   useEffect(() => {
     if (!loading) return;
@@ -34,7 +39,29 @@ export default function PatientsPage() {
     asyncEffect();
   }, [loading]);
 
-  console.log("🚀 ~ patients:", patients);
+  function onDeleteClick(patient: PatientStoredData) {
+    setPatientToDelete(patient);
+    setDeleteDialogOpen(true);
+  }
+
+  async function deleteSelectedPatient() {
+    if (!patientToDelete) return;
+
+    const { $id: patientId, authId, name } = patientToDelete;
+
+    const result = await deletePatient(patientId, authId);
+
+    if (!result.success) {
+      toast(`Unable to delete doctor ${name}`);
+      return;
+    }
+
+    toast(`Doctor ${name} deleted successfully.`);
+    setPatientToDelete(undefined);
+    setLoading(true);
+  }
+
+  // console.log("🚀 ~ patients:", patients);
 
   return (
     <div className="space-y-6">
@@ -56,19 +83,19 @@ export default function PatientsPage() {
           {loading ? (
             "Loading..."
           ) : patients ? (
-            <DataTable columns={PatientsColumns(() => null)} data={patients} />
+            <DataTable columns={PatientsColumns(onDeleteClick)} data={patients} />
           ) : (
             "Not patients found"
           )}
         </CardContent>
       </Card>
-      {/* <DeleteDialog
+      <DeleteDialog
         open={deleteDialogOpen}
         onCloseClick={() => setDeleteDialogOpen(false)}
-        type="doctor"
-        item={doctorToDelete?.name}
-        onContinue={deleteSelectedDoctor}
-      /> */}
+        type="patient"
+        item={patientToDelete?.name}
+        onContinue={deleteSelectedPatient}
+      />
     </div>
   );
 }
