@@ -12,11 +12,13 @@ import PictureField from "@/components/forms/PictureField";
 import TextField from "@/components/forms/TextField";
 import TextareaField from "@/components/forms/TextareaField";
 import SubmitButton from "@/components/forms/SubmitButton";
-import { getImageLink } from "@/lib/actions/getImageLink";
+
 import { currentPictureName } from "@/lib/constants";
 import AlertMessage from "@/components/forms/AlertMessage";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import TestDoctorFillWithRandomData from "@/components/testing/TestDoctorFillWithRandomData";
+import { env } from "@/lib/env";
+import { getFileLink } from "@/lib/actions/getFileLink";
 
 interface DoctorsFormProps {
   title: string;
@@ -46,7 +48,7 @@ export default function DoctorsForm({ title, description, doctorData, action }: 
     if (!doctorData?.pictureId) return;
 
     const asyncEffect = async () => {
-      const pictureUrl = getImageLink(doctorData?.pictureId);
+      const pictureUrl = getFileLink(env.imagesBucketId, doctorData?.pictureId);
       const response = await fetch(pictureUrl);
       const blob = await response.blob();
       form.setValue("picture", new File([blob], currentPictureName, { type: "image/jpeg" }), {
