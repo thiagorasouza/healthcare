@@ -5,7 +5,7 @@ import { env } from "@/lib/env";
 import { invalidFieldsError, success, unexpectedError } from "@/lib/results";
 import { userNotFoundError } from "@/lib/results/errors/userNotFoundError";
 import { doctorsSchema, getRawDoctorData } from "@/lib/schemas/doctorsSchema";
-import { isAppwriteException } from "@/lib/utils";
+import { getInvalidFieldsList, isAppwriteException } from "@/lib/utils";
 
 export async function updateDoctor(formData: FormData) {
   try {
@@ -14,12 +14,13 @@ export async function updateDoctor(formData: FormData) {
     const doctorId = rawData.doctorId;
     const authId = rawData.authId;
     if (!doctorId || typeof doctorId !== "string" || !authId || typeof authId !== "string") {
-      return invalidFieldsError();
+      return unexpectedError();
     }
 
     const validation = doctorsSchema.safeParse(rawData);
     if (!validation.success) {
-      return invalidFieldsError();
+      const fieldsList = getInvalidFieldsList(validation);
+      return invalidFieldsError(fieldsList);
     }
 
     const { name, email, phone, specialty, bio, picture } = validation.data;
