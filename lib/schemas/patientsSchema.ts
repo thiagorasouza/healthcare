@@ -83,6 +83,8 @@ export type PatientParsedData = {
   authId: string;
 } & Models.Document;
 
+export type IdentificationData = Models.File;
+
 export function parsePatientData(dbData: PatientStoredData): PatientParsedData {
   return {
     ...dbData,

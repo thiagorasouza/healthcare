@@ -5,9 +5,11 @@ import { Form } from "@/components/ui/form";
 import {
   allowedFileTypes,
   maxFileSize,
-  PatientFormData,
-  patientDefaultValues,
-  patientsSchema,
+  PatientZodData,
+  patientZodDefaultValues,
+  patientsZodSchema,
+  PatientParsedData,
+  IdentificationData,
 } from "@/lib/schemas/patientsSchema";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -18,49 +20,76 @@ import { genderTypes, idTypes } from "@/lib/constants";
 import FileField from "@/components/forms/FileField";
 import { CheckboxField } from "@/components/forms/CheckboxField";
 import AlertMessage from "@/components/forms/AlertMessage";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { objectToFormData } from "@/lib/utils";
 import { unexpectedError } from "@/lib/results";
-import { CreatePatientResult, CreatePatientSuccess } from "@/lib/actions/createPatient";
+import { CreatePatientResult } from "@/lib/actions/createPatient";
 import DateField from "@/components/forms/DateField";
+import { UpdatePatientResult } from "@/lib/actions/updatePatient";
 
 interface PatientsFormProps {
-  action: (form: FormData) => Promise<CreatePatientResult>;
-  onSuccess: (data: CreatePatientSuccess) => void;
+  data?: PatientParsedData;
+  identification: IdentificationData;
+  action: (form: FormData) => Promise<CreatePatientResult | UpdatePatientResult>;
+  onSuccess: (data: PatientParsedData) => void;
   submitLabel?: string;
 }
 
 export default function PatientsForm({
+  data: patientData,
+  identification,
   action,
   onSuccess,
   submitLabel = "Submit",
 }: PatientsFormProps) {
   const [message, setMessage] = useState("");
 
-  const form = useForm<PatientFormData>({
-    resolver: zodResolver(patientsSchema),
-    defaultValues: patientDefaultValues,
+  const form = useForm<PatientZodData>({
+    resolver: zodResolver(patientsZodSchema),
+    defaultValues: patientData || patientZodDefaultValues,
   });
 
-  async function onSubmit(data: any) {
+  useEffect(() => {
+    if (!patientData?.identificationId || !identification) return;
+
+    const currentFileName = identification?.name;
+    const mockFile = new File([new Blob()], currentFileName, { type: "application/pdf" });
+    // Object.defineProperty(mockFile, "size", { value: 1, configurable: true });
+
+    form.setValue("identification", mockFile, {
+      shouldValidate: true,
+    });
+  }, [patientData]);
+
+  async function onSubmit(submittedData: PatientZodData) {
+    console.log("🚀 ~ submittedData:", submittedData);
+    console.log("🚀 ~ patientData:", patientData);
     setMessage("");
     try {
-      const formData = objectToFormData(data);
+      const formData = objectToFormData(submittedData);
+      if (patientData?.$id && patientData?.authId) {
+        formData.append("patientId", patientData.$id);
+        formData.append("authId", patientData.authId);
+      }
 
       const result = await action(formData);
+      // console.log("🚀 ~ result:", result);
       if (result.success && result.data) {
         onSuccess(result.data);
         return;
       }
 
       setMessage(result.message);
+      window.scrollTo({ top: 0, behavior: "smooth" });
     } catch (error) {
       console.log(error);
+
       setMessage(unexpectedError().message);
-    } finally {
       window.scrollTo({ top: 0, behavior: "smooth" });
     }
   }
+
+  // console.log("Identification File:", form.getValues("identification"));
 
   return (
     <Form {...form}>

@@ -44,13 +44,7 @@ const FileField = ({
     maxSize,
   });
 
-  const hasFile = acceptedFiles.length > 0;
-
-  useEffect(() => {
-    if (!hasFile) {
-      form.setValue(name, undefined);
-    }
-  }, [acceptedFiles]);
+  const file = form.getValues(name);
 
   return (
     <FormField
@@ -64,12 +58,12 @@ const FileField = ({
                 "flex cursor-pointer flex-col items-center justify-center gap-1 overflow-hidden rounded-md border-2 border-dashed border-border bg-background text-foreground",
                 image ? "h-32 w-32" : "h-32 w-full gap-2",
                 form.formState.errors[name] && "border-red-400 text-red-400",
-                hasFile && "border-green-400 font-semibold",
+                file && "border-green-400 font-semibold",
               )}
               {...getRootProps()}
             >
               <input {...getInputProps({})} />
-              {hasFile ? (
+              {file ? (
                 <>
                   {image ? (
                     <Image
@@ -82,7 +76,7 @@ const FileField = ({
                   ) : (
                     <>
                       <CircleCheckBig className="h-7 w-7 text-green-400" />
-                      <span className="text-center text-sm">{acceptedFiles[0].name}</span>
+                      <span className="text-center text-sm">{file.name}</span>
                     </>
                   )}
                 </>

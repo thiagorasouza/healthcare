@@ -1,5 +1,6 @@
 "use server";
 
+import { getFileMetadataServer } from "@/lib/actions/getFileMetadataServer";
 import { databases, ID, storage, users } from "@/lib/appwrite/adminClient";
 import { env } from "@/lib/env";
 import { Error, invalidFieldsError, Success, success, unexpectedError } from "@/lib/results";
@@ -10,23 +11,25 @@ import {
   PatientStoredData,
   patientsZodSchema,
 } from "@/lib/schemas/patientsSchema";
-import { isAppwriteException } from "@/lib/utils";
+import { getInvalidFieldsList, isAppwriteException } from "@/lib/utils";
 
 export type UpdatePatientResult = Success<PatientParsedData> | Error<string[] | undefined>;
 
 export async function updatePatient(formData: FormData): Promise<UpdatePatientResult> {
   try {
     const rawData = Object.fromEntries(formData);
+    console.log("🚀 ~ rawData:", rawData);
 
     const patientId = rawData.patientId;
     const authId = rawData.authId;
     if (!patientId || typeof patientId !== "string" || !authId || typeof authId !== "string") {
-      return invalidFieldsError();
+      return unexpectedError();
     }
 
     const validation = patientsZodSchema.safeParse(rawData);
     if (!validation.success) {
-      return invalidFieldsError();
+      const fieldsList = getInvalidFieldsList(validation);
+      return invalidFieldsError(fieldsList);
     }
 
     const validData = validation.data;
@@ -45,7 +48,7 @@ export async function updatePatient(formData: FormData): Promise<UpdatePatientRe
     }
 
     let fileUploaded;
-    if (identification.name !== "___current___.pdf") {
+    if (identification.size > 0) {
       fileUploaded = await storage.createFile(env.docsBucketId, ID.unique(), identification);
     }
 
@@ -57,7 +60,7 @@ export async function updatePatient(formData: FormData): Promise<UpdatePatientRe
       patientId,
       {
         ...validData,
-        ...(fileUploaded ? { identification: fileUploaded.$id } : {}),
+        ...(fileUploaded ? { identificationId: fileUploaded.$id } : {}),
         authId,
       },
     )) as PatientStoredData;
