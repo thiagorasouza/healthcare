@@ -3,7 +3,8 @@ import ErrorCard from "@/components/shared/ErrorCard";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Card, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { getImageLink } from "@/lib/actions/getImageLink";
+import { getFileLink } from "@/lib/actions/getFileLink";
+import { env } from "@/lib/env";
 import { DoctorDataUpdate } from "@/lib/schemas/doctorsSchema";
 import { cn, getInitials } from "@/lib/utils";
 import { Search } from "lucide-react";
@@ -31,7 +32,7 @@ export default function DoctorCard({
         <div className="flex justify-between gap-3">
           <div className="flex items-center gap-3">
             <Avatar>
-              <AvatarImage src={getImageLink(data.pictureId)} />
+              <AvatarImage src={getFileLink(env.imagesBucketId, data.pictureId)} />
               <AvatarFallback>{getInitials(data.name)}</AvatarFallback>
             </Avatar>
             <div>
