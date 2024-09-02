@@ -18,6 +18,7 @@ export async function createDoctor(formData: FormData) {
     }
 
     const validData = validation.data;
+    console.log("🚀 ~ validData:", validData);
     const randomPassword = generateRandomPassword(16);
 
     const userCreated = await users.create(
@@ -39,14 +40,14 @@ export async function createDoctor(formData: FormData) {
 
     const labelUpdated = await users.updateLabels(authId, ["doctor"]);
 
+    Reflect.deleteProperty(validData, "picture");
+
     const doctorCreated = await databases.createDocument(
       env.databaseId,
       env.doctorsCollectionId,
       ID.unique(),
       {
-        name: validData.name,
-        specialty: validData.specialty,
-        bio: validData.bio,
+        ...validData,
         authId,
         pictureId,
       },
