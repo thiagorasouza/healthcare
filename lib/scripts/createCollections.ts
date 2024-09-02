@@ -66,6 +66,7 @@ async function createPatternsCollection() {
     await databases.createIntegerAttribute(dbId, colId, "duration", true);
     await databases.createBooleanAttribute(dbId, colId, "recurring", true);
     await databases.createStringAttribute(dbId, colId, "weekdays", 100, false, undefined, true);
+    await databases.createStringAttribute(dbId, colId, "doctorId", 100, true);
 
     console.log("Patterns collection created");
   } catch (error) {
