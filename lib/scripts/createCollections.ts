@@ -74,6 +74,24 @@ async function createPatternsCollection() {
   }
 }
 
-createDoctorCollection();
-createPatientCollection();
-createPatternsCollection();
+async function createAppointmentsCollection() {
+  const colId = env.appointmentsCollectionId;
+
+  try {
+    await databases.deleteCollection(dbId, colId);
+    await databases.createCollection(dbId, colId, "appointments", undefined, true);
+    await databases.createStringAttribute(dbId, colId, "doctorId", 100, true);
+    await databases.createStringAttribute(dbId, colId, "patientId", 100, true);
+    await databases.createStringAttribute(dbId, colId, "patternId", 100, true);
+    await databases.createDatetimeAttribute(dbId, colId, "startTime", true);
+
+    console.log("Appointments collection created");
+  } catch (error) {
+    console.log("🚀 ~ error:", error);
+  }
+}
+
+// createDoctorCollection();
+// createPatientCollection();
+// createPatternsCollection();
+createAppointmentsCollection();

@@ -6,4 +6,5 @@ export const env = {
   doctorsCollectionId: process.env.DOCTORS_COLLECTION_ID!,
   patternsCollectionId: process.env.PATTERNS_COLLECTION_ID!,
   patientsCollectionId: process.env.PATIENTS_COLLECTION_ID!,
+  appointmentsCollectionId: process.env.APPOINTMENTS_COLLECTION_ID!,
 };

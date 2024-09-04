@@ -1,11 +1,12 @@
 import { PatternData, Weekday } from "@/lib/schemas/patternsSchema";
 import { getFirstWeekdayAfter, transposeTime } from "@/lib/utils";
-import { addWeeks, differenceInWeeks, format, isAfter, isBefore } from "date-fns";
+import { addWeeks, differenceInWeeks, format, isAfter, isBefore, isSameDay } from "date-fns";
 
 interface LimitOptions {
-  start: Date;
-  end: Date;
-  weekdays: Weekday[];
+  start?: Date;
+  end?: Date;
+  weekdays?: Weekday[];
+  exactDate: Date;
 }
 
 export function processSlots(data: PatternData, limit?: LimitOptions) {
@@ -22,7 +23,9 @@ export function processSlots(data: PatternData, limit?: LimitOptions) {
   // console.log("🚀 ~ startDate:", startDate);
   // console.log("🚀 ~ weekdays:", weekdays);
   const weekdaysToLoop = (
-    limit ? weekdays.filter((weekday) => limit.weekdays.includes(weekday as Weekday)) : weekdays
+    limit?.weekdays
+      ? weekdays.filter((weekday) => limit.weekdays!.includes(weekday as Weekday))
+      : weekdays
   ) as Weekday[];
 
   const startTimeMs = startTime.getTime();
@@ -61,11 +64,15 @@ export function processSlots(data: PatternData, limit?: LimitOptions) {
         break weeksLoop;
       }
 
-      if (limit && isBefore(date, limit.start)) {
+      if (limit?.exactDate && !isSameDay(date, limit.exactDate)) {
         break;
       }
 
-      if (limit && isAfter(date, limit.end)) {
+      if (limit?.start && isBefore(date, limit.start)) {
+        break;
+      }
+
+      if (limit?.end && isAfter(date, limit.end)) {
         break weeksLoop;
       }
 
