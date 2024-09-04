@@ -14,12 +14,12 @@ import {
 import { PatternDocumentSchema } from "@/lib/schemas/appwriteSchema";
 import { parseDbData } from "@/lib/schemas/patternsSchema";
 
-export type CreateAppointmentResult = Error<string[] | undefined> | Success<AppointmentParsedData>;
+export type UpdateAppointmentResult = Error<string[] | undefined> | Success<AppointmentParsedData>;
 
-export async function createAppointment(formData: FormData): Promise<CreateAppointmentResult> {
+export async function updateAppointment(formData: FormData): Promise<UpdateAppointmentResult> {
   try {
     const rawData = Object.fromEntries(formData) as any;
-    const { doctorId, patientId, patternId, startTime } = rawData;
+    const { doctorId, patientId, patternId, startTime, appointmentId } = rawData;
 
     const pattern = (await databases.getDocument(
       env.databaseId,
@@ -46,10 +46,10 @@ export async function createAppointment(formData: FormData): Promise<CreateAppoi
       return conflictingAppointmentError();
     }
 
-    const appointmentCreated = (await databases.createDocument(
+    const appointmentUpdated = (await databases.updateDocument(
       env.databaseId,
       env.appointmentsCollectionId,
-      ID.unique(),
+      appointmentId,
       { doctorId, patientId, patternId, startTime: startTimeISOString },
     )) as AppointmentStoredData;
 
@@ -58,9 +58,9 @@ export async function createAppointment(formData: FormData): Promise<CreateAppoi
     console.log("🚀 ~ possibleSlots:", possibleSlots);
     console.log("🚀 ~ starTimeISOString:", startTimeDate.toISOString());
     console.log("🚀 ~ conflictingAppointments:", conflictingAppointments);
-    console.log("🚀 ~ appointmentCreated:", appointmentCreated);
+    console.log("🚀 ~ appointmentCreated:", appointmentUpdated);
 
-    return success(parseAppointmentData(appointmentCreated));
+    return success(parseAppointmentData(appointmentUpdated));
   } catch (error) {
     console.log(error);
     return unexpectedError();
