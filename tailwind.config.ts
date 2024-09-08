@@ -56,7 +56,8 @@ const config = {
         "light-yellow": "#FCF0E2",
         "light-green": "#EAF8E7",
         "light-blue": "#DCECFB",
-        highlight: "#DAB58B",
+        "light-gray": "#EEF2F2",
+        yellow: "#DAB58B",
         gray: "#819191",
       },
       borderRadius: {
