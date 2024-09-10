@@ -19,7 +19,7 @@ interface LimitOptions {
   exactDate?: Date;
 }
 
-export function getSlotsByDate(patterns: Pattern[], limit?: LimitOptions): SlotsByDate {
+export function getSlots(patterns: Pattern[], limit?: LimitOptions): SlotsByDate {
   const result = {} as SlotsByDate;
   for (const pattern of patterns) {
     const { startDate, endDate, startTime, endTime, duration, weekdays, recurring } = pattern;
