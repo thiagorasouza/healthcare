@@ -68,4 +68,24 @@ describe("getSlotsByDate Test Suite", () => {
       ],
     });
   });
+
+  it("should return slots for two recurring patterns", () => {
+    const recurringPatternMock1 = mockRecurringPattern(10, 11);
+    const recurringPatternMock2 = mockRecurringPattern(11, 12);
+    const result = getSlotsByDate([recurringPatternMock1, recurringPatternMock2]);
+    expect(result).toStrictEqual({
+      "2024-01-01T05:00:00.000Z": [
+        ["10:00", "10:30"],
+        ["10:30", "11:00"],
+        ["11:00", "11:30"],
+        ["11:30", "12:00"],
+      ],
+      "2024-01-02T05:00:00.000Z": [
+        ["10:00", "10:30"],
+        ["10:30", "11:00"],
+        ["11:00", "11:30"],
+        ["11:30", "12:00"],
+      ],
+    });
+  });
 });
