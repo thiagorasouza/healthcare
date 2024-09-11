@@ -9,7 +9,7 @@ import { type Error, invalidFieldsError, Success, success, unexpectedError } fro
 import { conflictingSlotError } from "@/lib/results/errors/conflictingSlotError";
 import { noPossibleSlotsError } from "@/lib/results/errors/noPossibleSlotsError";
 import { PatternDocumentSchema } from "@/lib/schemas/appwriteSchema";
-import { patternSchema, parseDbData } from "@/lib/schemas/patternsSchema";
+import { patternSchema, parsePatternData } from "@/lib/schemas/patternsSchema";
 import { getInvalidFieldsList } from "@/lib/utils";
 
 export type CreatePatternResult = Success<PatternDocumentSchema> | Error<string[] | undefined>;
@@ -38,7 +38,7 @@ export async function createPattern(formData: FormData): Promise<CreatePatternRe
 
     const documents = result.data.documents;
     for (const dbData of documents) {
-      const isConflicting = hasConflictingSlots(userData, parseDbData(dbData));
+      const isConflicting = hasConflictingSlots(userData, parsePatternData(dbData));
       if (isConflicting) {
         return conflictingSlotError();
       }
@@ -54,7 +54,7 @@ export async function createPattern(formData: FormData): Promise<CreatePatternRe
       },
     )) as PatternDocumentSchema;
 
-    return success(parseDbData(slotCreated));
+    return success(parsePatternData(slotCreated));
   } catch (error) {
     console.log(error);
     return unexpectedError();

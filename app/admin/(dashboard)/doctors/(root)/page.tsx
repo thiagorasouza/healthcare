@@ -7,7 +7,7 @@ import DeleteDialog from "@/components/shared/DeleteDialog";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { deleteDoctor } from "@/lib/actions/deleteDoctor";
-import { getAllDoctors } from "@/lib/actions/getAllDoctors";
+import { getDoctors } from "@/lib/actions/getDoctors";
 import { DoctorDocumentSchema } from "@/lib/schemas/appwriteSchema";
 import { PlusCircle } from "lucide-react";
 import Link from "next/link";
@@ -25,7 +25,7 @@ export default function DoctorsPage() {
 
     const asyncEffect = async () => {
       try {
-        const result = await getAllDoctors();
+        const result = await getDoctors();
         if (result.success && result.data) {
           setDoctors(result.data);
         }

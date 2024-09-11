@@ -1,7 +1,6 @@
 "use client";
 
 import AlertMessage from "@/components/forms/AlertMessage";
-import { createAppointment, CreateAppointmentResult } from "@/lib/actions/createAppointment";
 import { AppointmentParsedData } from "@/lib/schemas/appointmentsSchema";
 import { formatDate } from "@/lib/utils";
 import { useState } from "react";
@@ -96,7 +95,7 @@ export default function AppointmentsForm({
         />
       </div>
       <div>
-        <button type="submit" className="border border-black bg-gray-400 px-2 py-1">
+        <button type="submit" className="bg-gray-400 border border-black px-2 py-1">
           Submit
         </button>
       </div>

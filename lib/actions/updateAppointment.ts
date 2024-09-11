@@ -12,7 +12,7 @@ import {
   parseAppointmentData,
 } from "@/lib/schemas/appointmentsSchema";
 import { PatternDocumentSchema } from "@/lib/schemas/appwriteSchema";
-import { parseDbData } from "@/lib/schemas/patternsSchema";
+import { parsePatternData } from "@/lib/schemas/patternsSchema";
 
 export type UpdateAppointmentResult = Error<string[] | undefined> | Success<AppointmentParsedData>;
 
@@ -28,7 +28,7 @@ export async function updateAppointment(formData: FormData): Promise<UpdateAppoi
     )) as PatternDocumentSchema;
 
     const startTimeDate = new Date(startTime);
-    const parsedData = parseDbData(pattern);
+    const parsedData = parsePatternData(pattern);
     const dates = processSlots(parsedData, { exactDate: startTimeDate });
     const possibleSlots = dates[0].slots;
     if (!isSlotPossible(possibleSlots, startTimeDate)) {
