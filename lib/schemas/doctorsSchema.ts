@@ -1,3 +1,4 @@
+import { Models } from "node-appwrite";
 import { z } from "zod";
 
 export const allowedImageTypes = ["image/png", "image/jpeg", "image/gif"];
@@ -23,6 +24,39 @@ export type DoctorDataUpdate = Omit<DoctorData, "picture"> & {
   doctorId: string;
   authId: string;
 };
+
+export type Doctor = {
+  name: string;
+  email: string;
+  phone: string;
+  specialty: string;
+  bio: string;
+  pictureId: string;
+  authId: string;
+} & Models.Document;
+
+/**
+ * 
+ * async function createDoctorCollection() {
+  const colId = env.doctorsCollectionId;
+
+  try {
+    await databases.deleteCollection(dbId, colId);
+    await databases.createCollection(dbId, colId, "doctors", undefined, true);
+    await databases.createStringAttribute(dbId, colId, "name", 100, true);
+    await databases.createEmailAttribute(dbId, colId, "email", true);
+    await databases.createStringAttribute(dbId, colId, "phone", 100, true);
+    await databases.createStringAttribute(dbId, colId, "specialty", 100, true);
+    await databases.createStringAttribute(dbId, colId, "bio", 500, true);
+    await databases.createStringAttribute(dbId, colId, "pictureId", 100, true);
+    await databases.createStringAttribute(dbId, colId, "authId", 100, true);
+
+    console.log("Doctors collection created");
+  } catch (error) {
+    console.log("🚀 ~ error:", error);
+  }
+}
+ */
 
 export function getRawDoctorData(formData: FormData) {
   return {

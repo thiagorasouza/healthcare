@@ -1,5 +1,6 @@
 import { PatternDocumentSchema } from "@/lib/schemas/appwriteSchema";
 import { differenceInMonths } from "date-fns";
+import { Models } from "node-appwrite";
 import { z } from "zod";
 
 export const weekdays: Weekday[] = ["sun", "mon", "tue", "wed", "thu", "fri", "sat"];
@@ -101,13 +102,13 @@ export const patternSchema = z
     }
   });
 
-export function parseDbData(dbData: PatternDocumentSchema) {
+export function parsePatternData(data: any) {
   return {
-    ...dbData,
-    startTime: new Date(dbData.startTime),
-    endTime: new Date(dbData.endTime),
-    startDate: new Date(dbData.startDate),
-    endDate: new Date(dbData.endDate),
+    ...data,
+    startTime: new Date(data.startTime),
+    endTime: new Date(data.endTime),
+    startDate: new Date(data.startDate),
+    endDate: new Date(data.endDate),
   };
 }
 
@@ -120,5 +121,18 @@ export const patternDefaultValues = {
   recurring: false,
   weekdays: [],
 };
+
+export type Pattern = {
+  startDate: Date;
+  endDate: Date;
+  startTime: Date;
+  endTime: Date;
+  duration: number;
+  recurring: boolean;
+  weekdays: Weekday[];
+  doctorId: string;
+} & Models.Document;
+
+type document = Models.Document;
 
 export type PatternData = z.infer<typeof patternSchema>;
