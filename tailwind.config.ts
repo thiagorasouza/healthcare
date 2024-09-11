@@ -52,13 +52,15 @@ const config = {
           DEFAULT: "hsl(var(--card))",
           foreground: "hsl(var(--card-foreground))",
         },
-        "light-purple": "#F0EBFF",
-        "light-yellow": "#FCF0E2",
-        "light-green": "#EAF8E7",
-        "light-blue": "#DCECFB",
-        "light-gray": "#EEF2F2",
-        yellow: "#DAB58B",
-        gray: "#819191",
+        "light-purple": "var(--light-purple)",
+        "dark-purple": "var(--dark-purple)",
+        "darker-purple": "var(--darker-purple)",
+        "light-yellow": "var(--light-yellow)",
+        "light-green": "var(--light-green)",
+        "light-blue": "var(--light-blue)",
+        "light-gray": "var(--light-gray)",
+        yellow: "var(--yellow)",
+        gray: "var(--gray)",
       },
       borderRadius: {
         lg: "var(--radius)",
@@ -82,6 +84,15 @@ const config = {
     },
   },
   plugins: [require("tailwindcss-animate")],
+  safelist: [
+    "bg-light-purple",
+    "bg-dark-purple",
+    "bg-darker-purple",
+    "bg-light-yellow",
+    "bg-light-green",
+    "bg-light-blue",
+    "bg-light-gray",
+  ],
 } satisfies Config;
 
 export default config;

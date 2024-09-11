@@ -29,6 +29,15 @@
     --chart-3: 197 37% 24%;
     --chart-4: 43 74% 66%;
     --chart-5: 27 87% 67%;
+    --light-purple: #f0ebff;
+    --dark-purple: #9a8fe1;
+    --darker-purple: #857dcf;
+    --light-yellow: #fcf0e2;
+    --light-green: #eaf8e7;
+    --light-blue: #dcecfb;
+    --light-gray: #eef2f2;
+    --yellow: #dab58b;
+    --gray: #819191;
   }
 
   .dark {
