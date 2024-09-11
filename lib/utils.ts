@@ -176,7 +176,7 @@ export function getInitials(name: string) {
   return first.charAt(0).toUpperCase() + second.charAt(0).toUpperCase();
 }
 
-export function getTimeFromDate(date: Date) {
+export function getHourStrFromDate(date: Date) {
   // console.log("🚀 ~ date:", date);
   return date.toLocaleTimeString("en-US", {
     hour: "2-digit",
@@ -187,4 +187,14 @@ export function getTimeFromDate(date: Date) {
 
 export function formatDate(date: Date): string {
   return date.toLocaleString("en-US");
+}
+
+export function getFirstName(name: string) {
+  return name.split(" ").shift();
+}
+
+export function colorize(index: number) {
+  const colors = ["bg-light-purple", "bg-light-yellow", "bg-light-green", "bg-light-blue"];
+  const mod = index % colors.length;
+  return colors[mod];
 }

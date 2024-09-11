@@ -1,7 +1,7 @@
 import DefaultCard from "@/components/shared/DefaultCard";
 import { PatternDocumentSchema } from "@/lib/schemas/appwriteSchema";
 import { fullWeekdays, Weekday } from "@/lib/schemas/patternsSchema";
-import { getTimeFromDate, semanticJoin } from "@/lib/utils";
+import { getHourStrFromDate, semanticJoin } from "@/lib/utils";
 import { format } from "date-fns";
 import {
   CalendarDays,
@@ -56,8 +56,8 @@ export default function PatternCard({
         </div>
         <div>
           <Clock />
-          {getTimeFromDate(new Date(data.startTime))} &rarr;{" "}
-          {getTimeFromDate(new Date(data.endTime))} ({slotsNum} slots)
+          {getHourStrFromDate(new Date(data.startTime))} &rarr;{" "}
+          {getHourStrFromDate(new Date(data.endTime))} ({slotsNum} slots)
         </div>
         {recurring && (
           <div>

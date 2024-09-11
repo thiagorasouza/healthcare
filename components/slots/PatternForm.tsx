@@ -5,7 +5,7 @@ import {
   PatternData,
   patternSchema,
   patternDefaultValues,
-  parseDbData,
+  parsePatternData,
 } from "@/lib/schemas/patternsSchema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useEffect, useState } from "react";
@@ -44,7 +44,7 @@ export default function PatternForm({
 
   let storedValues;
   if (patternData) {
-    const parsedData = parseDbData(patternData);
+    const parsedData = parsePatternData(patternData);
     storedValues = {
       startDate: parsedData.startDate,
       endDate: parsedData.endDate,
@@ -87,7 +87,7 @@ export default function PatternForm({
 
       const result = await action(formData);
       if (result.success && result.data) {
-        onSuccess(parseDbData(result.data));
+        onSuccess(parsePatternData(result.data));
         return;
       }
 

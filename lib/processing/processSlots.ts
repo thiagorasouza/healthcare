@@ -6,7 +6,7 @@ interface LimitOptions {
   start?: Date;
   end?: Date;
   weekdays?: Weekday[];
-  exactDate: Date;
+  exactDate?: Date;
 }
 
 export function processSlots(data: PatternData, limit?: LimitOptions) {

@@ -4,7 +4,7 @@ import { databases } from "@/lib/appwrite/adminClient";
 import { env } from "@/lib/env";
 import { success, unexpectedError } from "@/lib/results";
 import { PatternDocumentListSchema } from "@/lib/schemas/appwriteSchema";
-import { parseDbData } from "@/lib/schemas/patternsSchema";
+import { parsePatternData } from "@/lib/schemas/patternsSchema";
 import { Query } from "node-appwrite";
 
 export async function getPatterns(doctorId: string, exceptId?: string) {
@@ -22,7 +22,7 @@ export async function getPatterns(doctorId: string, exceptId?: string) {
 
     const parsedPatterns = {
       total: patterns.total,
-      documents: patterns.documents.map((pattern) => parseDbData(pattern)),
+      documents: patterns.documents.map((pattern) => parsePatternData(pattern)),
     };
 
     return success(parsedPatterns);

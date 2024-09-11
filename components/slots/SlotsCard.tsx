@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button";
 import DefaultCard from "@/components/shared/DefaultCard";
 import { processSlots } from "@/lib/processing/processSlots";
 import { format } from "date-fns";
-import { getTimeFromDate } from "@/lib/utils";
+import { getHourStrFromDate } from "@/lib/utils";
 
 interface SlotsCardProps {
   data: PatternDocumentListSchema | undefined;
@@ -93,8 +93,8 @@ function SlotsListByDate({
           <li key={slot[0].toString()}>
             <SlotButton
               recurring={recurring}
-              start={getTimeFromDate(slot[0])}
-              end={getTimeFromDate(slot[1])}
+              start={getHourStrFromDate(slot[0])}
+              end={getHourStrFromDate(slot[1])}
               onClick={onSlotClick}
             />
           </li>
