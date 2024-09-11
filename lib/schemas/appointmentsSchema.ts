@@ -1,4 +1,11 @@
 import { Models } from "node-appwrite";
+import { z } from "zod";
+
+export const appointmentZodSchema = z.object({
+  doctorId: z.string(),
+  patientId: z.string(),
+  startTime: z.coerce.date(),
+});
 
 export type AppointmentStoredData = {
   doctorId: string;

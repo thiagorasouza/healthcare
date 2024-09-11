@@ -13,7 +13,15 @@ import { getSlots, Slots } from "@/lib/processing/getSlots";
 import { type Doctor } from "@/lib/schemas/doctorsSchema";
 import { PatientParsedData } from "@/lib/schemas/patientsSchema";
 import { weekdays } from "@/lib/schemas/patternsSchema";
-import { capitalize, cn, colorize, getFirstName, getInitials, scrollToTop } from "@/lib/utils";
+import {
+  capitalize,
+  cn,
+  colorize,
+  getFirstName,
+  getInitials,
+  objectToFormData,
+  scrollToTop,
+} from "@/lib/utils";
 import { format } from "date-fns";
 import { ArrowRight, CalendarDays, Clock } from "lucide-react";
 import Image from "next/image";
@@ -74,7 +82,7 @@ export default function AppointmentCreator({ doctors }: AppointmentCreatorProps)
     const startTime = new Date(pickedDate!);
     startTime.setHours(hours, minutes, 0, 0);
 
-    createAppointment;
+    createAppointment(objectToFormData({ doctorId, patientId, startTime }));
   }
 
   const dates = slots && [...slots.keys()].slice(0, MAX_DATES);
