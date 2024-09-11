@@ -29,7 +29,7 @@ import { UpdatePatientResult } from "@/lib/actions/updatePatient";
 
 interface PatientsFormProps {
   data?: PatientParsedData;
-  identification: IdentificationData;
+  identification?: IdentificationData;
   action: (form: FormData) => Promise<CreatePatientResult | UpdatePatientResult>;
   onSuccess: (data: PatientParsedData) => void;
   submitLabel?: string;

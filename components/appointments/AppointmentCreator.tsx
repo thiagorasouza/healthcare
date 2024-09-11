@@ -1,20 +1,23 @@
 "use client";
 
+import PatientsForm from "@/components/patients/PatientsForm";
+import BackButton from "@/components/shared/BackButton";
+import DefaultCard from "@/components/shared/DefaultCard";
 import DrawerAnimation from "@/components/shared/DrawerAnimation";
-import { Form } from "@/components/ui/form";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { createAppointment } from "@/lib/actions/createAppointment";
+import { createPatient } from "@/lib/actions/createPatient";
 import { getImageLink } from "@/lib/actions/getImageLink";
 import { getPatternsByDoctorId } from "@/lib/actions/getPatternsByDoctorId";
 import { getSlots, Slots } from "@/lib/processing/getSlots";
 import { type Doctor } from "@/lib/schemas/doctorsSchema";
+import { PatientParsedData } from "@/lib/schemas/patientsSchema";
 import { weekdays } from "@/lib/schemas/patternsSchema";
-import { capitalize, cn, colorize, getFirstName } from "@/lib/utils";
-import { zodResolver } from "@hookform/resolvers/zod";
+import { capitalize, cn, colorize, getFirstName, getInitials, scrollToTop } from "@/lib/utils";
 import { format } from "date-fns";
-import { ArrowRight } from "lucide-react";
+import { ArrowRight, CalendarDays, Clock } from "lucide-react";
 import Image from "next/image";
 import { useState } from "react";
-import { useForm } from "react-hook-form";
-import { z } from "zod";
 
 const MAX_DATES = 5;
 
@@ -23,6 +26,7 @@ interface AppointmentCreatorProps {
 }
 
 export default function AppointmentCreator({ doctors }: AppointmentCreatorProps) {
+  const [step, setStep] = useState<number>(1);
   const [doctor, setDoctor] = useState<Doctor | undefined>();
   const [slots, setSlots] = useState<Slots | undefined>();
   const [pickedDate, setPickedDate] = useState<string | undefined>();
@@ -40,7 +44,6 @@ export default function AppointmentCreator({ doctors }: AppointmentCreatorProps)
 
     const patterns = result.data;
     const slots = getSlots(patterns);
-    console.log("🚀 ~ slots:", slots);
 
     setDoctor(doctor);
     setSlots(slots);
@@ -54,32 +57,33 @@ export default function AppointmentCreator({ doctors }: AppointmentCreatorProps)
     setPickedHour(hour);
   }
 
+  function onNextClick() {
+    setStep(2);
+    scrollToTop();
+  }
+
+  function onBackClick() {
+    setStep(1);
+    scrollToTop();
+  }
+
+  function onPatientCreated(patient: PatientParsedData) {
+    const doctorId = doctor!.$id;
+    const patientId = patient.$id;
+    const [hours, minutes] = pickedHour!.split(":").map((x) => Number(x));
+    const startTime = new Date(pickedDate!);
+    startTime.setHours(hours, minutes, 0, 0);
+
+    createAppointment;
+  }
+
   const dates = slots && [...slots.keys()].slice(0, MAX_DATES);
   const hours = slots && pickedDate && slots.get(pickedDate);
 
-  const appointmentSchema = z.object({
-    doctorId: z.string(),
-    patientId: z.string(),
-    startTime: z.coerce.date(),
-  });
-
-  const form = useForm<z.infer<typeof appointmentSchema>>({
-    resolver: zodResolver(appointmentSchema),
-    defaultValues: {
-      doctorId: "",
-      patientId: "",
-      startTime: undefined,
-    },
-  });
-
-  function onSubmit(data: any) {
-    console.log("🚀 ~ data:", data);
-  }
-
   return (
-    <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit, console.log)}>
-        <div className="container mx-auto w-fit max-w-[1200px] space-y-20 px-6 py-10">
+    <div className="mx-auto w-[1200px] w-full px-6">
+      {step === 1 ? (
+        <div className="space-y-20 py-10">
           <section className="text-center">
             <h1 className="mb-2 text-2xl font-bold">
               Let&apos;s find your <span className="text-yellow">top doctor</span>
@@ -146,12 +150,7 @@ export default function AppointmentCreator({ doctors }: AppointmentCreatorProps)
                         {format(pickedDate, "PPP")} at {pickedHour}
                         <br />
                       </p>
-                      <div className="flex h-[50px] w-[140px] cursor-pointer items-center gap-[16px] rounded-full bg-dark-purple p-[5px] transition hover:bg-darker-purple">
-                        <div className="flex h-[40px] w-[40px] items-center justify-center rounded-full bg-white">
-                          <ArrowRight className="h-[19px] w-[19px] text-dark-purple" />
-                        </div>
-                        <div className="text-[18px] font-medium text-white">Next</div>
-                      </div>
+                      <NextButton onNextClick={onNextClick} />
                     </Section>
                   )}
                 </Column>
@@ -159,8 +158,48 @@ export default function AppointmentCreator({ doctors }: AppointmentCreatorProps)
             </DrawerAnimation>
           )}
         </div>
-      </form>
-    </Form>
+      ) : (
+        <div className="grid grid-cols-12 gap-6">
+          <DefaultCard
+            title="Your details"
+            description="Please fill in your details to proceed"
+            className="col-span-8"
+          >
+            <PatientsForm action={createPatient} onSuccess={onPatientCreated} />
+          </DefaultCard>
+          <DefaultCard
+            title="Appointment"
+            description="Your appointment so far"
+            className="col-span-4 self-start"
+          >
+            <div className="mb-8 flex items-center gap-3">
+              <Avatar>
+                <AvatarImage src={getImageLink(doctor!.pictureId)} />
+                <AvatarFallback>{getInitials(doctor!.name)}</AvatarFallback>
+              </Avatar>
+              <div className="font-semibold">
+                <p className="text-lg">{`Dr. ${doctor!.name}`}</p>
+                <p className="text-sm text-gray">{doctor!.specialty}</p>
+              </div>
+              <div>
+                <p></p>
+              </div>
+            </div>
+            <div className="mb-8 space-y-2 text-sm">
+              <p className="flex items-center gap-3">
+                <CalendarDays className="h-4 w-4" />
+                {format(new Date(pickedDate!), "PPP")}
+              </p>
+              <p className="flex items-center gap-3">
+                <Clock className="h-4 w-4" />
+                {pickedHour}
+              </p>
+            </div>
+            <BackButton label="Change" onBackClick={onBackClick} />
+          </DefaultCard>
+        </div>
+      )}
+    </div>
   );
 }
 
@@ -186,7 +225,6 @@ interface DoctorCardProps {
 function DoctorCard({ index, doctor, onDoctorClick }: DoctorCardProps) {
   const picture = getImageLink(doctor.pictureId);
   const bgColor = colorize(index);
-  console.log("🚀 ~ bgColor:", bgColor);
 
   return (
     <div
@@ -260,6 +298,20 @@ function HourCard({ hour, highlight, onHourClick }: HourCardProps) {
       onClick={() => onHourClick(hour)}
     >
       {hour}
+    </div>
+  );
+}
+
+function NextButton({ onNextClick }: { onNextClick: () => void }) {
+  return (
+    <div
+      className="flex h-[50px] w-[140px] cursor-pointer items-center gap-[16px] rounded-full bg-dark-purple p-[5px] transition hover:bg-darker-purple"
+      onClick={onNextClick}
+    >
+      <div className="flex h-[40px] w-[40px] items-center justify-center rounded-full bg-white">
+        <ArrowRight className="h-[19px] w-[19px] text-dark-purple" />
+      </div>
+      <div className="text-[18px] font-medium text-white">Next</div>
     </div>
   );
 }

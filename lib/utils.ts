@@ -198,3 +198,7 @@ export function colorize(index: number) {
   const mod = index % colors.length;
   return colors[mod];
 }
+
+export function scrollToTop() {
+  window.scrollTo({ top: 0, behavior: "smooth" });
+}
