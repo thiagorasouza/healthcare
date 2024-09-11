@@ -8,9 +8,10 @@ import { addWeeks, differenceInWeeks, isAfter, isBefore, isSameDay, startOfDay }
  *    "...": ....
  * }
  */
-type SlotsByDate = {
-  [key: string]: string[][];
-};
+export type Slots = Map<string, string[][]>;
+// export type Slots = {
+//   [key: string]: string[][];
+// };
 
 interface LimitOptions {
   start?: Date;
@@ -19,8 +20,8 @@ interface LimitOptions {
   exactDate?: Date;
 }
 
-export function getSlots(patterns: Pattern[], limit?: LimitOptions): SlotsByDate {
-  const result = {} as SlotsByDate;
+export function getSlots(patterns: Pattern[], limit?: LimitOptions): Slots {
+  const result = new Map() as Slots;
   for (const pattern of patterns) {
     const { startDate, endDate, startTime, endTime, duration, weekdays, recurring } = pattern;
 
@@ -46,7 +47,7 @@ export function getSlots(patterns: Pattern[], limit?: LimitOptions): SlotsByDate
 
     if (!recurring) {
       const dateStr = getNormalizedDateStr(startDate);
-      result[dateStr] = Array.isArray(result[dateStr]) ? result[dateStr].concat(slots) : slots;
+      result.set(dateStr, result.has(dateStr) ? result.get(dateStr)!.concat(slots) : slots);
       continue;
     }
 
@@ -73,13 +74,13 @@ export function getSlots(patterns: Pattern[], limit?: LimitOptions): SlotsByDate
         }
 
         const dateStr = getNormalizedDateStr(date);
-        result[dateStr] = Array.isArray(result[dateStr]) ? result[dateStr].concat(slots) : slots;
+        result.set(dateStr, result.has(dateStr) ? result.get(dateStr)!.concat(slots) : slots);
       }
     }
   }
 
-  for (const dateStr in result) {
-    result[dateStr].sort((a, b) => (a[0] < b[0] ? -1 : 1));
+  for (const slots of result.values()) {
+    slots.sort((a, b) => (a[0] < b[0] ? -1 : 1));
   }
   return result;
 }
