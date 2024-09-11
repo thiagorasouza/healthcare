@@ -1,3 +1,3 @@
 export abstract class Result {
-  abstract ok: boolean;
+  protected abstract ok: boolean;
 }
