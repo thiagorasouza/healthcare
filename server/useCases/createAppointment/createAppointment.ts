@@ -46,6 +46,11 @@ export class CreateAppointment implements UseCase {
       return doctorExistsResult;
     }
 
+    const patientExistsResult = await this.repository.getPatientById(request.patientId);
+    if (!patientExistsResult.ok) {
+      return patientExistsResult;
+    }
+
     return new AppointmentCreatedSuccess(request);
   }
 }
