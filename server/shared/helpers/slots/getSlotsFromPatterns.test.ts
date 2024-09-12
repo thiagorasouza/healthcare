@@ -2,7 +2,7 @@ import { expect, jest, test } from "@jest/globals";
 import { mockRecurringPattern, mockSingleDate } from "@/__tests__/mocks/pattern.mock";
 import { getSlots } from "@/lib/processing/getSlots";
 
-describe("getSlots Test Suite", () => {
+describe("getSlotsFromPatterns Test Suite", () => {
   it("should return slots for a single date", () => {
     const singleDateMock = mockSingleDate(10, 11);
     const result = getSlots([singleDateMock]);
