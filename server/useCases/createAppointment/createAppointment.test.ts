@@ -1,5 +1,8 @@
+import { DoctorNotFoundFailure } from "@/server/shared/failures/doctorNotFoundFailure";
 import { LogicFailure } from "@/server/shared/failures/logicFailure";
+import { DoctorFoundSuccess } from "@/server/shared/successes/doctorFoundSuccess";
 import { CreateAppointment } from "@/server/useCases/createAppointment/createAppointment";
+import { CreateAppointmentRepository } from "@/server/useCases/createAppointment/createAppointmentRepository";
 import { faker } from "@faker-js/faker";
 import { expect, jest } from "@jest/globals";
 
@@ -9,10 +12,31 @@ const mockRequest = () => ({
   startTime: faker.date.soon(),
 });
 
-const makeSut = () => {
-  const sut = new CreateAppointment();
+const mockDoctor = () => ({
+  name: faker.person.fullName(),
+  email: faker.internet.email(),
+  phone: faker.phone.number(),
+  specialty: faker.person.jobType(),
+  bio: faker.lorem.paragraph(),
+  pictureId: faker.string.uuid(),
+  authId: faker.string.uuid(),
+});
 
-  return { sut };
+const makeRepository = () => {
+  class CreateAppointmentRepositoryStub implements CreateAppointmentRepository {
+    async getDoctorById(doctorId: string): Promise<DoctorFoundSuccess | DoctorNotFoundFailure> {
+      return new DoctorFoundSuccess(mockDoctor());
+    }
+  }
+
+  return new CreateAppointmentRepositoryStub();
+};
+
+const makeSut = () => {
+  const repository = makeRepository();
+  const sut = new CreateAppointment(repository);
+
+  return { sut, repository };
 };
 
 describe("CreateAppointment Use Case Test Suite", () => {
@@ -24,5 +48,17 @@ describe("CreateAppointment Use Case Test Suite", () => {
 
     const result = await sut.execute(requestMock);
     expect(result).toStrictEqual(new LogicFailure(["startTime"]));
+  });
+
+  it("should fail if doctor does not exist", async () => {
+    const { sut, repository } = makeSut();
+
+    const requestMock = mockRequest();
+    const failure = new DoctorNotFoundFailure(requestMock.doctorId);
+
+    jest.spyOn(repository, "getDoctorById").mockReturnValueOnce(Promise.resolve(failure));
+
+    const result = await sut.execute(requestMock);
+    expect(result).toStrictEqual(failure);
   });
 });

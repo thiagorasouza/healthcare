@@ -7,6 +7,7 @@ import { PatientUnavailableFailure } from "@/server/shared/failures/patientUnava
 import { UseCase } from "@/server/shared/protocols/useCase";
 
 import { AppointmentCreatedSuccess } from "@/server/shared/successes/appointmentCreatedSuccess";
+import { CreateAppointmentRepository } from "@/server/useCases/createAppointment/createAppointmentRepository";
 
 export interface CreateAppointmentRequest {
   doctorId: string;
@@ -23,7 +24,7 @@ export interface CreateAppointmentRequest {
 // 6. save appointment data
 
 export class CreateAppointment implements UseCase {
-  constructor() {}
+  constructor(private readonly repository: CreateAppointmentRepository) {}
 
   async execute(
     request: CreateAppointmentRequest,
@@ -38,6 +39,11 @@ export class CreateAppointment implements UseCase {
     const validateLogicResult = Appointment.create(request);
     if (!validateLogicResult.ok) {
       return validateLogicResult;
+    }
+
+    const doctorExistsResult = await this.repository.getDoctorById(request.doctorId);
+    if (!doctorExistsResult.ok) {
+      return doctorExistsResult;
     }
 
     return new AppointmentCreatedSuccess(request);
