@@ -37,6 +37,14 @@ export function getSlotsFromPatterns(patterns: PatternModel[], limit?: LimitOpti
     }
 
     if (!recurring) {
+      if (
+        (limit?.exactDate && !isSameDay(startDate, limit.exactDate)) ||
+        (limit?.start && isBefore(startDate, limit.start)) ||
+        (limit?.end && isAfter(startDate, limit.end))
+      ) {
+        continue;
+      }
+
       const dateStr = getNormalizedDateStr(startDate);
       result.set(dateStr, result.has(dateStr) ? result.get(dateStr)!.concat(slots) : slots);
       continue;

@@ -25,6 +25,22 @@ export const mockRecurringPattern = (startTime = 8, endTime = 10) => ({
 });
 
 describe("getSlotsFromPatterns Test Suite", () => {
+  it("should return an empty Map if date provided does not match pattern", () => {
+    const recurringPatternMock = mockRecurringPattern();
+    const result = getSlotsFromPatterns([recurringPatternMock], {
+      exactDate: new Date("2024-01-03T05:00:00.000Z"),
+    });
+    expect(result).toStrictEqual(new Map());
+  });
+
+  it("should return an empty Map if date provided does not match single date", () => {
+    const singleDateMock = mockSingleDate();
+    const result = getSlotsFromPatterns([singleDateMock], {
+      exactDate: new Date("2024-01-03T05:00:00.000Z"),
+    });
+    expect(result).toStrictEqual(new Map());
+  });
+
   it("should return slots for a single date", () => {
     const singleDateMock = mockSingleDate(10, 11);
     const result = getSlotsFromPatterns([singleDateMock]);
