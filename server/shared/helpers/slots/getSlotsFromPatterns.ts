@@ -1,8 +1,7 @@
 import { PatternModel, Weekday } from "@/server/domain/models/patternModel";
+import { SlotsModel } from "@/server/domain/models/slotsModel";
 import { getFirstWeekdayAfter, getHourStrFromDate } from "@/server/shared/helpers/dateHelpers";
 import { addWeeks, differenceInWeeks, isAfter, isBefore, isSameDay, startOfDay } from "date-fns";
-
-export type Slots = Map<string, string[][]>;
 
 interface LimitOptions {
   start?: Date;
@@ -11,8 +10,8 @@ interface LimitOptions {
   exactDate?: Date;
 }
 
-export function getSlotsFromPatterns(patterns: PatternModel[], limit?: LimitOptions): Slots {
-  const result = new Map() as Slots;
+export function getSlotsFromPatterns(patterns: PatternModel[], limit?: LimitOptions): SlotsModel {
+  const result = new Map() as SlotsModel;
   for (const pattern of patterns) {
     const { startDate, endDate, startTime, endTime, duration, weekdays, recurring } = pattern;
 
