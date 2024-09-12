@@ -13,6 +13,7 @@ const mockRequest = () => ({
 });
 
 const mockDoctor = () => ({
+  id: faker.string.uuid(),
   name: faker.person.fullName(),
   email: faker.internet.email(),
   phone: faker.phone.number(),
@@ -25,7 +26,9 @@ const mockDoctor = () => ({
 const makeRepository = () => {
   class CreateAppointmentRepositoryStub implements CreateAppointmentRepository {
     async getDoctorById(doctorId: string): Promise<DoctorFoundSuccess | DoctorNotFoundFailure> {
-      return new DoctorFoundSuccess(mockDoctor());
+      const doctorMock = mockDoctor();
+      doctorMock.id = doctorId;
+      return new DoctorFoundSuccess(doctorMock);
     }
   }
 
