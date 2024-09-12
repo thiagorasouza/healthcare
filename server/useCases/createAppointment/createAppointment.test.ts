@@ -1,14 +1,19 @@
+import { weekdays } from "@/lib/schemas/patternsSchema";
 import { genders, identificationTypes } from "@/server/config/constants";
 import { Gender, IdentificationType } from "@/server/domain/models/patientModel";
 import { DoctorNotFoundFailure } from "@/server/shared/failures/doctorNotFoundFailure";
+import { DoctorUnavailableFailure } from "@/server/shared/failures/doctorUnavailableFailure";
 import { LogicFailure } from "@/server/shared/failures/logicFailure";
 import { PatientNotFoundFailure } from "@/server/shared/failures/patientNotFoundFailure";
+import { PatternNotFoundFailure } from "@/server/shared/failures/patternNotFoundFailure";
 import { DoctorFoundSuccess } from "@/server/shared/successes/doctorFoundSuccess";
 import { PatientFoundSuccess } from "@/server/shared/successes/patientFoundSuccess";
+import { PatternsFoundSuccess } from "@/server/shared/successes/patternsFoundSuccess";
 import { CreateAppointment } from "@/server/useCases/createAppointment/createAppointment";
 import { CreateAppointmentRepository } from "@/server/useCases/createAppointment/createAppointmentRepository";
 import { faker } from "@faker-js/faker";
 import { expect, jest } from "@jest/globals";
+import { addHours, addWeeks } from "date-fns";
 
 const mockRequest = () => ({
   doctorId: faker.string.alphanumeric(12),
@@ -45,6 +50,22 @@ const mockPatient = () => ({
   authId: faker.string.uuid(),
 });
 
+const mockPattern = () => {
+  const startDate = faker.date.soon();
+
+  return {
+    id: faker.string.uuid(),
+    startDate,
+    endDate: addWeeks(startDate, 1),
+    startTime: startDate,
+    endTime: addHours(startDate, 3),
+    duration: 30,
+    recurring: faker.datatype.boolean(),
+    weekdays: faker.helpers.arrayElements(weekdays, 2),
+    doctorId: faker.string.uuid(),
+  };
+};
+
 const makeRepository = () => {
   class CreateAppointmentRepositoryStub implements CreateAppointmentRepository {
     async getDoctorById(doctorId: string): Promise<DoctorFoundSuccess | DoctorNotFoundFailure> {
@@ -57,6 +78,16 @@ const makeRepository = () => {
       const patientMock = mockPatient();
       patientMock.id = patientId;
       return new PatientFoundSuccess(patientMock);
+    }
+
+    async getPatternsByDoctorId(
+      doctorId: string,
+    ): Promise<PatternsFoundSuccess | PatternNotFoundFailure> {
+      const patternsMock = [mockPattern(), mockPattern()];
+      for (const pattern of patternsMock) {
+        pattern.doctorId = doctorId;
+      }
+      return new PatternsFoundSuccess(patternsMock);
     }
   }
 
@@ -100,6 +131,20 @@ describe("CreateAppointment Use Case Test Suite", () => {
     const failure = new PatientNotFoundFailure(requestMock.patientId);
 
     jest.spyOn(repository, "getPatientById").mockReturnValueOnce(Promise.resolve(failure));
+
+    const result = await sut.execute(requestMock);
+    expect(result).toStrictEqual(failure);
+  });
+
+  it("should fail if doctor has no slots registered", async () => {
+    const { sut, repository } = makeSut();
+
+    const requestMock = mockRequest();
+    const failure = new DoctorUnavailableFailure(requestMock.doctorId, requestMock.startTime);
+
+    jest
+      .spyOn(repository, "getPatternsByDoctorId")
+      .mockReturnValueOnce(Promise.resolve(new PatternNotFoundFailure(requestMock.doctorId)));
 
     const result = await sut.execute(requestMock);
     expect(result).toStrictEqual(failure);

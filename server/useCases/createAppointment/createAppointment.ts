@@ -51,6 +51,16 @@ export class CreateAppointment implements UseCase {
       return patientExistsResult;
     }
 
+    const doctorUnavailableFailure = new DoctorUnavailableFailure(
+      request.doctorId,
+      request.startTime,
+    );
+
+    const patternsResult = await this.repository.getPatternsByDoctorId(request.doctorId);
+    if (!patternsResult.ok) {
+      return doctorUnavailableFailure;
+    }
+
     return new AppointmentCreatedSuccess(request);
   }
 }
