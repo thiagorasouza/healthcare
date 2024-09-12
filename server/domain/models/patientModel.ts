@@ -1,13 +1,18 @@
+export type Gender = "male" | "female" | "other";
+
+export type IdentificationType = "passport" | "identityCard" | "driversLicense" | "other";
+
 export interface PatientModel {
+  id: string;
   name: string;
   email: string;
   phone: string;
   birthdate: Date;
-  gender: "male" | "female" | "other";
+  gender: Gender;
   address: string;
   insuranceProvider: string;
   insuranceNumber: string;
-  identificationType: "passport" | "identityCard" | "driversLicense" | "other";
+  identificationType: IdentificationType;
   identificationNumber: string;
   identificationId: string;
   usageConsent: boolean;
