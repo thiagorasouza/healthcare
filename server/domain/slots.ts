@@ -19,63 +19,62 @@ interface Limits {
   exactDate?: Date;
 }
 
+// Purpose:
+// 1. Should represent slots from a group of patterns
+// 2. Should check for slot availability
+
 export class Slots {
-  private constructor(public readonly model: SlotsModel) {}
+  private readonly data: SlotsModel;
+  private readonly source: PatternModel[];
 
-  public static create(patterns: PatternModel[], limits?: Limits) {
-    const result = new Map() as SlotsModel;
-
-    const pushSlots = (dateStr: string, slots: string[][]) =>
-      result.set(dateStr, result.has(dateStr) ? result.get(dateStr)!.concat(slots) : slots);
-
-    for (const pattern of patterns) {
-      const { startDate, endDate, startTime, endTime, duration, weekdays, recurring } = pattern;
-
-      const slots = Slots.getDailySlots(startTime, endTime, duration);
-
-      if (!recurring) {
-        if (!limits || !Slots.isDateOutOfLimits(startDate, limits)) {
-          pushSlots(Slots.toNormalizedDateStr(startDate), slots);
-        }
-        continue;
-      }
-
-      let weekdaysToLoop = weekdays;
-      if (limits?.weekdays) {
-        weekdaysToLoop = weekdays.filter((weekday) =>
-          limits.weekdays!.includes(weekday as Weekday),
-        );
-      }
-
-      const weeksNum = differenceInWeeks(endDate, startDate) + 1;
-      weeksLoop: for (let i = 0; i < weeksNum; i++) {
-        for (const weekday of weekdaysToLoop) {
-          const start = addWeeks(startDate, i);
-          const date = getFirstWeekdayAfter(start, weekday);
-
-          if (isAfter(date, endDate) || (limits?.end && isAfter(date, limits.end))) {
-            break weeksLoop;
-          }
-
-          if (
-            (limits?.exactDate && !isSameDay(date, limits.exactDate)) ||
-            (limits?.start && isBefore(date, limits.start))
-          ) {
-            break;
-          }
-
-          pushSlots(Slots.toNormalizedDateStr(date), slots);
-        }
-      }
-    }
-
-    for (const slots of result.values()) {
-      slots.sort((a, b) => (a[0] < b[0] ? -1 : 1));
-    }
-    return result;
+  public constructor(source: PatternModel[]) {
+    this.data = new Map();
+    this.source = source;
   }
 
-  public static getDailySlots(startTime: Date, endTime: Date, duration: number) {
+  // public static from(patterns: PatternModel[]) {
+  //   const slots = new Slots(patterns);
+  //   return slots;
+  // }
+
+  public parse() {
+    for (const pattern of this.source) {
+      const isSingleDate = !pattern.recurring;
+
+      if (isSingleDate) {
+        this.parseSingleDate(pattern);
+      } else {
+        this.parseRecurringPattern(pattern);
+      }
+    }
+  }
+
+  public get() {
+    return this.data;
+  }
+
+  private parseSingleDate(pattern: PatternModel) {
+    const { startDate, startTime, endTime, duration } = pattern;
+
+    const singleDateStr = this.dateStr(startDate);
+    const hoursArray = this.hoursArray(startTime, endTime, duration);
+
+    this.add(singleDateStr, hoursArray);
+  }
+
+  private parseRecurringPattern(pattern: PatternModel) {}
+
+  public add(dateStr: string, hours: string[][]) {
+    const previousValue = this.data.get(dateStr);
+
+    this.data.set(dateStr, previousValue ? previousValue.concat(hours) : hours);
+  }
+
+  public dateStr(date: Date) {
+    return startOfDay(date).toISOString();
+  }
+
+  public hoursArray(startTime: Date, endTime: Date, duration: number) {
     const startTimeMs = startTime.getTime();
     const endTimeMs = endTime.getTime();
     const diffMs = endTimeMs - startTimeMs;
@@ -94,16 +93,91 @@ export class Slots {
     return slots;
   }
 
-  public static isDateOutOfLimits(date: Date, limits: Limits) {
-    return (
-      (limits?.exactDate && !isSameDay(date, limits.exactDate)) ||
-      (limits?.start && isBefore(date, limits.start)) ||
-      (limits?.end && isAfter(date, limits.end)) ||
-      (limits?.weekdays && !weekdays.includes(weekdays[getDay(date)]))
-    );
-  }
+  // public isAvailable(slots: Slots, startTime: Date) {
+  //   const startTimeDate = startOfDay(startTime);
+  //   const dateStr = startTimeDate.toISOString();
+  //   const hoursStr = getHourStrFromDate(startTime);
 
-  public static toNormalizedDateStr(date: Date) {
-    return startOfDay(date).toISOString();
-  }
+  //   for (const [date, hours] of slots.data.entries()) {
+  //     if (date === dateStr) {
+  //       const matchingHours = hours.some((slot) => slot[0] === hoursStr);
+  //       if (matchingHours) {
+  //         return true;
+  //       }
+  //     }
+  //   }
+
+  //   return false;
+  // }
+
+  // public static readDay(patterns: PatternModel[], day: Date) {
+  //   return Slots.read(patterns, { exactDate: day });
+  // }
+
+  // public static read(patterns: PatternModel[], limits?: Limits) {
+  //   const model: SlotsModel = new Map();
+
+  //   const pushSlots = (dateStr: string, slots: string[][]) =>
+  //     model.set(dateStr, model.has(dateStr) ? model.get(dateStr)!.concat(slots) : slots);
+
+  //   for (const pattern of patterns) {
+  //     const { startDate, endDate, startTime, endTime, duration, weekdays, recurring } = pattern;
+
+  //     const slots = Slots.hoursArray(startTime, endTime, duration);
+
+  //     if (!recurring) {
+  //       if (!limits || !Slots.isDateOutOfLimits(startDate, limits)) {
+  //         pushSlots(Slots.toNormalizedDateStr(startDate), slots);
+  //       }
+  //       continue;
+  //     }
+
+  //     let weekdaysToLoop = weekdays;
+  //     if (limits?.weekdays) {
+  //       weekdaysToLoop = weekdays.filter((weekday) =>
+  //         limits.weekdays!.includes(weekday as Weekday),
+  //       );
+  //     }
+
+  //     const weeksNum = differenceInWeeks(endDate, startDate) + 1;
+  //     weeksLoop: for (let i = 0; i < weeksNum; i++) {
+  //       for (const weekday of weekdaysToLoop) {
+  //         const start = addWeeks(startDate, i);
+  //         const date = getFirstWeekdayAfter(start, weekday);
+
+  //         if (isAfter(date, endDate) || (limits?.end && isAfter(date, limits.end))) {
+  //           break weeksLoop;
+  //         }
+
+  //         if (
+  //           (limits?.exactDate && !isSameDay(date, limits.exactDate)) ||
+  //           (limits?.start && isBefore(date, limits.start))
+  //         ) {
+  //           break;
+  //         }
+
+  //         pushSlots(Slots.toNormalizedDateStr(date), slots);
+  //       }
+  //     }
+  //   }
+
+  //   for (const slots of model.values()) {
+  //     slots.sort((a, b) => (a[0] < b[0] ? -1 : 1));
+  //   }
+
+  //   return model;
+  // }
+
+  // public static isDateOutOfLimits(date: Date, limits: Limits) {
+  //   return (
+  //     (limits?.exactDate && !isSameDay(date, limits.exactDate)) ||
+  //     (limits?.start && isBefore(date, limits.start)) ||
+  //     (limits?.end && isAfter(date, limits.end)) ||
+  //     (limits?.weekdays && !weekdays.includes(weekdays[getDay(date)]))
+  //   );
+  // }
+
+  // public static toNormalizedDateStr(date: Date) {
+  //   return startOfDay(date).toISOString();
+  // }
 }
