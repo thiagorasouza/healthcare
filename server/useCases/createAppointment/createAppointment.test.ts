@@ -1,14 +1,18 @@
 import { weekdays } from "@/lib/schemas/patternsSchema";
 import { genders, identificationTypes } from "@/server/config/constants";
 import { Gender, IdentificationType } from "@/server/domain/models/patientModel";
-import { DoctorNotFoundFailure } from "@/server/shared/failures/doctorNotFoundFailure";
-import { DoctorUnavailableFailure } from "@/server/shared/failures/doctorUnavailableFailure";
-import { LogicFailure } from "@/server/shared/failures/logicFailure";
-import { PatientNotFoundFailure } from "@/server/shared/failures/patientNotFoundFailure";
-import { PatternNotFoundFailure } from "@/server/shared/failures/patternNotFoundFailure";
-import { DoctorFoundSuccess } from "@/server/shared/successes/doctorFoundSuccess";
-import { PatientFoundSuccess } from "@/server/shared/successes/patientFoundSuccess";
-import { PatternsFoundSuccess } from "@/server/shared/successes/patternsFoundSuccess";
+import {
+  DoctorNotFoundFailure,
+  DoctorUnavailableFailure,
+  LogicFailure,
+  PatientNotFoundFailure,
+  PatternNotFoundFailure,
+} from "@/server/shared/failures";
+import {
+  DoctorFoundSuccess,
+  PatientFoundSuccess,
+  PatternsFoundSuccess,
+} from "@/server/shared/successes";
 import { CreateAppointment } from "@/server/useCases/createAppointment/createAppointment";
 import { CreateAppointmentRepository } from "@/server/useCases/createAppointment/createAppointmentRepository";
 import { faker } from "@faker-js/faker";
@@ -149,4 +153,11 @@ describe("CreateAppointment Use Case Test Suite", () => {
     const result = await sut.execute(requestMock);
     expect(result).toStrictEqual(failure);
   });
+
+  // it("should fail if doctor is not available", async () => {
+  //   const { sut, repository } = makeSut();
+
+  //   const requestMock = mockRequest();
+  //   const failure = new DoctorUnavailableFailure(requestMock.doctorId, requestMock.startTime);
+  // });
 });

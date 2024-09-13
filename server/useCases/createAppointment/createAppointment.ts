@@ -1,11 +1,11 @@
 import { Appointment } from "@/server/domain/appointment";
+import { Slots } from "@/server/domain/slots";
 import { DoctorNotFoundFailure } from "@/server/shared/failures/doctorNotFoundFailure";
 import { DoctorUnavailableFailure } from "@/server/shared/failures/doctorUnavailableFailure";
 import { LogicFailure } from "@/server/shared/failures/logicFailure";
 import { PatientNotFoundFailure } from "@/server/shared/failures/patientNotFoundFailure";
 import { PatientUnavailableFailure } from "@/server/shared/failures/patientUnavailableFailure";
 import { UseCase } from "@/server/shared/protocols/useCase";
-
 import { AppointmentCreatedSuccess } from "@/server/shared/successes/appointmentCreatedSuccess";
 import { CreateAppointmentRepository } from "@/server/useCases/createAppointment/createAppointmentRepository";
 
@@ -41,25 +41,35 @@ export class CreateAppointment implements UseCase {
       return validateLogicResult;
     }
 
-    const doctorExistsResult = await this.repository.getDoctorById(request.doctorId);
+    const { doctorId, patientId, startTime } = request;
+
+    const doctorExistsResult = await this.repository.getDoctorById(doctorId);
     if (!doctorExistsResult.ok) {
       return doctorExistsResult;
     }
 
-    const patientExistsResult = await this.repository.getPatientById(request.patientId);
+    const patientExistsResult = await this.repository.getPatientById(patientId);
     if (!patientExistsResult.ok) {
       return patientExistsResult;
     }
 
-    const doctorUnavailableFailure = new DoctorUnavailableFailure(
-      request.doctorId,
-      request.startTime,
-    );
+    const doctorUnavailableFailure = new DoctorUnavailableFailure(doctorId, startTime);
 
-    const patternsResult = await this.repository.getPatternsByDoctorId(request.doctorId);
+    const patternsResult = await this.repository.getPatternsByDoctorId(doctorId);
     if (!patternsResult.ok) {
       return doctorUnavailableFailure;
     }
+
+    // const slots = Slots.read(patternsResult.value, { exactDate: startTime });
+    const isDoctorAvailable = new Slots()
+      .source(patternsResult.value)
+      .date(startTime)
+      .parse()
+      .isValid(startTime);
+
+    // if(!isDoctorAvailable) {
+    //   return doctorUnavailableFailure;
+    // }
 
     return new AppointmentCreatedSuccess(request);
   }
