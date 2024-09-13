@@ -2,11 +2,15 @@ import { expect } from "@jest/globals";
 import { PatternModel, Weekday } from "@/server/domain/models/patternModel";
 import { Slots } from "@/server/domain/slots";
 
+const day1 = () => new Date("2024-01-01T05:00:00.000Z");
+const day2 = () => new Date("2024-01-02T05:00:00.000Z");
+const day3 = () => new Date("2024-01-03T05:00:00.000Z");
+
 export const mockSingleDate = (startTime = 10, endTime = 11) => ({
-  startDate: new Date("2024-01-01T05:00:00.000Z"),
-  endDate: new Date("2024-01-01T05:00:00.000Z"),
-  startTime: new Date(new Date().setHours(startTime, 0, 0, 0)),
-  endTime: new Date(new Date().setHours(endTime, 0, 0, 0)),
+  startDate: day1(),
+  endDate: day1(),
+  startTime: new Date(day1().setHours(startTime, 0, 0, 0)),
+  endTime: new Date(day1().setHours(endTime, 0, 0, 0)),
   duration: 30,
   recurring: false,
   weekdays: [],
@@ -14,27 +18,25 @@ export const mockSingleDate = (startTime = 10, endTime = 11) => ({
 });
 
 export const mockRecurringPattern = (startTime = 8, endTime = 10) => ({
-  startDate: new Date("2024-01-01T05:00:00.000Z"),
-  endDate: new Date("2024-01-02T05:00:00.000Z"),
-  startTime: new Date(new Date().setHours(startTime, 0, 0, 0)),
-  endTime: new Date(new Date().setHours(endTime, 0, 0, 0)),
+  startDate: day1(),
+  endDate: day2(),
+  startTime: new Date(day1().setHours(startTime, 0, 0, 0)),
+  endTime: new Date(day1().setHours(endTime, 0, 0, 0)),
   duration: 30,
   recurring: true,
   weekdays: ["mon", "tue"] as Weekday[],
   doctorId: "any_id",
 });
 
-const makeSut = (patternsMock: PatternModel[]) => {
-  const sut = new Slots(patternsMock);
-
-  return { sut };
+const makeSut = () => {
+  return new Slots();
 };
 
 describe("Slots Test Suite", () => {
   it("should parse a single date", () => {
     const singleDateMock = mockSingleDate();
-    const { sut } = makeSut([singleDateMock]);
-    sut.parse();
+    const sut = makeSut();
+    sut.source([singleDateMock]).parse();
     expect(sut.get()).toStrictEqual(
       new Map(
         Object.entries({

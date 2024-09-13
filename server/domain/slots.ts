@@ -12,7 +12,7 @@ import {
   startOfDay,
 } from "date-fns";
 
-interface Limits {
+interface Options {
   start?: Date;
   end?: Date;
   weekdays?: Weekday[];
@@ -24,12 +24,14 @@ interface Limits {
 // 2. Should check for slot availability
 
 export class Slots {
+  private options: Options;
   private readonly data: SlotsModel;
-  private readonly source: PatternModel[];
+  private patterns: PatternModel[];
 
-  public constructor(source: PatternModel[]) {
+  public constructor() {
     this.data = new Map();
-    this.source = source;
+    this.patterns = [];
+    this.options = {};
   }
 
   // public static from(patterns: PatternModel[]) {
@@ -37,8 +39,18 @@ export class Slots {
   //   return slots;
   // }
 
+  public source(source: PatternModel[]) {
+    this.patterns = source;
+    return this;
+  }
+
+  public start(start: Date) {
+    this.options.start = start;
+    return this;
+  }
+
   public parse() {
-    for (const pattern of this.source) {
+    for (const pattern of this.patterns) {
       const isSingleDate = !pattern.recurring;
 
       if (isSingleDate) {
