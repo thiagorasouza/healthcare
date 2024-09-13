@@ -49,6 +49,13 @@ describe("Slots Test Suite", () => {
     );
   });
 
+  it("should return only dates after start", () => {
+    const singleDateMock = mockSingleDate();
+    const sut = makeSut();
+    sut.source([singleDateMock]).start(day2()).parse();
+    expect(sut.get()).toStrictEqual(new Map());
+  });
+
   // it("should return an empty Map if date provided does not match pattern", () => {
   //   const recurringPatternMock = mockRecurringPattern();
   //   const result = Slots.read([recurringPatternMock], {

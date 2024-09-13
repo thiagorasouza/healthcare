@@ -68,10 +68,23 @@ export class Slots {
   private parseSingleDate(pattern: PatternModel) {
     const { startDate, startTime, endTime, duration } = pattern;
 
+    if (this.isDateOutOfRange(startDate)) {
+      return;
+    }
+
     const singleDateStr = this.dateStr(startDate);
     const hoursArray = this.hoursArray(startTime, endTime, duration);
 
     this.add(singleDateStr, hoursArray);
+  }
+
+  public isDateOutOfRange(date: Date) {
+    return (
+      (this.options?.exactDate && !isSameDay(date, this.options.exactDate)) ||
+      (this.options?.start && isBefore(date, this.options.start)) ||
+      (this.options?.end && isAfter(date, this.options.end)) ||
+      (this.options?.weekdays && !weekdays.includes(weekdays[getDay(date)]))
+    );
   }
 
   private parseRecurringPattern(pattern: PatternModel) {}
@@ -178,15 +191,6 @@ export class Slots {
   //   }
 
   //   return model;
-  // }
-
-  // public static isDateOutOfLimits(date: Date, limits: Limits) {
-  //   return (
-  //     (limits?.exactDate && !isSameDay(date, limits.exactDate)) ||
-  //     (limits?.start && isBefore(date, limits.start)) ||
-  //     (limits?.end && isAfter(date, limits.end)) ||
-  //     (limits?.weekdays && !weekdays.includes(weekdays[getDay(date)]))
-  //   );
   // }
 
   // public static toNormalizedDateStr(date: Date) {
