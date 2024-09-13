@@ -26,32 +26,40 @@ export class Slots {
     this.options = {};
   }
 
-  // public static from(patterns: PatternModel[]) {
-  //   const slots = new Slots(patterns);
-  //   return slots;
-  // }
+  public static from(patterns: PatternModel[], options: Options) {
+    const slots = new Slots();
+    return slots
+      .source(patterns)
+      .start(options.start)
+      .end(options.end)
+      .date(options.date)
+      .weekdays(options.weekdays)
+      .parse()
+      .sort()
+      .get();
+  }
 
   public source(source: PatternModel[]) {
     this.patterns = source;
     return this;
   }
 
-  public start(start: Date) {
+  public start(start?: Date) {
     this.options.start = start;
     return this;
   }
 
-  public end(end: Date) {
+  public end(end?: Date) {
     this.options.end = end;
     return this;
   }
 
-  public date(date: Date) {
+  public date(date?: Date) {
     this.options.date = date;
     return this;
   }
 
-  public weekdays(weekdays: Weekday[]) {
+  public weekdays(weekdays?: Weekday[]) {
     this.options.weekdays = weekdays;
     return this;
   }
@@ -74,6 +82,8 @@ export class Slots {
     for (const slots of this.data.values()) {
       slots.sort((a, b) => (a[0] < b[0] ? -1 : 1));
     }
+
+    return this;
   }
 
   public get() {
@@ -109,16 +119,14 @@ export class Slots {
 
     let date = startDate;
     while (date <= endDate) {
-      if (this.isDateOutOfRange(date)) {
-        continue;
-      }
+      if (!this.isDateOutOfRange(date)) {
+        const weekday = getWeekDayFromDate(date);
+        const weekdayMatches = weekdays.includes(weekday);
 
-      const weekday = getWeekDayFromDate(date);
-      const weekdayMatches = weekdays.includes(weekday);
-
-      if (weekdayMatches) {
-        const dateStr = this.dateStr(date);
-        this.add(dateStr, hoursArray);
+        if (weekdayMatches) {
+          const dateStr = this.dateStr(date);
+          this.add(dateStr, hoursArray);
+        }
       }
 
       date = addDays(date, 1);
@@ -170,8 +178,4 @@ export class Slots {
 
   //   return false;
   // }
-
-  //   for (const slots of model.values()) {
-  //     slots.sort((a, b) => (a[0] < b[0] ? -1 : 1));
-  //   }
 }
