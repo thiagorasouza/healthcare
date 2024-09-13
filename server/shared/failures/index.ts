@@ -1,3 +1,4 @@
+export * from "./appointmentNotFoundFailure";
 export * from "./doctorNotFoundFailure";
 export * from "./doctorUnavailableFailure";
 export * from "./logicFailure";
