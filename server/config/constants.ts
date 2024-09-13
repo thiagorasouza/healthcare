@@ -9,3 +9,9 @@ export const identificationTypes: IdentificationType[] = [
   "driversLicense",
   "other",
 ];
+
+// Minimum appointment duration in minutes
+export const MIN_DURATION = 15;
+
+// Minimum booking advance duration in minutes
+export const MIN_ADVANCE = 60;
