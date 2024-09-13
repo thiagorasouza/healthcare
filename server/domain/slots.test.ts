@@ -133,8 +133,34 @@ describe("Slots Test Suite", () => {
     );
   });
 
+  it("should parse 1 single date and 1 recurring pattern", () => {
+    const recurringPatternMock = [
+      mockRecurringPattern(day1(), day2(), 8, 9),
+      mockSingleDate(day2(), 9, 10),
+    ];
+    const sut = makeSut();
+    sut.source(recurringPatternMock).parse().sort();
+    expect(sut.get()).toStrictEqual(
+      new Map(
+        Object.entries({
+          [day1Str]: [
+            ["08:00", "08:30"],
+            ["08:30", "09:00"],
+          ],
+          [day2Str]: [
+            ["08:00", "08:30"],
+            ["08:30", "09:00"],
+            ["09:00", "09:30"],
+            ["09:30", "10:00"],
+          ],
+        }),
+      ),
+    );
+  });
+
   it("should sort patterns in mixed order", () => {
     const recurringPatternMock = [
+      mockSingleDate(day2(), 10, 11),
       mockRecurringPattern(day1(), day2(), 9, 10),
       mockRecurringPattern(day1(), day2(), 8, 9),
     ];
@@ -154,6 +180,8 @@ describe("Slots Test Suite", () => {
             ["08:30", "09:00"],
             ["09:00", "09:30"],
             ["09:30", "10:00"],
+            ["10:00", "10:30"],
+            ["10:30", "11:00"],
           ],
         }),
       ),
