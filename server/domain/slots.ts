@@ -1,7 +1,7 @@
 import { weekdays } from "@/server/config/constants";
 import { PatternModel, Weekday } from "@/server/domain/models/patternModel";
 import { SlotsModel } from "@/server/domain/models/slotsModel";
-import { getHourStrFromDate, getWeekDayFromDate } from "@/server/shared/helpers/dateHelpers";
+import { getDateStr, getHoursStr, getWeekday } from "@/server/shared/helpers/dateHelpers";
 import { addDays, getDay, isAfter, isBefore, isSameDay, startOfDay } from "date-fns";
 
 interface Options {
@@ -90,6 +90,22 @@ export class Slots {
     return this.data;
   }
 
+  public isValid(slot: Date) {
+    const dateStr = getDateStr(slot);
+    const hoursStr = getHoursStr(slot);
+
+    for (const [date, slots] of this.data.entries()) {
+      if (date === dateStr) {
+        const matchingHours = slots.some((slot) => slot[0] === hoursStr);
+        if (matchingHours) {
+          return true;
+        }
+      }
+    }
+
+    return false;
+  }
+
   private parseSingleDate(pattern: PatternModel) {
     const { startDate, startTime, endTime, duration } = pattern;
 
@@ -97,7 +113,7 @@ export class Slots {
       return;
     }
 
-    const dateStr = this.dateStr(startDate);
+    const dateStr = getDateStr(startDate);
     const hoursArray = this.hoursArray(startTime, endTime, duration);
 
     this.add(dateStr, hoursArray);
@@ -120,11 +136,11 @@ export class Slots {
     let date = startDate;
     while (date <= endDate) {
       if (!this.isDateOutOfRange(date)) {
-        const weekday = getWeekDayFromDate(date);
+        const weekday = getWeekday(date);
         const weekdayMatches = weekdays.includes(weekday);
 
         if (weekdayMatches) {
-          const dateStr = this.dateStr(date);
+          const dateStr = getDateStr(date);
           this.add(dateStr, hoursArray);
         }
       }
@@ -139,10 +155,6 @@ export class Slots {
     this.data.set(dateStr, previousValue ? previousValue.concat(hours) : hours);
   }
 
-  public dateStr(date: Date) {
-    return startOfDay(date).toISOString();
-  }
-
   public hoursArray(startTime: Date, endTime: Date, duration: number) {
     const startTimeMs = startTime.getTime();
     const endTimeMs = endTime.getTime();
@@ -154,8 +166,8 @@ export class Slots {
     for (let i = 0; i < slotsNum; i++) {
       const startMs = startTimeMs + durationMs * i;
       const endMs = startMs + durationMs;
-      const startStr = getHourStrFromDate(new Date(startMs));
-      const endStr = getHourStrFromDate(new Date(endMs));
+      const startStr = getHoursStr(new Date(startMs));
+      const endStr = getHoursStr(new Date(endMs));
       slots.push([startStr, endStr]);
     }
 

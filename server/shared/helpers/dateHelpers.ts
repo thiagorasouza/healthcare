@@ -1,8 +1,7 @@
 import { weekdays } from "@/server/config/constants";
-import { Weekday } from "@/server/domain/models/patternModel";
-import { Day, nextDay, subDays } from "date-fns";
+import { startOfDay } from "date-fns";
 
-export function getHourStrFromDate(date: Date) {
+export function getHoursStr(date: Date) {
   // console.log("🚀 ~ date:", date);
   return date.toLocaleTimeString("en-US", {
     hour: "2-digit",
@@ -11,7 +10,11 @@ export function getHourStrFromDate(date: Date) {
   });
 }
 
-export function getWeekDayFromDate(date: Date) {
+export function getWeekday(date: Date) {
   const weekdayNum = date.getDay();
   return weekdays[weekdayNum];
+}
+
+export function getDateStr(date: Date) {
+  return startOfDay(date).toISOString();
 }

@@ -41,6 +41,10 @@ export const mockRecurringPattern = (start: Date, end: Date, startTime = 8, endT
   };
 };
 
+export const mockSlot = (date: Date, hours: number, minutes: number) => {
+  return new Date(new Date(date).setHours(hours, minutes, 0, 0));
+};
+
 const makeSut = () => {
   return new Slots();
 };
@@ -274,5 +278,15 @@ describe("Slots Test Suite", () => {
         }),
       ),
     );
+  });
+
+  it("should return false if slot is not valid", () => {
+    const patternsMock = [mockSingleDate(day1(), 10, 12)];
+    const slotMock = mockSlot(day1(), 12, 0);
+
+    const sut = makeSut();
+    sut.source(patternsMock).parse().sort();
+
+    expect(sut.isValid(slotMock)).toBe(false);
   });
 });
