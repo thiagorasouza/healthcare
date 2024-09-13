@@ -16,6 +16,19 @@ export class Appointment {
     return startTime >= minAdvance && duration >= MIN_DURATION;
   }
 
+  public isConflicting(newAppointment: AppointmentModel) {
+    const { startTime, endTime } = this.data;
+
+    if (
+      (newAppointment.startTime >= startTime && newAppointment.startTime < endTime) ||
+      (newAppointment.endTime > startTime && newAppointment.endTime <= endTime)
+    ) {
+      return true;
+    }
+
+    return false;
+  }
+
   // public constructor() {
   //   const now = new Date();
   //   if (data.startTime < now) {
