@@ -46,7 +46,7 @@ const makeSut = () => {
 };
 
 describe("Slots Test Suite", () => {
-  it("should parse a single date", () => {
+  it("should parse 1 single date", () => {
     const singleDateMock = [mockSingleDate(day1())];
     const sut = makeSut();
     sut.source(singleDateMock).parse();
@@ -56,6 +56,50 @@ describe("Slots Test Suite", () => {
           [day1Str]: [
             ["10:00", "10:30"],
             ["10:30", "11:00"],
+          ],
+        }),
+      ),
+    );
+  });
+
+  it("should parse 2 single dates", () => {
+    const singleDateMock = [mockSingleDate(day1()), mockSingleDate(day2())];
+    const sut = makeSut();
+    sut.source(singleDateMock).parse();
+    expect(sut.get()).toStrictEqual(
+      new Map(
+        Object.entries({
+          [day1Str]: [
+            ["10:00", "10:30"],
+            ["10:30", "11:00"],
+          ],
+          [day2Str]: [
+            ["10:00", "10:30"],
+            ["10:30", "11:00"],
+          ],
+        }),
+      ),
+    );
+  });
+
+  it("should parse a recurring pattern", () => {
+    const recurringPatternMock = [mockRecurringPattern(day1(), day2(), 8, 10)];
+    const sut = makeSut();
+    sut.source(recurringPatternMock).parse();
+    expect(sut.get()).toStrictEqual(
+      new Map(
+        Object.entries({
+          [day1Str]: [
+            ["08:00", "08:30"],
+            ["08:30", "09:00"],
+            ["09:00", "09:30"],
+            ["09:30", "10:00"],
+          ],
+          [day2Str]: [
+            ["08:00", "08:30"],
+            ["08:30", "09:00"],
+            ["09:00", "09:30"],
+            ["09:30", "10:00"],
           ],
         }),
       ),
@@ -120,30 +164,6 @@ describe("Slots Test Suite", () => {
           [day1Str]: [
             ["10:00", "10:30"],
             ["10:30", "11:00"],
-          ],
-        }),
-      ),
-    );
-  });
-
-  it("should parse a recurring pattern", () => {
-    const recurringPatternMock = [mockRecurringPattern(day1(), day2(), 8, 10)];
-    const sut = makeSut();
-    sut.source(recurringPatternMock).parse();
-    expect(sut.get()).toStrictEqual(
-      new Map(
-        Object.entries({
-          [day1Str]: [
-            ["08:00", "08:30"],
-            ["08:30", "09:00"],
-            ["09:00", "09:30"],
-            ["09:30", "10:00"],
-          ],
-          [day2Str]: [
-            ["08:00", "08:30"],
-            ["08:30", "09:00"],
-            ["09:00", "09:30"],
-            ["09:30", "10:00"],
           ],
         }),
       ),
