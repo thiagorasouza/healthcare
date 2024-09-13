@@ -16,7 +16,7 @@ interface Options {
   start?: Date;
   end?: Date;
   weekdays?: Weekday[];
-  exactDate?: Date;
+  date?: Date;
 }
 
 // Purpose:
@@ -54,6 +54,11 @@ export class Slots {
     return this;
   }
 
+  public date(date: Date) {
+    this.options.date = date;
+    return this;
+  }
+
   public parse() {
     for (const pattern of this.patterns) {
       const isSingleDate = !pattern.recurring;
@@ -85,7 +90,7 @@ export class Slots {
 
   public isDateOutOfRange(date: Date) {
     return (
-      (this.options?.exactDate && !isSameDay(date, this.options.exactDate)) ||
+      (this.options?.date && !isSameDay(date, this.options.date)) ||
       (this.options?.start && isBefore(date, this.options.start)) ||
       (this.options?.end && isAfter(date, this.options.end)) ||
       (this.options?.weekdays && !weekdays.includes(weekdays[getDay(date)]))
