@@ -66,6 +66,14 @@ export class Slots {
         this.parseRecurringPattern(pattern);
       }
     }
+
+    return this;
+  }
+
+  public sort() {
+    for (const slots of this.data.values()) {
+      slots.sort((a, b) => (a[0] < b[0] ? -1 : 1));
+    }
   }
 
   public get() {

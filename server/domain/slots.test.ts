@@ -133,6 +133,33 @@ describe("Slots Test Suite", () => {
     );
   });
 
+  it("should sort patterns in mixed order", () => {
+    const recurringPatternMock = [
+      mockRecurringPattern(day1(), day2(), 9, 10),
+      mockRecurringPattern(day1(), day2(), 8, 9),
+    ];
+    const sut = makeSut();
+    sut.source(recurringPatternMock).parse().sort();
+    expect(sut.get()).toStrictEqual(
+      new Map(
+        Object.entries({
+          [day1Str]: [
+            ["08:00", "08:30"],
+            ["08:30", "09:00"],
+            ["09:00", "09:30"],
+            ["09:30", "10:00"],
+          ],
+          [day2Str]: [
+            ["08:00", "08:30"],
+            ["08:30", "09:00"],
+            ["09:00", "09:30"],
+            ["09:30", "10:00"],
+          ],
+        }),
+      ),
+    );
+  });
+
   it("should return only dates after start", () => {
     const singleDatesMock = [mockSingleDate(day1()), mockSingleDate(day3(), 10, 11)];
     const sut = makeSut();
