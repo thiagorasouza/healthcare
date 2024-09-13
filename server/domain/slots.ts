@@ -1,16 +1,8 @@
 import { weekdays } from "@/server/config/constants";
 import { PatternModel, Weekday } from "@/server/domain/models/patternModel";
 import { SlotsModel } from "@/server/domain/models/slotsModel";
-import { getFirstWeekdayAfter, getHourStrFromDate } from "@/server/shared/helpers/dateHelpers";
-import {
-  addWeeks,
-  differenceInWeeks,
-  getDay,
-  isAfter,
-  isBefore,
-  isSameDay,
-  startOfDay,
-} from "date-fns";
+import { getHourStrFromDate, getWeekDayFromDate } from "@/server/shared/helpers/dateHelpers";
+import { addDays, getDay, isAfter, isBefore, isSameDay, startOfDay } from "date-fns";
 
 interface Options {
   start?: Date;
@@ -87,10 +79,10 @@ export class Slots {
       return;
     }
 
-    const singleDateStr = this.dateStr(startDate);
+    const dateStr = this.dateStr(startDate);
     const hoursArray = this.hoursArray(startTime, endTime, duration);
 
-    this.add(singleDateStr, hoursArray);
+    this.add(dateStr, hoursArray);
   }
 
   public isDateOutOfRange(date: Date) {
@@ -102,7 +94,28 @@ export class Slots {
     );
   }
 
-  private parseRecurringPattern(pattern: PatternModel) {}
+  private parseRecurringPattern(pattern: PatternModel) {
+    const { startDate, endDate, startTime, endTime, duration, weekdays } = pattern;
+
+    const hoursArray = this.hoursArray(startTime, endTime, duration);
+
+    let date = startDate;
+    while (date <= endDate) {
+      if (this.isDateOutOfRange(date)) {
+        continue;
+      }
+
+      const weekday = getWeekDayFromDate(date);
+      const weekdayMatches = weekdays.includes(weekday);
+
+      if (weekdayMatches) {
+        const dateStr = this.dateStr(date);
+        this.add(dateStr, hoursArray);
+      }
+
+      date = addDays(date, 1);
+    }
+  }
 
   public add(dateStr: string, hours: string[][]) {
     const previousValue = this.data.get(dateStr);
@@ -150,65 +163,7 @@ export class Slots {
   //   return false;
   // }
 
-  // public static readDay(patterns: PatternModel[], day: Date) {
-  //   return Slots.read(patterns, { exactDate: day });
-  // }
-
-  // public static read(patterns: PatternModel[], limits?: Limits) {
-  //   const model: SlotsModel = new Map();
-
-  //   const pushSlots = (dateStr: string, slots: string[][]) =>
-  //     model.set(dateStr, model.has(dateStr) ? model.get(dateStr)!.concat(slots) : slots);
-
-  //   for (const pattern of patterns) {
-  //     const { startDate, endDate, startTime, endTime, duration, weekdays, recurring } = pattern;
-
-  //     const slots = Slots.hoursArray(startTime, endTime, duration);
-
-  //     if (!recurring) {
-  //       if (!limits || !Slots.isDateOutOfLimits(startDate, limits)) {
-  //         pushSlots(Slots.toNormalizedDateStr(startDate), slots);
-  //       }
-  //       continue;
-  //     }
-
-  //     let weekdaysToLoop = weekdays;
-  //     if (limits?.weekdays) {
-  //       weekdaysToLoop = weekdays.filter((weekday) =>
-  //         limits.weekdays!.includes(weekday as Weekday),
-  //       );
-  //     }
-
-  //     const weeksNum = differenceInWeeks(endDate, startDate) + 1;
-  //     weeksLoop: for (let i = 0; i < weeksNum; i++) {
-  //       for (const weekday of weekdaysToLoop) {
-  //         const start = addWeeks(startDate, i);
-  //         const date = getFirstWeekdayAfter(start, weekday);
-
-  //         if (isAfter(date, endDate) || (limits?.end && isAfter(date, limits.end))) {
-  //           break weeksLoop;
-  //         }
-
-  //         if (
-  //           (limits?.exactDate && !isSameDay(date, limits.exactDate)) ||
-  //           (limits?.start && isBefore(date, limits.start))
-  //         ) {
-  //           break;
-  //         }
-
-  //         pushSlots(Slots.toNormalizedDateStr(date), slots);
-  //       }
-  //     }
-  //   }
-
   //   for (const slots of model.values()) {
   //     slots.sort((a, b) => (a[0] < b[0] ? -1 : 1));
   //   }
-
-  //   return model;
-  // }
-
-  // public static toNormalizedDateStr(date: Date) {
-  //   return startOfDay(date).toISOString();
-  // }
 }
