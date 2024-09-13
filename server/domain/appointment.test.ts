@@ -2,6 +2,9 @@ import { MIN_ADVANCE, MIN_DURATION } from "@/server/config/constants";
 import { Appointment } from "@/server/domain/appointment";
 import { mockAppointment } from "@/server/domain/mocks/appointment.mock";
 import { AppointmentModel } from "@/server/domain/models/appointmentModel";
+import { AppointmentTooShortFailure } from "@/server/shared/failures/appointmentTooShortFailure";
+import { AppointmentTooSoonFailure } from "@/server/shared/failures/appointmentTooSoonFailure";
+import { AppointmentLogicSuccess } from "@/server/shared/successes";
 import { expect } from "@jest/globals";
 import { addMinutes, set } from "date-fns";
 
@@ -10,34 +13,34 @@ const makeSut = (appointment: AppointmentModel) => {
 };
 
 describe("Appointment Entity Test Suite", () => {
-  it("isValid should return false if appointment is too soon", () => {
+  it("validate should fail if appointment is too soon", () => {
     const startTime = addMinutes(new Date(), MIN_ADVANCE - 5);
     const duration = MIN_DURATION;
 
     const appointmentMock = mockAppointment(startTime, duration);
     const sut = makeSut(appointmentMock);
 
-    expect(sut.isValid()).toBe(false);
+    expect(sut.validate()).toStrictEqual(new AppointmentTooSoonFailure(startTime));
   });
 
-  it("isValid should return false if appointment is too short", () => {
+  it("validate should return false if appointment is too short", () => {
     const startTime = addMinutes(new Date(), MIN_ADVANCE);
     const duration = MIN_DURATION - 5;
 
     const appointmentMock = mockAppointment(startTime, duration);
     const sut = makeSut(appointmentMock);
 
-    expect(sut.isValid()).toBe(false);
+    expect(sut.validate()).toStrictEqual(new AppointmentTooShortFailure(duration));
   });
 
-  it("isValid should return true if appointment is valid", () => {
+  it("validate should return true if appointment is valid", () => {
     const startTime = addMinutes(new Date(), MIN_ADVANCE + 5);
     const duration = MIN_DURATION;
 
     const appointmentMock = mockAppointment(startTime, duration);
     const sut = makeSut(appointmentMock);
 
-    expect(sut.isValid()).toBe(true);
+    expect(sut.validate()).toStrictEqual(new AppointmentLogicSuccess(sut));
   });
 
   it("isConflicting should return false if appointments conflict", () => {

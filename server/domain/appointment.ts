@@ -1,5 +1,8 @@
 import { MIN_ADVANCE, MIN_DURATION } from "@/server/config/constants";
 import { AppointmentModel } from "@/server/domain/models/appointmentModel";
+import { AppointmentTooShortFailure } from "@/server/shared/failures/appointmentTooShortFailure";
+import { AppointmentTooSoonFailure } from "@/server/shared/failures/appointmentTooSoonFailure";
+import { AppointmentLogicSuccess } from "@/server/shared/successes";
 import { addMinutes } from "date-fns";
 
 export class Appointment {
@@ -9,33 +12,36 @@ export class Appointment {
     this.data = data;
   }
 
-  public isValid() {
-    const { startTime, endTime } = this.data;
-    const duration = (endTime.getTime() - startTime.getTime()) / (60 * 1000);
+  public validate() {
+    const { startTime, duration } = this.data;
+
     const minAdvance = addMinutes(new Date(), MIN_ADVANCE);
-    return startTime >= minAdvance && duration >= MIN_DURATION;
+
+    if (startTime < minAdvance) {
+      return new AppointmentTooSoonFailure(startTime);
+    }
+
+    if (duration < MIN_DURATION) {
+      return new AppointmentTooShortFailure(duration);
+    }
+
+    return new AppointmentLogicSuccess(this);
   }
 
   public isConflicting(newAppointment: AppointmentModel) {
-    const { startTime, endTime } = this.data;
+    const { startTime, duration } = this.data;
+    const endTime = addMinutes(startTime, duration);
+
+    const newStartTime = newAppointment.startTime;
+    const newEndTime = addMinutes(newStartTime, duration);
 
     if (
-      (newAppointment.startTime >= startTime && newAppointment.startTime < endTime) ||
-      (newAppointment.endTime > startTime && newAppointment.endTime <= endTime)
+      (newStartTime >= startTime && newStartTime < endTime) ||
+      (newEndTime > startTime && newEndTime <= endTime)
     ) {
       return true;
     }
 
     return false;
   }
-
-  // public constructor() {
-  //   const now = new Date();
-  //   if (data.startTime < now) {
-  //     return new LogicFailure(["startTime"]);
-  //   }
-
-  //   const appointment = new Appointment(data);
-  //   return new AppointmentLogicSuccess(appointment);
-  // }
 }
