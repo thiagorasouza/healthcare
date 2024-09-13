@@ -6,6 +6,6 @@ export const mockAppointment = (startTime = faker.date.soon(), duration = 30) =>
     doctorId: faker.string.alphanumeric(12),
     patientId: faker.string.alphanumeric(12),
     startTime,
-    endTime: addMinutes(startTime, duration),
+    duration,
   };
 };
