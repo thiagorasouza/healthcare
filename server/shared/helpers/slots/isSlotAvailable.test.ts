@@ -19,4 +19,11 @@ describe("isSlotAvailable Test Suite", () => {
     const result = isSlotAvailable(slotsMock, startTime);
     expect(result).toBe(false);
   });
+
+  it("should true false for matching slots", () => {
+    const slotsMock = mockSlots();
+    const startTime = setHours(new Date("2024-01-01T05:00:00.000Z"), 10);
+    const result = isSlotAvailable(slotsMock, startTime);
+    expect(result).toBe(true);
+  });
 });
