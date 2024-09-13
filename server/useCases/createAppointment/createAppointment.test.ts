@@ -1,6 +1,7 @@
 import { weekdays } from "@/lib/schemas/patternsSchema";
 import { genders, identificationTypes } from "@/server/config/constants";
 import { Gender, IdentificationType } from "@/server/domain/models/patientModel";
+import { Slots } from "@/server/domain/slots";
 import {
   DoctorNotFoundFailure,
   DoctorUnavailableFailure,
@@ -154,10 +155,15 @@ describe("CreateAppointment Use Case Test Suite", () => {
     expect(result).toStrictEqual(failure);
   });
 
-  // it("should fail if doctor is not available", async () => {
-  //   const { sut, repository } = makeSut();
+  it("should fail if doctor is not available", async () => {
+    const { sut, repository } = makeSut();
 
-  //   const requestMock = mockRequest();
-  //   const failure = new DoctorUnavailableFailure(requestMock.doctorId, requestMock.startTime);
-  // });
+    const requestMock = mockRequest();
+    const failure = new DoctorUnavailableFailure(requestMock.doctorId, requestMock.startTime);
+
+    jest.spyOn(Slots.prototype, "isValid").mockImplementationOnce(() => false);
+
+    const result = await sut.execute(requestMock);
+    expect(result).toStrictEqual(failure);
+  });
 });

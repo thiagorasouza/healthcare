@@ -67,9 +67,9 @@ export class CreateAppointment implements UseCase {
       .parse()
       .isValid(startTime);
 
-    // if(!isDoctorAvailable) {
-    //   return doctorUnavailableFailure;
-    // }
+    if (!isDoctorAvailable) {
+      return doctorUnavailableFailure;
+    }
 
     return new AppointmentCreatedSuccess(request);
   }
