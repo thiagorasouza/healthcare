@@ -289,4 +289,14 @@ describe("Slots Test Suite", () => {
 
     expect(sut.isValid(slotMock)).toBe(false);
   });
+
+  it("should return true if slot is valid", () => {
+    const patternsMock = [mockSingleDate(day1(), 10, 12)];
+    const slotMock = mockSlot(day1(), 11, 30);
+
+    const sut = makeSut();
+    sut.source(patternsMock).parse().sort();
+
+    expect(sut.isValid(slotMock)).toBe(true);
+  });
 });
