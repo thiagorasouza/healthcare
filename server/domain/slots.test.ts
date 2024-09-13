@@ -1,6 +1,7 @@
 import { expect } from "@jest/globals";
-import { PatternModel, Weekday } from "@/server/domain/models/patternModel";
+import { Weekday } from "@/server/domain/models/patternModel";
 import { Slots } from "@/server/domain/slots";
+import { weekdays } from "@/server/config/constants";
 
 const day1 = () => new Date("2024-01-01T05:00:00.000Z");
 const day2 = () => new Date("2024-01-02T05:00:00.000Z");
@@ -8,28 +9,37 @@ const day3 = () => new Date("2024-01-03T05:00:00.000Z");
 const day1Str = day1().toISOString();
 const day2Str = day2().toISOString();
 const day3Str = day3().toISOString();
+const day1Weekday = weekdays[day1().getDay()];
+const day2Weekday = weekdays[day2().getDay()];
+const day3Weekday = weekdays[day3().getDay()];
 
 export const mockSingleDate = (day: Date, startHour = 10, endHour = 11) => ({
   startDate: day,
   endDate: day,
-  startTime: new Date(day.setHours(startHour, 0, 0, 0)),
-  endTime: new Date(day.setHours(endHour, 0, 0, 0)),
+  startTime: new Date(new Date(day).setHours(startHour, 0, 0, 0)),
+  endTime: new Date(new Date(day).setHours(endHour, 0, 0, 0)),
   duration: 30,
   recurring: false,
   weekdays: [],
   doctorId: "any_id",
 });
 
-export const mockRecurringPattern = (startTime = 8, endTime = 10) => ({
-  startDate: day1(),
-  endDate: day2(),
-  startTime: new Date(day1().setHours(startTime, 0, 0, 0)),
-  endTime: new Date(day1().setHours(endTime, 0, 0, 0)),
-  duration: 30,
-  recurring: true,
-  weekdays: ["mon", "tue"] as Weekday[],
-  doctorId: "any_id",
-});
+export const mockRecurringPattern = (start: Date, end: Date, startTime = 8, endTime = 10) => {
+  const startDay = start.getDay();
+  const startWeekday = weekdays[startDay];
+  const dayAfterStartWeekday = weekdays[(startDay + 1) % 6];
+
+  return {
+    startDate: start,
+    endDate: end,
+    startTime: new Date(new Date(start).setHours(startTime, 0, 0, 0)),
+    endTime: new Date(new Date(start).setHours(endTime, 0, 0, 0)),
+    duration: 30,
+    recurring: true,
+    weekdays: [startWeekday, dayAfterStartWeekday] as Weekday[],
+    doctorId: "any_id",
+  };
+};
 
 const makeSut = () => {
   return new Slots();
@@ -88,6 +98,22 @@ describe("Slots Test Suite", () => {
     const singleDatesMock = [mockSingleDate(day1(), 10, 11), mockSingleDate(day2())];
     const sut = makeSut();
     sut.source(singleDatesMock).date(day1()).parse();
+    expect(sut.get()).toStrictEqual(
+      new Map(
+        Object.entries({
+          [day1Str]: [
+            ["10:00", "10:30"],
+            ["10:30", "11:00"],
+          ],
+        }),
+      ),
+    );
+  });
+
+  it("should return only the specified weekdays", () => {
+    const recurringPatternMock = [mockSingleDate(day1(), 10, 11), mockSingleDate(day2())];
+    const sut = makeSut();
+    sut.source(recurringPatternMock).weekdays([day1Weekday]).parse();
     expect(sut.get()).toStrictEqual(
       new Map(
         Object.entries({

@@ -59,6 +59,11 @@ export class Slots {
     return this;
   }
 
+  public weekdays(weekdays: Weekday[]) {
+    this.options.weekdays = weekdays;
+    return this;
+  }
+
   public parse() {
     for (const pattern of this.patterns) {
       const isSingleDate = !pattern.recurring;
@@ -93,7 +98,7 @@ export class Slots {
       (this.options?.date && !isSameDay(date, this.options.date)) ||
       (this.options?.start && isBefore(date, this.options.start)) ||
       (this.options?.end && isAfter(date, this.options.end)) ||
-      (this.options?.weekdays && !weekdays.includes(weekdays[getDay(date)]))
+      (this.options?.weekdays && !this.options.weekdays.includes(weekdays[getDay(date)]))
     );
   }
 
