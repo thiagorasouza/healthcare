@@ -49,6 +49,11 @@ export class Slots {
     return this;
   }
 
+  public end(end: Date) {
+    this.options.end = end;
+    return this;
+  }
+
   public parse() {
     for (const pattern of this.patterns) {
       const isSingleDate = !pattern.recurring;

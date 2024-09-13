@@ -68,6 +68,22 @@ describe("Slots Test Suite", () => {
     );
   });
 
+  it("should return only dates before end", () => {
+    const singleDatesMock = [mockSingleDate(day1(), 10, 11), mockSingleDate(day3())];
+    const sut = makeSut();
+    sut.source(singleDatesMock).end(day2()).parse();
+    expect(sut.get()).toStrictEqual(
+      new Map(
+        Object.entries({
+          [day1Str]: [
+            ["10:00", "10:30"],
+            ["10:30", "11:00"],
+          ],
+        }),
+      ),
+    );
+  });
+
   // it("should return an empty Map if date provided does not match pattern", () => {
   //   const recurringPatternMock = mockRecurringPattern();
   //   const result = Slots.read([recurringPatternMock], {
