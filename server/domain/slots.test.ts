@@ -5,12 +5,15 @@ import { Slots } from "@/server/domain/slots";
 const day1 = () => new Date("2024-01-01T05:00:00.000Z");
 const day2 = () => new Date("2024-01-02T05:00:00.000Z");
 const day3 = () => new Date("2024-01-03T05:00:00.000Z");
+const day1Str = day1().toISOString();
+const day2Str = day2().toISOString();
+const day3Str = day3().toISOString();
 
-export const mockSingleDate = (startTime = 10, endTime = 11) => ({
-  startDate: day1(),
-  endDate: day1(),
-  startTime: new Date(day1().setHours(startTime, 0, 0, 0)),
-  endTime: new Date(day1().setHours(endTime, 0, 0, 0)),
+export const mockSingleDate = (day: Date, startHour = 10, endHour = 11) => ({
+  startDate: day,
+  endDate: day,
+  startTime: new Date(day.setHours(startHour, 0, 0, 0)),
+  endTime: new Date(day.setHours(endHour, 0, 0, 0)),
   duration: 30,
   recurring: false,
   weekdays: [],
@@ -34,13 +37,13 @@ const makeSut = () => {
 
 describe("Slots Test Suite", () => {
   it("should parse a single date", () => {
-    const singleDateMock = mockSingleDate();
+    const singleDateMock = [mockSingleDate(day1())];
     const sut = makeSut();
-    sut.source([singleDateMock]).parse();
+    sut.source(singleDateMock).parse();
     expect(sut.get()).toStrictEqual(
       new Map(
         Object.entries({
-          "2024-01-01T05:00:00.000Z": [
+          [day1Str]: [
             ["10:00", "10:30"],
             ["10:30", "11:00"],
           ],
@@ -50,10 +53,19 @@ describe("Slots Test Suite", () => {
   });
 
   it("should return only dates after start", () => {
-    const singleDateMock = mockSingleDate();
+    const singleDatesMock = [mockSingleDate(day1()), mockSingleDate(day3(), 10, 11)];
     const sut = makeSut();
-    sut.source([singleDateMock]).start(day2()).parse();
-    expect(sut.get()).toStrictEqual(new Map());
+    sut.source(singleDatesMock).start(day2()).parse();
+    expect(sut.get()).toStrictEqual(
+      new Map(
+        Object.entries({
+          [day3Str]: [
+            ["10:00", "10:30"],
+            ["10:30", "11:00"],
+          ],
+        }),
+      ),
+    );
   });
 
   // it("should return an empty Map if date provided does not match pattern", () => {
