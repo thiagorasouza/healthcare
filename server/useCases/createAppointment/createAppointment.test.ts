@@ -1,5 +1,6 @@
 import { weekdays } from "@/lib/schemas/patternsSchema";
 import { genders, identificationTypes } from "@/server/config/constants";
+import { Appointment } from "@/server/domain/appointment";
 import { Gender, IdentificationType } from "@/server/domain/models/patientModel";
 import { Slots } from "@/server/domain/slots";
 import {
@@ -10,6 +11,7 @@ import {
   PatternNotFoundFailure,
 } from "@/server/shared/failures";
 import {
+  AppointmentLogicSuccess,
   DoctorFoundSuccess,
   PatientFoundSuccess,
   PatternsFoundSuccess,
@@ -17,7 +19,7 @@ import {
 import { CreateAppointment } from "@/server/useCases/createAppointment/createAppointment";
 import { CreateAppointmentRepository } from "@/server/useCases/createAppointment/createAppointmentRepository";
 import { faker } from "@faker-js/faker";
-import { expect, jest } from "@jest/globals";
+import { beforeAll, expect, jest } from "@jest/globals";
 import { addHours, addWeeks } from "date-fns";
 
 const mockRequest = () => ({
@@ -107,14 +109,16 @@ const makeSut = () => {
 };
 
 describe("CreateAppointment Use Case Test Suite", () => {
-  it("should fail if appointment is in the past", async () => {
+  it("should fail if appointment logic is invalid", async () => {
     const { sut } = makeSut();
 
     const requestMock = mockRequest();
-    requestMock.startTime = faker.date.recent();
+    const failure = new LogicFailure(["startTime"]);
+
+    jest.spyOn(Appointment, "create").mockImplementationOnce(() => failure);
 
     const result = await sut.execute(requestMock);
-    expect(result).toStrictEqual(new LogicFailure(["startTime"]));
+    expect(result).toStrictEqual(failure);
   });
 
   it("should fail if doctor does not exist", async () => {
