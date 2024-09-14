@@ -1,8 +1,10 @@
+import { Appointment } from "@/server/domain/appointment";
 import { AppointmentNotFoundFailure } from "@/server/shared/failures/appointmentNotFoundFailure";
 import { DoctorNotFoundFailure } from "@/server/shared/failures/doctorNotFoundFailure";
 import { PatientNotFoundFailure } from "@/server/shared/failures/patientNotFoundFailure";
 import { PatternNotFoundFailure } from "@/server/shared/failures/patternNotFoundFailure";
-import { AppointmentsFoundSuccess } from "@/server/shared/successes";
+import { ServerFailure } from "@/server/shared/failures/serverFailure";
+import { AppointmentCreatedSuccess, AppointmentsFoundSuccess } from "@/server/shared/successes";
 import { DoctorFoundSuccess } from "@/server/shared/successes/doctorFoundSuccess";
 import { PatientFoundSuccess } from "@/server/shared/successes/patientFoundSuccess";
 import { PatternsFoundSuccess } from "@/server/shared/successes/patternsFoundSuccess";
@@ -14,4 +16,5 @@ export interface CreateAppointmentRepository {
   getAppointmentsByPatientId(
     patientId: string,
   ): Promise<AppointmentsFoundSuccess | AppointmentNotFoundFailure>;
+  createAppointment(appointment: Appointment): Promise<AppointmentCreatedSuccess | ServerFailure>;
 }
