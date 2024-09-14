@@ -1,17 +1,20 @@
 import { weekdays } from "@/lib/schemas/patternsSchema";
 import { genders, identificationTypes } from "@/server/config/constants";
 import { Appointment } from "@/server/domain/appointment";
+import { mockAppointment } from "@/server/domain/mocks/appointment.mock";
 import { Gender, IdentificationType } from "@/server/domain/models/patientModel";
 import { Slots } from "@/server/domain/slots";
 import {
+  AppointmentNotFoundFailure,
   DoctorNotFoundFailure,
   DoctorUnavailableFailure,
-  LogicFailure,
   PatientNotFoundFailure,
+  PatientUnavailableFailure,
   PatternNotFoundFailure,
 } from "@/server/shared/failures";
+import { AppointmentTooShortFailure } from "@/server/shared/failures/appointmentTooShortFailure";
 import {
-  AppointmentLogicSuccess,
+  AppointmentsFoundSuccess,
   DoctorFoundSuccess,
   PatientFoundSuccess,
   PatternsFoundSuccess,
@@ -19,14 +22,18 @@ import {
 import { CreateAppointment } from "@/server/useCases/createAppointment/createAppointment";
 import { CreateAppointmentRepository } from "@/server/useCases/createAppointment/createAppointmentRepository";
 import { faker } from "@faker-js/faker";
-import { beforeAll, expect, jest } from "@jest/globals";
-import { addHours, addWeeks } from "date-fns";
+import { expect, jest } from "@jest/globals";
+import { addHours, addMinutes, addWeeks } from "date-fns";
 
-const mockRequest = () => ({
-  doctorId: faker.string.alphanumeric(12),
-  patientId: faker.string.alphanumeric(12),
-  startTime: faker.date.soon(),
-});
+const mockRequest = () => {
+  const startTime = faker.date.soon();
+  return {
+    doctorId: faker.string.alphanumeric(12),
+    patientId: faker.string.alphanumeric(12),
+    startTime,
+    duration: 30,
+  };
+};
 
 const mockDoctor = () => ({
   id: faker.string.uuid(),
@@ -96,6 +103,16 @@ const makeRepository = () => {
       }
       return new PatternsFoundSuccess(patternsMock);
     }
+
+    async getAppointmentsByPatientId(
+      patientId: string,
+    ): Promise<AppointmentsFoundSuccess | AppointmentNotFoundFailure> {
+      const appointmentsMock = [mockAppointment(), mockAppointment()];
+      for (const appointment of appointmentsMock) {
+        appointment.patientId = patientId;
+      }
+      return new AppointmentsFoundSuccess(appointmentsMock);
+    }
   }
 
   return new CreateAppointmentRepositoryStub();
@@ -113,9 +130,9 @@ describe("CreateAppointment Use Case Test Suite", () => {
     const { sut } = makeSut();
 
     const requestMock = mockRequest();
-    const failure = new LogicFailure(["startTime"]);
+    const failure = new AppointmentTooShortFailure(requestMock.duration);
 
-    jest.spyOn(Appointment, "create").mockImplementationOnce(() => failure);
+    jest.spyOn(Appointment.prototype, "validate").mockImplementationOnce(() => failure);
 
     const result = await sut.execute(requestMock);
     expect(result).toStrictEqual(failure);
@@ -170,4 +187,17 @@ describe("CreateAppointment Use Case Test Suite", () => {
     const result = await sut.execute(requestMock);
     expect(result).toStrictEqual(failure);
   });
+
+  // it("should fail if patient is not available", async () => {
+  //   const { sut, repository } = makeSut();
+
+  //   const requestMock = mockRequest();
+  //   const failure = new PatientUnavailableFailure(requestMock.patientId, requestMock.startTime);
+
+  //   jest.spyOn(Slots.prototype, "isValid").mockImplementationOnce(() => true);
+  //   jest.spyOn(Slots.prototype, "isValid").mockImplementationOnce(() => false);
+
+  //   const result = await sut.execute(requestMock);
+  //   expect(result).toStrictEqual(failure);
+  // });
 });

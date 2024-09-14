@@ -1,8 +1,9 @@
 import { Appointment } from "@/server/domain/appointment";
 import { Slots } from "@/server/domain/slots";
+import { AppointmentTooShortFailure } from "@/server/shared/failures/appointmentTooShortFailure";
+import { AppointmentTooSoonFailure } from "@/server/shared/failures/appointmentTooSoonFailure";
 import { DoctorNotFoundFailure } from "@/server/shared/failures/doctorNotFoundFailure";
 import { DoctorUnavailableFailure } from "@/server/shared/failures/doctorUnavailableFailure";
-import { LogicFailure } from "@/server/shared/failures/logicFailure";
 import { PatientNotFoundFailure } from "@/server/shared/failures/patientNotFoundFailure";
 import { PatientUnavailableFailure } from "@/server/shared/failures/patientUnavailableFailure";
 import { UseCase } from "@/server/shared/protocols/useCase";
@@ -13,6 +14,7 @@ export interface CreateAppointmentRequest {
   doctorId: string;
   patientId: string;
   startTime: Date;
+  duration: number;
 }
 
 // algorithm
@@ -30,15 +32,16 @@ export class CreateAppointment implements UseCase {
     request: CreateAppointmentRequest,
   ): Promise<
     | AppointmentCreatedSuccess
-    | LogicFailure
+    | AppointmentTooSoonFailure
+    | AppointmentTooShortFailure
     | DoctorNotFoundFailure
     | PatientNotFoundFailure
     | DoctorUnavailableFailure
     | PatientUnavailableFailure
   > {
-    const validateLogicResult = Appointment.create(request);
-    if (!validateLogicResult.ok) {
-      return validateLogicResult;
+    const appointmentValidation = new Appointment(request).validate();
+    if (!appointmentValidation.ok) {
+      return appointmentValidation;
     }
 
     const { doctorId, patientId, startTime } = request;
@@ -70,6 +73,12 @@ export class CreateAppointment implements UseCase {
     if (!isDoctorAvailable) {
       return doctorUnavailableFailure;
     }
+
+    const appointmentsResult = await this.repository.getAppointmentsByPatientId(patientId);
+    if (appointmentsResult.ok) {
+      const appointments = appointmentsResult.value;
+    }
+    // return new PatientUnavailableFailure(patientId, startTime);
 
     return new AppointmentCreatedSuccess(request);
   }
