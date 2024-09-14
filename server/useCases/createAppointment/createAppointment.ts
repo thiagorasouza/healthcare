@@ -1,5 +1,9 @@
 import { Appointment } from "@/server/domain/appointment";
 import { Slots } from "@/server/domain/slots";
+import { AppointmentsRepository } from "@/server/repositories/appointmentsRepository";
+import { DoctorsRepository } from "@/server/repositories/doctorsRepository";
+import { PatientsRepository } from "@/server/repositories/patientsRepository";
+import { PatternsRepository } from "@/server/repositories/patternsRepository";
 import { AppointmentTooShortFailure } from "@/server/shared/failures/appointmentTooShortFailure";
 import { AppointmentTooSoonFailure } from "@/server/shared/failures/appointmentTooSoonFailure";
 import { DoctorNotFoundFailure } from "@/server/shared/failures/doctorNotFoundFailure";
@@ -9,7 +13,6 @@ import { PatientUnavailableFailure } from "@/server/shared/failures/patientUnava
 import { ServerFailure } from "@/server/shared/failures/serverFailure";
 import { UseCase } from "@/server/shared/protocols/useCase";
 import { AppointmentCreatedSuccess } from "@/server/shared/successes/appointmentCreatedSuccess";
-import { CreateAppointmentRepository } from "@/server/useCases/createAppointment/createAppointmentRepository";
 
 export interface CreateAppointmentRequest {
   doctorId: string;
@@ -27,7 +30,12 @@ export interface CreateAppointmentRequest {
 // 6. save appointment data
 
 export class CreateAppointment implements UseCase {
-  constructor(private readonly repository: CreateAppointmentRepository) {}
+  constructor(
+    private readonly doctorsRepository: DoctorsRepository,
+    private readonly patientsRepository: PatientsRepository,
+    private readonly patternsRepository: PatternsRepository,
+    private readonly appointmentsRepository: AppointmentsRepository,
+  ) {}
 
   async execute(
     request: CreateAppointmentRequest,
@@ -49,19 +57,19 @@ export class CreateAppointment implements UseCase {
     const { doctorId, patientId, startTime } = request;
     const appointment = appointmentValidation.value;
 
-    const doctorExistsResult = await this.repository.getDoctorById(doctorId);
+    const doctorExistsResult = await this.doctorsRepository.getDoctorById(doctorId);
     if (!doctorExistsResult.ok) {
       return doctorExistsResult;
     }
 
-    const patientExistsResult = await this.repository.getPatientById(patientId);
+    const patientExistsResult = await this.patientsRepository.getPatientById(patientId);
     if (!patientExistsResult.ok) {
       return patientExistsResult;
     }
 
     const doctorUnavailableFailure = new DoctorUnavailableFailure(doctorId, startTime);
 
-    const patternsResult = await this.repository.getPatternsByDoctorId(doctorId);
+    const patternsResult = await this.patternsRepository.getPatternsByDoctorId(doctorId);
     if (!patternsResult.ok) {
       return doctorUnavailableFailure;
     }
@@ -77,7 +85,8 @@ export class CreateAppointment implements UseCase {
       return doctorUnavailableFailure;
     }
 
-    const appointmentsResult = await this.repository.getAppointmentsByPatientId(patientId);
+    const appointmentsResult =
+      await this.appointmentsRepository.getAppointmentsByPatientId(patientId);
     if (appointmentsResult.ok) {
       const storedAppointments = appointmentsResult.value;
 
@@ -87,7 +96,8 @@ export class CreateAppointment implements UseCase {
       }
     }
 
-    const createAppointmentResult = await this.repository.createAppointment(appointment);
+    const createAppointmentResult =
+      await this.appointmentsRepository.createAppointment(appointment);
 
     return createAppointmentResult;
   }

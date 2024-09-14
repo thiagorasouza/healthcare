@@ -4,6 +4,10 @@ import { Appointment } from "@/server/domain/appointment";
 import { mockAppointment } from "@/server/domain/mocks/appointment.mock";
 import { Gender, IdentificationType } from "@/server/domain/models/patientModel";
 import { Slots } from "@/server/domain/slots";
+import { AppointmentsRepository } from "@/server/repositories/appointmentsRepository";
+import { DoctorsRepository } from "@/server/repositories/doctorsRepository";
+import { PatientsRepository } from "@/server/repositories/patientsRepository";
+import { PatternsRepository } from "@/server/repositories/patternsRepository";
 import {
   AppointmentNotFoundFailure,
   DoctorNotFoundFailure,
@@ -82,20 +86,32 @@ const mockPattern = () => {
   };
 };
 
-const makeRepository = () => {
-  class CreateAppointmentRepositoryStub implements CreateAppointmentRepository {
+const makeDoctorsRepository = () => {
+  class DoctorsRepositoryStub implements DoctorsRepository {
     async getDoctorById(doctorId: string): Promise<DoctorFoundSuccess | DoctorNotFoundFailure> {
       const doctorMock = mockDoctor();
       doctorMock.id = doctorId;
       return new DoctorFoundSuccess(doctorMock);
     }
+  }
 
+  return new DoctorsRepositoryStub();
+};
+
+const makePatientsRepository = () => {
+  class PatientsRepositoryStub implements PatientsRepository {
     async getPatientById(patientId: string): Promise<PatientFoundSuccess | PatientNotFoundFailure> {
       const patientMock = mockPatient();
       patientMock.id = patientId;
       return new PatientFoundSuccess(patientMock);
     }
+  }
 
+  return new PatientsRepositoryStub();
+};
+
+const makePatternsRepository = () => {
+  class PatternsRepositoryStub implements PatternsRepository {
     async getPatternsByDoctorId(
       doctorId: string,
     ): Promise<PatternsFoundSuccess | PatternNotFoundFailure> {
@@ -105,7 +121,13 @@ const makeRepository = () => {
       }
       return new PatternsFoundSuccess(patternsMock);
     }
+  }
 
+  return new PatternsRepositoryStub();
+};
+
+const makeAppointmentsRepository = () => {
+  class AppointmentsRepositoryStub implements AppointmentsRepository {
     async getAppointmentsByPatientId(
       patientId: string,
     ): Promise<AppointmentsFoundSuccess | AppointmentNotFoundFailure> {
@@ -124,14 +146,22 @@ const makeRepository = () => {
     }
   }
 
-  return new CreateAppointmentRepositoryStub();
+  return new AppointmentsRepositoryStub();
 };
 
 const makeSut = () => {
-  const repository = makeRepository();
-  const sut = new CreateAppointment(repository);
+  const doctorsRepository = makeDoctorsRepository();
+  const patientsRepository = makePatientsRepository();
+  const patternsRepository = makePatternsRepository();
+  const appointmentsRepository = makeAppointmentsRepository();
+  const sut = new CreateAppointment(
+    doctorsRepository,
+    patientsRepository,
+    patternsRepository,
+    appointmentsRepository,
+  );
 
-  return { sut, repository };
+  return { sut, doctorsRepository, patientsRepository, patternsRepository, appointmentsRepository };
 };
 
 describe("CreateAppointment Use Case Test Suite", () => {
@@ -154,37 +184,37 @@ describe("CreateAppointment Use Case Test Suite", () => {
   });
 
   it("should fail if doctor does not exist", async () => {
-    const { sut, repository } = makeSut();
+    const { sut, doctorsRepository } = makeSut();
 
     const requestMock = mockRequest();
     const failure = new DoctorNotFoundFailure(requestMock.doctorId);
 
-    jest.spyOn(repository, "getDoctorById").mockReturnValueOnce(Promise.resolve(failure));
+    jest.spyOn(doctorsRepository, "getDoctorById").mockReturnValueOnce(Promise.resolve(failure));
 
     const result = await sut.execute(requestMock);
     expect(result).toStrictEqual(failure);
   });
 
   it("should fail if patient does not exist", async () => {
-    const { sut, repository } = makeSut();
+    const { sut, patientsRepository } = makeSut();
 
     const requestMock = mockRequest();
     const failure = new PatientNotFoundFailure(requestMock.patientId);
 
-    jest.spyOn(repository, "getPatientById").mockReturnValueOnce(Promise.resolve(failure));
+    jest.spyOn(patientsRepository, "getPatientById").mockReturnValueOnce(Promise.resolve(failure));
 
     const result = await sut.execute(requestMock);
     expect(result).toStrictEqual(failure);
   });
 
   it("should fail if doctor has no slots registered", async () => {
-    const { sut, repository } = makeSut();
+    const { sut, patternsRepository } = makeSut();
 
     const requestMock = mockRequest();
     const failure = new DoctorUnavailableFailure(requestMock.doctorId, requestMock.startTime);
 
     jest
-      .spyOn(repository, "getPatternsByDoctorId")
+      .spyOn(patternsRepository, "getPatternsByDoctorId")
       .mockReturnValueOnce(Promise.resolve(new PatternNotFoundFailure(requestMock.doctorId)));
 
     const result = await sut.execute(requestMock);
@@ -192,7 +222,7 @@ describe("CreateAppointment Use Case Test Suite", () => {
   });
 
   it("should fail if doctor is not available", async () => {
-    const { sut, repository } = makeSut();
+    const { sut } = makeSut();
 
     const requestMock = mockRequest();
     const failure = new DoctorUnavailableFailure(requestMock.doctorId, requestMock.startTime);
@@ -204,7 +234,7 @@ describe("CreateAppointment Use Case Test Suite", () => {
   });
 
   it("should fail if patient is not available", async () => {
-    const { sut, repository } = makeSut();
+    const { sut } = makeSut();
 
     const requestMock = mockRequest();
     const failure = new PatientUnavailableFailure(requestMock.patientId, requestMock.startTime);
@@ -216,19 +246,21 @@ describe("CreateAppointment Use Case Test Suite", () => {
   });
 
   it("should fail if saving appointment fails", async () => {
-    const { sut, repository } = makeSut();
+    const { sut, appointmentsRepository } = makeSut();
 
     const requestMock = mockRequest();
     const failure = new ServerFailure("");
 
-    jest.spyOn(repository, "createAppointment").mockReturnValueOnce(Promise.resolve(failure));
+    jest
+      .spyOn(appointmentsRepository, "createAppointment")
+      .mockReturnValueOnce(Promise.resolve(failure));
 
     const result = await sut.execute(requestMock);
     expect(result).toStrictEqual(failure);
   });
 
   it("should succeed if everything is ok", async () => {
-    const { sut, repository } = makeSut();
+    const { sut } = makeSut();
 
     const requestMock = mockRequest();
     const appointmentMock = new Appointment(requestMock);
