@@ -76,9 +76,14 @@ export class CreateAppointment implements UseCase {
 
     const appointmentsResult = await this.repository.getAppointmentsByPatientId(patientId);
     if (appointmentsResult.ok) {
-      const appointments = appointmentsResult.value;
+      const storedAppointments = appointmentsResult.value;
+      const currentAppointment = appointmentValidation.value;
+
+      const anyConflict = storedAppointments.some((ap) => currentAppointment.isConflicting(ap));
+      if (anyConflict) {
+        return new PatientUnavailableFailure(patientId, startTime);
+      }
     }
-    // return new PatientUnavailableFailure(patientId, startTime);
 
     return new AppointmentCreatedSuccess(request);
   }
