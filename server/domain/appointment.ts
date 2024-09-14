@@ -12,6 +12,10 @@ export class Appointment {
     this.data = data;
   }
 
+  public get() {
+    return this.data;
+  }
+
   public validate() {
     const { startTime, duration } = this.data;
 

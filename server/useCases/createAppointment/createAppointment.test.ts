@@ -119,7 +119,7 @@ const makeRepository = () => {
     async createAppointment(
       appointment: Appointment,
     ): Promise<AppointmentCreatedSuccess | ServerFailure> {
-      const appointmentMock = new Appointment(mockRequest());
+      const appointmentMock = new Appointment(appointment.get());
       return new AppointmentCreatedSuccess(appointmentMock);
     }
   }
@@ -225,5 +225,15 @@ describe("CreateAppointment Use Case Test Suite", () => {
 
     const result = await sut.execute(requestMock);
     expect(result).toStrictEqual(failure);
+  });
+
+  it("should succeed if everything is ok", async () => {
+    const { sut, repository } = makeSut();
+
+    const requestMock = mockRequest();
+    const appointmentMock = new Appointment(requestMock);
+
+    const result = await sut.execute(requestMock);
+    expect(result).toStrictEqual(new AppointmentCreatedSuccess(appointmentMock));
   });
 });
