@@ -13,7 +13,9 @@ import {
   PatternNotFoundFailure,
 } from "@/server/shared/failures";
 import { AppointmentTooShortFailure } from "@/server/shared/failures/appointmentTooShortFailure";
+import { ServerFailure } from "@/server/shared/failures/serverFailure";
 import {
+  AppointmentCreatedSuccess,
   AppointmentsFoundSuccess,
   DoctorFoundSuccess,
   PatientFoundSuccess,
@@ -23,10 +25,10 @@ import { CreateAppointment } from "@/server/useCases/createAppointment/createApp
 import { CreateAppointmentRepository } from "@/server/useCases/createAppointment/createAppointmentRepository";
 import { faker } from "@faker-js/faker";
 import { beforeEach, expect, jest } from "@jest/globals";
-import { addHours, addMinutes, addWeeks } from "date-fns";
+import { addDays, addHours, addWeeks } from "date-fns";
 
 const mockRequest = () => {
-  const startTime = faker.date.soon();
+  const startTime = faker.date.soon({ refDate: addDays(new Date(), 1) });
   return {
     doctorId: faker.string.alphanumeric(12),
     patientId: faker.string.alphanumeric(12),
@@ -113,6 +115,13 @@ const makeRepository = () => {
       }
       return new AppointmentsFoundSuccess(appointmentsMock);
     }
+
+    async createAppointment(
+      appointment: Appointment,
+    ): Promise<AppointmentCreatedSuccess | ServerFailure> {
+      const appointmentMock = new Appointment(mockRequest());
+      return new AppointmentCreatedSuccess(appointmentMock);
+    }
   }
 
   return new CreateAppointmentRepositoryStub();
@@ -128,6 +137,8 @@ const makeSut = () => {
 describe("CreateAppointment Use Case Test Suite", () => {
   beforeEach(() => {
     jest.clearAllMocks();
+    jest.spyOn(Slots.prototype, "isValid").mockImplementation(() => true);
+    jest.spyOn(Appointment.prototype, "isConflicting").mockImplementation(() => false);
   });
 
   it("should fail if appointment logic is invalid", async () => {
@@ -198,8 +209,19 @@ describe("CreateAppointment Use Case Test Suite", () => {
     const requestMock = mockRequest();
     const failure = new PatientUnavailableFailure(requestMock.patientId, requestMock.startTime);
 
-    jest.spyOn(Slots.prototype, "isValid").mockImplementationOnce(() => true);
     jest.spyOn(Appointment.prototype, "isConflicting").mockImplementationOnce(() => true);
+
+    const result = await sut.execute(requestMock);
+    expect(result).toStrictEqual(failure);
+  });
+
+  it("should fail if saving appointment fails", async () => {
+    const { sut, repository } = makeSut();
+
+    const requestMock = mockRequest();
+    const failure = new ServerFailure("");
+
+    jest.spyOn(repository, "createAppointment").mockReturnValueOnce(Promise.resolve(failure));
 
     const result = await sut.execute(requestMock);
     expect(result).toStrictEqual(failure);

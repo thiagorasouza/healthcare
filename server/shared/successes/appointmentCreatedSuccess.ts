@@ -1,8 +1,8 @@
 import { Success } from "@/server/core/success";
-import { AppointmentModel } from "@/server/domain/models/appointmentModel";
+import { Appointment } from "@/server/domain/appointment";
 
-export class AppointmentCreatedSuccess extends Success<AppointmentModel> {
-  constructor(appointment: AppointmentModel) {
+export class AppointmentCreatedSuccess extends Success<Appointment> {
+  constructor(appointment: Appointment) {
     super(appointment);
   }
 }

@@ -6,6 +6,7 @@ import { DoctorNotFoundFailure } from "@/server/shared/failures/doctorNotFoundFa
 import { DoctorUnavailableFailure } from "@/server/shared/failures/doctorUnavailableFailure";
 import { PatientNotFoundFailure } from "@/server/shared/failures/patientNotFoundFailure";
 import { PatientUnavailableFailure } from "@/server/shared/failures/patientUnavailableFailure";
+import { ServerFailure } from "@/server/shared/failures/serverFailure";
 import { UseCase } from "@/server/shared/protocols/useCase";
 import { AppointmentCreatedSuccess } from "@/server/shared/successes/appointmentCreatedSuccess";
 import { CreateAppointmentRepository } from "@/server/useCases/createAppointment/createAppointmentRepository";
@@ -38,6 +39,7 @@ export class CreateAppointment implements UseCase {
     | PatientNotFoundFailure
     | DoctorUnavailableFailure
     | PatientUnavailableFailure
+    | ServerFailure
   > {
     const appointmentValidation = new Appointment(request).validate();
     if (!appointmentValidation.ok) {
@@ -45,6 +47,7 @@ export class CreateAppointment implements UseCase {
     }
 
     const { doctorId, patientId, startTime } = request;
+    const appointment = appointmentValidation.value;
 
     const doctorExistsResult = await this.repository.getDoctorById(doctorId);
     if (!doctorExistsResult.ok) {
@@ -77,14 +80,15 @@ export class CreateAppointment implements UseCase {
     const appointmentsResult = await this.repository.getAppointmentsByPatientId(patientId);
     if (appointmentsResult.ok) {
       const storedAppointments = appointmentsResult.value;
-      const currentAppointment = appointmentValidation.value;
 
-      const anyConflict = storedAppointments.some((ap) => currentAppointment.isConflicting(ap));
+      const anyConflict = storedAppointments.some((ap) => appointment.isConflicting(ap));
       if (anyConflict) {
         return new PatientUnavailableFailure(patientId, startTime);
       }
     }
 
-    return new AppointmentCreatedSuccess(request);
+    const createAppointmentResult = await this.repository.createAppointment(appointment);
+
+    return createAppointmentResult;
   }
 }
