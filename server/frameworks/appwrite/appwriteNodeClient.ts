@@ -1,4 +1,4 @@
-import { env } from "@/lib/env";
+import { env } from "@/server/config/env";
 import { Account, Client, Databases, Storage, Users } from "node-appwrite";
 
 const client = new Client()
