@@ -1,4 +1,4 @@
-// INTEGRATION TESTS
+// HITS THE APPWRITE API
 
 import { env } from "@/server/config/env";
 import { mockDoctor } from "@/server/domain/mocks/doctor.mock";

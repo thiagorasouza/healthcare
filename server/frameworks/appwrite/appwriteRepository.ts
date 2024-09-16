@@ -1,3 +1,4 @@
+import { isAppwriteException } from "@/server/frameworks/appwrite/appwriteHelpers";
 import { Databases, ID } from "node-appwrite";
 
 export class AppwriteRepository {
@@ -22,7 +23,15 @@ export class AppwriteRepository {
   }
 
   public async getDocument(id: string) {
-    return await this.db.getDocument(this.databaseId, this.collectionId, id);
+    try {
+      return await this.db.getDocument(this.databaseId, this.collectionId, id);
+    } catch (error) {
+      if (isAppwriteException(error) && error.type === "document_not_found") {
+        return null;
+      }
+
+      throw error;
+    }
   }
 
   public async listDocuments(queries: string[]) {

@@ -18,14 +18,13 @@ export class AppwriteDoctorRepository extends AppwriteRepository implements Doct
   ): Promise<DoctorFoundSuccess | DoctorNotFoundFailure> {
     try {
       const result = (await this.getDocument(doctorId)) as Appwritify<DoctorModel>;
+      if (!result) {
+        return new DoctorNotFoundFailure(doctorId);
+      }
 
       return new DoctorFoundSuccess(this.map(result));
     } catch (error) {
-      if (isAppwriteException(error) && error.type === "document_not_found") {
-        return new DoctorNotFoundFailure(doctorId);
-      } else {
-        return new ServerFailure(error);
-      }
+      return new ServerFailure(error);
     }
   }
 
