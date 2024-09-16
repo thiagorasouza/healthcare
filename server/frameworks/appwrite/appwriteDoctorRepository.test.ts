@@ -7,6 +7,7 @@ import { AppwriteDoctorRepository } from "@/server/frameworks/appwrite/appwriteD
 import { Appwritify } from "@/server/frameworks/appwrite/appwriteHelpers";
 import { databases } from "@/server/frameworks/appwrite/appwriteNodeClient";
 import { DoctorNotFoundFailure } from "@/server/shared/failures";
+import { DoctorFoundSuccess } from "@/server/shared/successes";
 import { afterAll, beforeAll, expect } from "@jest/globals";
 
 const makeSut = () => {
@@ -33,6 +34,16 @@ describe("AppwriteDoctorRepository Test Suite", () => {
     const result = await sut.getDoctorById(doctorId);
 
     expect(result).toStrictEqual(failure);
+  });
+
+  it("getDoctorById should return doctor if id is found", async () => {
+    const { sut } = makeSut();
+
+    const doctorId = doctorCreated.$id;
+    const success = new DoctorFoundSuccess({ ...doctorMock, id: doctorId });
+    const result = await sut.getDoctorById(doctorId);
+
+    expect(result).toStrictEqual(success);
   });
 
   afterAll(async () => {
