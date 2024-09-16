@@ -3,7 +3,7 @@
 import { env } from "@/server/config/env";
 import { mockDoctor } from "@/server/domain/mocks/doctor.mock";
 import { DoctorModel } from "@/server/domain/models/doctorModel";
-import { AppwriteDoctorRepository } from "@/server/frameworks/appwrite/appwriteDoctorRepository";
+import { AppwriteDoctorsRepository } from "@/server/frameworks/appwrite/appwriteDoctorsRepository";
 import { Appwritify } from "@/server/frameworks/appwrite/appwriteHelpers";
 import { databases } from "@/server/frameworks/appwrite/appwriteNodeClient";
 import { DoctorNotFoundFailure } from "@/server/shared/failures";
@@ -11,7 +11,7 @@ import { DoctorFoundSuccess } from "@/server/shared/successes";
 import { afterAll, beforeAll, expect } from "@jest/globals";
 
 const makeSut = () => {
-  const sut = new AppwriteDoctorRepository(databases, env.databaseId, env.doctorsCollectionId);
+  const sut = new AppwriteDoctorsRepository(databases, env.databaseId, env.doctorsCollectionId);
   return { sut };
 };
 
@@ -20,7 +20,7 @@ Reflect.deleteProperty(doctorMock, "id");
 
 let doctorCreated: Appwritify<DoctorModel>;
 
-describe("AppwriteDoctorRepository Test Suite", () => {
+describe("AppwriteDoctorsRepository Test Suite", () => {
   beforeAll(async () => {
     const { sut } = makeSut();
     doctorCreated = (await sut.createDocument(doctorMock)) as Appwritify<DoctorModel>;

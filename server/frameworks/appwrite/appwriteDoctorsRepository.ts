@@ -1,4 +1,3 @@
-import { isAppwriteException } from "@/lib/utils";
 import { DoctorModel } from "@/server/domain/models/doctorModel";
 import { Appwritify } from "@/server/frameworks/appwrite/appwriteHelpers";
 import { AppwriteRepository } from "@/server/frameworks/appwrite/appwriteRepository";
@@ -8,7 +7,7 @@ import { ServerFailure } from "@/server/shared/failures/serverFailure";
 import { DoctorFoundSuccess } from "@/server/shared/successes";
 import { Databases } from "node-appwrite";
 
-export class AppwriteDoctorRepository extends AppwriteRepository implements DoctorsRepository {
+export class AppwriteDoctorsRepository extends AppwriteRepository implements DoctorsRepository {
   constructor(databases: Databases, databaseId: string, collectionId: string) {
     super(databases, databaseId, collectionId);
   }
