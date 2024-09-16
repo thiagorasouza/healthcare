@@ -2,6 +2,7 @@ import { weekdays } from "@/lib/schemas/patternsSchema";
 import { genders, identificationTypes } from "@/server/config/constants";
 import { Appointment } from "@/server/domain/appointment";
 import { mockAppointment } from "@/server/domain/mocks/appointment.mock";
+import { mockDoctor } from "@/server/domain/mocks/doctor.mock";
 import { Gender, IdentificationType } from "@/server/domain/models/patientModel";
 import { Slots } from "@/server/domain/slots";
 import { AppointmentsRepository } from "@/server/repositories/appointmentsRepository";
@@ -26,7 +27,6 @@ import {
   PatternsFoundSuccess,
 } from "@/server/shared/successes";
 import { CreateAppointment } from "@/server/useCases/createAppointment/createAppointment";
-import { CreateAppointmentRepository } from "@/server/useCases/createAppointment/createAppointmentRepository";
 import { faker } from "@faker-js/faker";
 import { beforeEach, expect, jest } from "@jest/globals";
 import { addDays, addHours, addWeeks } from "date-fns";
@@ -40,17 +40,6 @@ const mockRequest = () => {
     duration: 30,
   };
 };
-
-const mockDoctor = () => ({
-  id: faker.string.uuid(),
-  name: faker.person.fullName(),
-  email: faker.internet.email(),
-  phone: faker.phone.number(),
-  specialty: faker.person.jobType(),
-  bio: faker.lorem.paragraph(),
-  pictureId: faker.string.uuid(),
-  authId: faker.string.uuid(),
-});
 
 const mockPatient = () => ({
   id: faker.string.uuid(),
