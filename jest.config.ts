@@ -11,6 +11,7 @@ const config: Config = {
   moduleNameMapper: {
     "^@/(.*)$": "<rootDir>/$1",
   },
+  setupFiles: ["<rootDir>/server/config/envConfig.ts"],
 };
 
 const jestConfig = createJestConfig(config);
