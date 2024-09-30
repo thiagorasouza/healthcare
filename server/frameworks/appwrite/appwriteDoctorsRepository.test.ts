@@ -6,8 +6,8 @@ import { DoctorModel } from "@/server/domain/models/doctorModel";
 import { AppwriteDoctorsRepository } from "@/server/frameworks/appwrite/appwriteDoctorsRepository";
 import { Appwritify } from "@/server/frameworks/appwrite/appwriteHelpers";
 import { databases } from "@/server/frameworks/appwrite/appwriteNodeClient";
-import { DoctorNotFoundFailure } from "@/server/shared/failures";
-import { DoctorFoundSuccess } from "@/server/shared/successes";
+import { NotFoundFailure } from "@/server/shared/failures/notFoundFailure";
+import { FoundSuccess } from "@/server/shared/successes/foundSuccess";
 import { afterAll, beforeAll, expect } from "@jest/globals";
 
 const makeSut = () => {
@@ -30,7 +30,7 @@ describe("AppwriteDoctorsRepository Test Suite", () => {
     const { sut } = makeSut();
 
     const doctorId = "non_existent_id";
-    const failure = new DoctorNotFoundFailure(doctorId);
+    const failure = new NotFoundFailure(doctorId);
     const result = await sut.getDoctorById(doctorId);
 
     expect(result).toStrictEqual(failure);
@@ -40,7 +40,7 @@ describe("AppwriteDoctorsRepository Test Suite", () => {
     const { sut } = makeSut();
 
     const doctorId = doctorCreated.$id;
-    const success = new DoctorFoundSuccess({ ...doctorMock, id: doctorId });
+    const success = new FoundSuccess<DoctorModel>({ ...doctorMock, id: doctorId });
     const result = await sut.getDoctorById(doctorId);
 
     expect(result).toStrictEqual(success);
