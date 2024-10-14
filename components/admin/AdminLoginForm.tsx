@@ -1,3 +1,5 @@
+"use client";
+
 import { Form } from "@/components/ui/form";
 import { unexpectedError } from "@/lib/results";
 import { useRouter } from "next/navigation";
@@ -29,6 +31,7 @@ export default function AdminLoginForm() {
     setMessage("");
     try {
       const result = await loginAdmin(loginData);
+      console.log("🚀 ~ result:", result);
       if (result.success) {
         router.push("/admin");
         return;
