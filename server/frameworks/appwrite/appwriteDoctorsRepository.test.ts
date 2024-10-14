@@ -1,17 +1,15 @@
 // HITS THE APPWRITE API
 
-import { env } from "@/server/config/env";
 import { mockDoctor } from "@/server/domain/mocks/doctor.mock";
 import { DoctorModel } from "@/server/domain/models/doctorModel";
 import { AppwriteDoctorsRepository } from "@/server/frameworks/appwrite/appwriteDoctorsRepository";
 import { Appwritify } from "@/server/frameworks/appwrite/appwriteHelpers";
-import { databases } from "@/server/frameworks/appwrite/appwriteNodeClient";
 import { NotFoundFailure } from "@/server/shared/failures/notFoundFailure";
 import { FoundSuccess } from "@/server/shared/successes/foundSuccess";
 import { afterAll, beforeAll, expect } from "@jest/globals";
 
 const makeSut = () => {
-  const sut = new AppwriteDoctorsRepository(databases, env.databaseId, env.doctorsCollectionId);
+  const sut = new AppwriteDoctorsRepository();
   return { sut };
 };
 
