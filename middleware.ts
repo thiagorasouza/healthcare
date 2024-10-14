@@ -1,11 +1,9 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
-import { getNodeSessionClient } from "./lib/appwrite/nodeSessionClient";
-import { Account } from "node-appwrite";
+import { account } from "@/lib/appwrite/nodeSessionClient";
 
 export async function middleware(request: NextRequest) {
   try {
-    const { account } = getNodeSessionClient();
     const user = await account.get();
     if (!user.labels.includes("admin")) throw new Error("User is not admin");
   } catch (error) {
