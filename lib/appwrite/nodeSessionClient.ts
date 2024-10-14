@@ -6,12 +6,15 @@ const client = new Client();
 
 client.setEndpoint("https://cloud.appwrite.io/v1").setProject(env.projectId);
 
-const sessionCookie = cookies().get("session");
-if (!sessionCookie) {
-  throw new Error("Session cookie is not set.");
-}
+const getAccount = () => {
+  const sessionCookie = cookies().get("session");
+  if (!sessionCookie) {
+    throw new Error("Session cookie is not set.");
+  }
 
-client.setSession(sessionCookie.value);
-const account = new Account(client);
+  client.setSession(sessionCookie.value);
 
-export { client, account };
+  return new Account(client);
+};
+
+export { client, getAccount };

@@ -2,10 +2,11 @@
 
 import { cookies } from "next/headers";
 import { success, unexpectedError } from "../results";
-import { account } from "@/lib/appwrite/nodeSessionClient";
+import { getAccount } from "@/lib/appwrite/nodeSessionClient";
 
 export async function logout() {
   try {
+    const account = getAccount();
     await account.deleteSession("current");
     cookies().delete("session");
     return success();
