@@ -10,7 +10,7 @@ export class AppwritePatientsRepository
   implements PatientsRepository
 {
   constructor() {
-    super(databases, env.databaseId, env.patientsCollectionId);
+    super(env.patientsCollectionId);
   }
 
   async getPatientById(patientId: string) {

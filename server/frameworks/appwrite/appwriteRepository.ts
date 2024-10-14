@@ -1,4 +1,6 @@
+import { env } from "@/server/config/env";
 import { Appwritify, isAppwriteException } from "@/server/frameworks/appwrite/appwriteHelpers";
+import { databases } from "@/server/frameworks/appwrite/appwriteNodeClient";
 import { ServerFailure } from "@/server/shared/failures";
 import { NotFoundFailure } from "@/server/shared/failures/notFoundFailure";
 import { FoundSuccess } from "@/server/shared/successes/foundSuccess";
@@ -9,9 +11,9 @@ export abstract class AppwriteRepository<T> {
   private readonly databaseId: string;
   private readonly collectionId: string;
 
-  constructor(databases: Databases, databaseId: string, collectionId: string) {
+  constructor(collectionId: string) {
     this.db = databases;
-    this.databaseId = databaseId;
+    this.databaseId = env.databaseId;
     this.collectionId = collectionId;
   }
 
