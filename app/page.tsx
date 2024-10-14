@@ -4,7 +4,7 @@ import Link from "next/link";
 
 export default function HomePage() {
   return (
-    <main className="flex flex-col min-h-screen gap-4 justify-center items-center text-center">
+    <main className="flex min-h-screen flex-col items-center justify-center gap-4 text-center">
       <h1 className="text-6xl font-bold tracking-tighter">Mednow</h1>
       <p className="text-sm">
         Under construction by{" "}
@@ -15,8 +15,8 @@ export default function HomePage() {
       <nav className="mt-2">
         <ul>
           <li>
-            <Button variant="outline" className="shadow">
-              <Link href="/admin" className="flex items-center">
+            <Button variant="outline" className="shadow" asChild>
+              <Link href="/admin/login" className="flex items-center">
                 <PersonIcon className="mr-2 h-4 w-4" /> Dashboard
               </Link>
             </Button>
