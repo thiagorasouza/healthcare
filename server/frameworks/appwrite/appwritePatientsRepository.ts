@@ -1,15 +1,16 @@
+import { env } from "@/server/config/env";
 import { PatientModel } from "@/server/domain/models/patientModel";
 import { Appwritify } from "@/server/frameworks/appwrite/appwriteHelpers";
+import { databases } from "@/server/frameworks/appwrite/appwriteNodeClient";
 import { AppwriteRepository } from "@/server/frameworks/appwrite/appwriteRepository";
 import { PatientsRepository } from "@/server/repositories/patientsRepository";
-import { Databases } from "node-appwrite";
 
 export class AppwritePatientsRepository
   extends AppwriteRepository<PatientModel>
   implements PatientsRepository
 {
-  constructor(databases: Databases, databaseId: string, collectionId: string) {
-    super(databases, databaseId, collectionId);
+  constructor() {
+    super(databases, env.databaseId, env.patientsCollectionId);
   }
 
   async getPatientById(patientId: string) {
