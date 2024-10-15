@@ -22,7 +22,7 @@ import {
   scrollToTop,
   subtractTimeStrings,
 } from "@/lib/utils";
-import { createAppointment } from "@/server/actions/createAppointment.action";
+import { createAppointment } from "@/server/actions/createAppointment";
 import { format } from "date-fns";
 import { ArrowRight, CalendarDays, Clock, Hourglass } from "lucide-react";
 import Image from "next/image";

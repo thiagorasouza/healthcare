@@ -6,7 +6,9 @@ import { appointmentValidator } from "@/server/frameworks/zod/appointmentValidat
 import { CreateAppointmentController } from "@/server/useCases/createAppointment/createAppointmentController";
 import { CreateAppointmentUseCase } from "@/server/useCases/createAppointment/createAppointmentUseCase";
 
-export const createAppointment = (formData: FormData) => {
+export const createAppointment = async (formData: FormData) => {
+  console.log("🚀 ~ formData:", formData);
+
   const doctorsRepository = new DoctorsRepository();
   const patientsRepository = new PatientsRepository();
   const patternsRepository = new PatternsRepository();
@@ -19,5 +21,8 @@ export const createAppointment = (formData: FormData) => {
   );
   const controller = new CreateAppointmentController(useCase, appointmentValidator);
 
-  return controller.handle(formData);
+  const result = await controller.handle(formData);
+  console.log("🚀 ~ result:", result);
+
+  return result;
 };
