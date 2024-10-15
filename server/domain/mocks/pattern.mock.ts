@@ -1,17 +1,19 @@
-import { PatternModel } from "@/server/domain/models/patternModel";
+import { weekdays } from "@/server/config/constants";
 import { faker } from "@faker-js/faker";
-import { addMonths } from "date-fns";
+import { addHours, addWeeks } from "date-fns";
 
-export const mockPattern = (): PatternModel => {
+export const mockPattern = () => {
+  const startDate = faker.date.soon();
+
   return {
     id: faker.string.uuid(),
-    startDate: new Date(),
-    endDate: addMonths(new Date(), 3),
-    startTime: new Date(new Date().setHours(8, 0, 0, 0)),
-    endTime: new Date(new Date().setHours(16, 0, 0, 0)),
+    startDate,
+    endDate: addWeeks(startDate, 1),
+    startTime: startDate,
+    endTime: addHours(startDate, 3),
     duration: 30,
-    recurring: true,
-    weekdays: ["tue", "wed", "thu"],
+    recurring: faker.datatype.boolean(),
+    weekdays: faker.helpers.arrayElements(weekdays, 2),
     doctorId: faker.string.uuid(),
   };
 };

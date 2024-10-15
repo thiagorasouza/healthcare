@@ -1,9 +1,8 @@
-import { weekdays } from "@/lib/schemas/patternsSchema";
-import { genders, identificationTypes } from "@/server/config/constants";
 import { Appointment } from "@/server/domain/appointment";
 import { mockAppointment } from "@/server/domain/mocks/appointment.mock";
 import { mockDoctor } from "@/server/domain/mocks/doctor.mock";
-import { Gender, IdentificationType } from "@/server/domain/models/patientModel";
+import { mockPatient } from "@/server/domain/mocks/patients.mock";
+import { mockPattern } from "@/server/domain/mocks/pattern.mock";
 import { Slots } from "@/server/domain/slots";
 import { AppointmentsRepository } from "@/server/repositories/appointmentsRepository";
 import { DoctorsRepository } from "@/server/repositories/doctorsRepository";
@@ -29,7 +28,7 @@ import {
 import { CreateAppointment } from "@/server/useCases/createAppointment/createAppointment";
 import { faker } from "@faker-js/faker";
 import { beforeEach, expect, jest } from "@jest/globals";
-import { addDays, addHours, addWeeks } from "date-fns";
+import { addDays } from "date-fns";
 
 const mockRequest = () => {
   const startTime = faker.date.soon({ refDate: addDays(new Date(), 1) });
@@ -38,40 +37,6 @@ const mockRequest = () => {
     patientId: faker.string.alphanumeric(12),
     startTime,
     duration: 30,
-  };
-};
-
-const mockPatient = () => ({
-  id: faker.string.uuid(),
-  name: faker.person.fullName(),
-  email: faker.internet.email(),
-  phone: faker.phone.number(),
-  birthdate: faker.date.birthdate(),
-  gender: faker.helpers.arrayElement(genders) as Gender,
-  address: faker.location.streetAddress(),
-  insuranceProvider: faker.company.name(),
-  insuranceNumber: faker.string.alphanumeric(8),
-  identificationType: faker.helpers.arrayElement(identificationTypes) as IdentificationType,
-  identificationNumber: faker.string.alphanumeric(8),
-  identificationId: faker.string.uuid(),
-  usageConsent: faker.datatype.boolean(),
-  privacyConsent: faker.datatype.boolean(),
-  authId: faker.string.uuid(),
-});
-
-const mockPattern = () => {
-  const startDate = faker.date.soon();
-
-  return {
-    id: faker.string.uuid(),
-    startDate,
-    endDate: addWeeks(startDate, 1),
-    startTime: startDate,
-    endTime: addHours(startDate, 3),
-    duration: 30,
-    recurring: faker.datatype.boolean(),
-    weekdays: faker.helpers.arrayElements(weekdays, 2),
-    doctorId: faker.string.uuid(),
   };
 };
 
