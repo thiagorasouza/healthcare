@@ -1,5 +1,4 @@
 import { faker } from "@faker-js/faker";
-import { addMinutes } from "date-fns";
 
 export const mockAppointment = (startTime = faker.date.soon(), duration = 30) => {
   return {

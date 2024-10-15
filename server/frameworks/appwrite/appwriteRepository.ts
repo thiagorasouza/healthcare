@@ -1,10 +1,9 @@
 import { env } from "@/server/config/env";
 import { Appwritify, isAppwriteException } from "@/server/frameworks/appwrite/appwriteHelpers";
-import { databases } from "@/server/frameworks/appwrite/appwriteNodeClient";
+import { databases, Databases, ID } from "@/server/frameworks/appwrite/appwriteNodeClient";
 import { ServerFailure } from "@/server/shared/failures";
 import { NotFoundFailure } from "@/server/shared/failures/notFoundFailure";
 import { FoundSuccess } from "@/server/shared/successes/foundSuccess";
-import { Databases, ID } from "node-appwrite";
 
 export abstract class AppwriteRepository<T> {
   private readonly db: Databases;
