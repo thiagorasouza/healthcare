@@ -15,7 +15,7 @@ export class AppwritePatternsRepository
     super(env.patternsCollectionId);
   }
 
-  async getPatternsByDoctorId(doctorId: string) {
+  public async getPatternsByDoctorId(doctorId: string) {
     const result = await this.listDocuments([Query.equal("doctorId", doctorId)]);
     if (result.total === 0) {
       return new NotFoundFailure(doctorId);
