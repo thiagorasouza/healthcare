@@ -31,6 +31,21 @@ export class AppointmentsRepository
     return new FoundSuccess<AppointmentModel[]>(appointments);
   }
 
+  public async getByDoctorIdAndStartTime(doctorId: string, startTime: Date) {
+    const result = await this.listDocuments([
+      Query.and([
+        Query.equal("doctorId", doctorId),
+        Query.equal("startTime", startTime.toISOString()),
+      ]),
+    ]);
+    if (result.total === 0) {
+      return new NotFoundFailure(doctorId);
+    }
+
+    const appointments = result.documents.map((ap) => this.map(ap as Appwritify<AppointmentModel>));
+    return new FoundSuccess<AppointmentModel[]>(appointments);
+  }
+
   public map(data: Appwritify<AppointmentModel>): AppointmentModel {
     return {
       id: data.$id,
