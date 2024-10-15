@@ -60,7 +60,7 @@ export class CreateAppointmentUseCase implements UseCase {
     }
 
     const currentAppointment = appointmentValidation.value;
-    const { doctorId, patientId, startTime } = request;
+    const { doctorId, patientId, startTime, duration } = request;
 
     const doctorExistsResult = await this.doctorsRepository.getDoctorById(doctorId);
     if (!doctorExistsResult.ok) {
@@ -74,26 +74,34 @@ export class CreateAppointmentUseCase implements UseCase {
 
     const doctorUnavailableFailure = new DoctorUnavailableFailure(doctorId, startTime);
 
-    const patternsResult = await this.patternsRepository.getPatternsByDoctorId(doctorId);
-    if (!patternsResult.ok) {
+    const doctorPatternsResult = await this.patternsRepository.getPatternsByDoctorId(doctorId);
+    if (!doctorPatternsResult.ok) {
       return doctorUnavailableFailure;
     }
 
-    const isDoctorAvailable = new Slots()
-      .source(patternsResult.value)
+    const isSlotValid = new Slots()
+      .source(doctorPatternsResult.value)
       .date(startTime)
       .parse()
-      .isValid(startTime);
+      .isValid(startTime, duration);
 
-    if (!isDoctorAvailable) {
+    if (!isSlotValid) {
       return doctorUnavailableFailure;
     }
 
-    const appointmentsResult =
+    const doctorAppointmentResult = await this.appointmentsRepository.getByDoctorIdAndStartTime(
+      doctorId,
+      startTime,
+    );
+    if (doctorAppointmentResult.ok) {
+      return doctorUnavailableFailure;
+    }
+
+    const patientAppointmentsResult =
       await this.appointmentsRepository.getAppointmentsByPatientId(patientId);
 
-    if (appointmentsResult.ok) {
-      const storedAppointments = appointmentsResult.value;
+    if (patientAppointmentsResult.ok) {
+      const storedAppointments = patientAppointmentsResult.value;
 
       const conflictingAppointment = storedAppointments.find((ap) =>
         currentAppointment.isConflicting(ap),

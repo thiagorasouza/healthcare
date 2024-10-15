@@ -8,6 +8,10 @@ import { FoundSuccess } from "@/server/shared/successes/foundSuccess";
 type T = AppointmentModel;
 
 export interface AppointmentsRepositoryInterface {
+  getByDoctorIdAndStartTime(
+    doctorId: string,
+    startTime: Date,
+  ): Promise<FoundSuccess<T[]> | NotFoundFailure>;
   getAppointmentsByPatientId(patientId: string): Promise<FoundSuccess<T[]> | NotFoundFailure>;
   createAppointment(appointment: Appointment): Promise<CreatedSuccess<T> | ServerFailure>;
 }

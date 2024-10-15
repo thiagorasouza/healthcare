@@ -14,6 +14,7 @@ import {
   AppointmentTooShortFailure,
   DoctorNotFoundFailure,
   DoctorUnavailableFailure,
+  NotFoundFailure,
   PatientNotFoundFailure,
   PatientUnavailableFailure,
   PatternNotFoundFailure,
@@ -25,6 +26,7 @@ import {
   DoctorFoundSuccess,
   PatientFoundSuccess,
   PatternsFoundSuccess,
+  FoundSuccess,
 } from "@/server/shared/successes";
 import { CreateAppointmentUseCase } from "@/server/useCases/createAppointment/createAppointmentUseCase";
 import { faker } from "@faker-js/faker";
@@ -90,6 +92,13 @@ const mockAppointmentsRepository = () => {
         appointment.patientId = patientId;
       }
       return new AppointmentsFoundSuccess(appointmentsMock);
+    }
+
+    async getByDoctorIdAndStartTime(
+      doctorId: string,
+      startTime: Date,
+    ): Promise<FoundSuccess<AppointmentModel[]> | NotFoundFailure> {
+      return new NotFoundFailure(doctorId);
     }
 
     async createAppointment(
@@ -174,13 +183,29 @@ describe("CreateAppointment Use Case Test Suite", () => {
     expect(result).toStrictEqual(failure);
   });
 
-  it("should fail if doctor is not available", async () => {
+  it("should fail if this doctor slot is not valid", async () => {
     const { sut } = makeSut();
 
     const requestMock = mockRequest();
     const failure = new DoctorUnavailableFailure(requestMock.doctorId, requestMock.startTime);
 
     jest.spyOn(Slots.prototype, "isValid").mockImplementationOnce(() => false);
+
+    const result = await sut.execute(requestMock);
+    expect(result).toStrictEqual(failure);
+  });
+
+  it("should fail if doctor already has an appointment at the same time", async () => {
+    const { sut, appointmentsRepository } = makeSut();
+
+    const requestMock = mockRequest();
+
+    const appointmentMock = mockAppointment();
+    jest
+      .spyOn(appointmentsRepository, "getByDoctorIdAndStartTime")
+      .mockReturnValueOnce(Promise.resolve(new FoundSuccess([appointmentMock])));
+
+    const failure = new DoctorUnavailableFailure(requestMock.doctorId, requestMock.startTime);
 
     const result = await sut.execute(requestMock);
     expect(result).toStrictEqual(failure);
