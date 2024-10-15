@@ -13,5 +13,9 @@ export default async function CreateAppointmentPage() {
 
   const doctors = result.data;
 
-  return <AppointmentCreator doctors={doctors} />;
+  return (
+    <div className="mx-auto w-[1200px]">
+      <AppointmentCreator doctors={doctors} />
+    </div>
+  );
 }
