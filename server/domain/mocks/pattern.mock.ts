@@ -12,6 +12,6 @@ export const mockPattern = (): PatternModel => {
     duration: 30,
     recurring: true,
     weekdays: ["tue", "wed", "thu"],
-    doctorId: faker.string.alphanumeric(12),
+    doctorId: faker.string.uuid(),
   };
 };

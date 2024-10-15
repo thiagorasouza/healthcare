@@ -16,12 +16,16 @@ export class AppwritePatternsRepository
   }
 
   async getPatternsByDoctorId(doctorId: string) {
-    // const result = await this.listDocuments([Query.equal("doctorId", doctorId)]);
-    // const patterns = result.documents.map((pattern) =>
-    //   this.map(pattern as Appwritify<PatternModel>),
-    // );
-    // return new FoundSuccess<PatternModel[]>(patterns);
-    return new NotFoundFailure(doctorId);
+    const result = await this.listDocuments([Query.equal("doctorId", doctorId)]);
+    if (result.total === 0) {
+      return new NotFoundFailure(doctorId);
+    }
+
+    const patterns = result.documents.map((pattern) =>
+      this.map(pattern as Appwritify<PatternModel>),
+    );
+
+    return new FoundSuccess<PatternModel[]>(patterns);
   }
 
   public map(data: Appwritify<PatternModel>): PatternModel {
