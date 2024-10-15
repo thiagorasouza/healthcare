@@ -31,13 +31,10 @@ import { beforeEach, expect, jest } from "@jest/globals";
 import { addDays } from "date-fns";
 
 const mockRequest = () => {
-  const startTime = faker.date.soon({ refDate: addDays(new Date(), 1) });
-  return {
-    doctorId: faker.string.alphanumeric(12),
-    patientId: faker.string.alphanumeric(12),
-    startTime,
-    duration: 30,
-  };
+  const duration = 30;
+  const tomorrow = addDays(new Date(), 1);
+  const startTime = faker.date.soon({ refDate: tomorrow });
+  return mockAppointment(startTime, duration);
 };
 
 const makeDoctorsRepository = () => {

@@ -74,7 +74,6 @@ export class CreateAppointment implements UseCase {
       return doctorUnavailableFailure;
     }
 
-    // const slots = Slots.read(patternsResult.value, { exactDate: startTime });
     const isDoctorAvailable = new Slots()
       .source(patternsResult.value)
       .date(startTime)
@@ -87,6 +86,7 @@ export class CreateAppointment implements UseCase {
 
     const appointmentsResult =
       await this.appointmentsRepository.getAppointmentsByPatientId(patientId);
+
     if (appointmentsResult.ok) {
       const storedAppointments = appointmentsResult.value;
 
