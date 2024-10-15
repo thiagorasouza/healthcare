@@ -1,24 +1,27 @@
-import { mockAppointment } from "@/server/domain/mocks/appointment.mock";
-import { AppointmentModel } from "@/server/domain/models/appointmentModel";
 import { ValidationFailure } from "@/server/shared/failures";
-import { objectToFormData } from "@/server/shared/helpers/formData";
+import { objectToFormData } from "@/server/shared/helpers/utils";
 import { UseCase } from "@/server/shared/protocols/useCase";
 import { ValidatorInterface } from "@/server/shared/protocols/validator";
 import { ValidationSuccess } from "@/server/shared/successes";
-import { CreateAppointmentController } from "@/server/useCases/createAppointment/createAppointmentController";
+import { GenericActionController } from "@/server/useCases/shared/GenericActionController";
 import { describe, expect, it, jest } from "@jest/globals";
 
-const appointmentMock = mockAppointment();
-// Reflect.deleteProperty(appointmentMock, "id");
+interface MockType {
+  field: string;
+}
+
+const mockObject = (): MockType => ({
+  field: "value",
+});
 
 const mockFormData = () => {
-  return objectToFormData(appointmentMock);
+  return objectToFormData(mockObject());
 };
 
 const mockValidator = () => {
-  class ValidatorStub implements ValidatorInterface<AppointmentModel> {
-    validate(rawData: any): ValidationFailure | ValidationSuccess<AppointmentModel> {
-      return new ValidationSuccess(appointmentMock);
+  class ValidatorStub implements ValidatorInterface<MockType> {
+    validate(): ValidationFailure | ValidationSuccess<MockType> {
+      return new ValidationSuccess(mockObject());
     }
   }
 
@@ -38,18 +41,18 @@ const mockUseCase = () => {
 const makeSut = () => {
   const useCase = mockUseCase();
   const validator = mockValidator();
-  const sut = new CreateAppointmentController(useCase, validator);
+  const sut = new GenericActionController(useCase, validator);
 
   return { sut, useCase, validator };
 };
 
-describe("CreateAppointmentController Test Suite", () => {
+describe("GenericActionController Test Suite", () => {
   it("should fail if input is not valid", async () => {
     const { sut, validator } = makeSut();
 
     const formDataMock = mockFormData();
 
-    const failure = new ValidationFailure(["patientId"]);
+    const failure = new ValidationFailure(["field"]);
     jest.spyOn(validator, "validate").mockReturnValueOnce(failure);
 
     const result = await sut.handle(formDataMock);
