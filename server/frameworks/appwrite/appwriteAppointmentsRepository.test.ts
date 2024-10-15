@@ -5,6 +5,7 @@ import { AppointmentModel } from "@/server/domain/models/appointmentModel";
 import { AppwriteAppointmentsRepository } from "@/server/frameworks/appwrite/appwriteAppointmentsRepository";
 import { Appwritify } from "@/server/frameworks/appwrite/appwriteHelpers";
 import { NotFoundFailure } from "@/server/shared/failures/notFoundFailure";
+import { FoundSuccess } from "@/server/shared/successes/foundSuccess";
 import { afterAll, beforeAll, describe, expect, it } from "@jest/globals";
 
 const makeSut = () => {
@@ -35,16 +36,18 @@ describe("AppwritePatternsRepository Test Suite", () => {
     expect(result).toStrictEqual(failure);
   });
 
-  // it("getPatternsByDoctorId should return patterns if id is found", async () => {
-  //   const { sut } = makeSut();
+  it("getAppointmentsByPatientId should return appointments if id is found", async () => {
+    const { sut } = makeSut();
 
-  //   const patternId = appointmentCreated.$id;
-  //   const doctorId = appointmentCreated.doctorId;
-  //   const success = new FoundSuccess<AppointmentModel[]>([{ ...appointmentMock, id: patternId }]);
-  //   const result = await sut.getPatternsByDoctorId(doctorId);
+    const appointmentId = appointmentCreated.$id;
+    const patientId = appointmentCreated.patientId;
+    const success = new FoundSuccess<AppointmentModel[]>([
+      { ...appointmentMock, id: appointmentId },
+    ]);
+    const result = await sut.getAppointmentsByPatientId(patientId);
 
-  //   expect(result).toStrictEqual(success);
-  // });
+    expect(result).toStrictEqual(success);
+  });
 
   afterAll(async () => {
     const { sut } = makeSut();
