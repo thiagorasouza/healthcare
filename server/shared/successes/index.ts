@@ -6,3 +6,4 @@ export * from "./doctorFoundSuccess";
 export * from "./foundSuccess";
 export * from "./patientFoundSuccess";
 export * from "./patternsFoundSuccess";
+export * from "./validationSuccess";
