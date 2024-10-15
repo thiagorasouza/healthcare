@@ -40,7 +40,7 @@ const mockRequest = () => {
   return appointmentMock;
 };
 
-const makeDoctorsRepository = () => {
+const mockDoctorsRepository = () => {
   class DoctorsRepositoryStub implements DoctorsRepositoryInterface {
     async getDoctorById(doctorId: string): Promise<DoctorFoundSuccess | DoctorNotFoundFailure> {
       const doctorMock = mockDoctor();
@@ -52,7 +52,7 @@ const makeDoctorsRepository = () => {
   return new DoctorsRepositoryStub();
 };
 
-const makePatientsRepository = () => {
+const mockPatientsRepository = () => {
   class PatientsRepositoryStub implements PatientsRepositoryInterface {
     async getPatientById(patientId: string): Promise<PatientFoundSuccess | PatientNotFoundFailure> {
       const patientMock = mockPatient();
@@ -64,7 +64,7 @@ const makePatientsRepository = () => {
   return new PatientsRepositoryStub();
 };
 
-const makePatternsRepository = () => {
+const mockPatternsRepository = () => {
   class PatternsRepositoryStub implements PatternsRepositoryInterface {
     async getPatternsByDoctorId(
       doctorId: string,
@@ -80,7 +80,7 @@ const makePatternsRepository = () => {
   return new PatternsRepositoryStub();
 };
 
-const makeAppointmentsRepository = () => {
+const mockAppointmentsRepository = () => {
   class AppointmentsRepositoryStub implements AppointmentsRepositoryInterface {
     async getAppointmentsByPatientId(
       patientId: string,
@@ -103,10 +103,10 @@ const makeAppointmentsRepository = () => {
 };
 
 const makeSut = () => {
-  const doctorsRepository = makeDoctorsRepository();
-  const patientsRepository = makePatientsRepository();
-  const patternsRepository = makePatternsRepository();
-  const appointmentsRepository = makeAppointmentsRepository();
+  const doctorsRepository = mockDoctorsRepository();
+  const patientsRepository = mockPatientsRepository();
+  const patternsRepository = mockPatternsRepository();
+  const appointmentsRepository = mockAppointmentsRepository();
   const sut = new CreateAppointment(
     doctorsRepository,
     patientsRepository,
