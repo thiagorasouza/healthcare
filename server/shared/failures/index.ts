@@ -3,6 +3,7 @@ export * from "./appointmentTooShortFailure";
 export * from "./appointmentTooSoonFailure";
 export * from "./doctorNotFoundFailure";
 export * from "./doctorUnavailableFailure";
+export * from "./notFoundFailure";
 export * from "./patientNotFoundFailure";
 export * from "./patientUnavailableFailure";
 export * from "./patternNotFoundFailure";

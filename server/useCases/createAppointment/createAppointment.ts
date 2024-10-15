@@ -1,18 +1,23 @@
 import { Appointment } from "@/server/domain/appointment";
+import { AppointmentModel } from "@/server/domain/models/appointmentModel";
 import { Slots } from "@/server/domain/slots";
-import { AppointmentsRepository } from "@/server/repositories/appointmentsRepository";
-import { DoctorsRepository } from "@/server/repositories/doctorsRepository";
-import { PatientsRepository } from "@/server/repositories/patientsRepository";
-import { PatternsRepository } from "@/server/repositories/patternsRepository";
-import { AppointmentTooShortFailure } from "@/server/shared/failures/appointmentTooShortFailure";
-import { AppointmentTooSoonFailure } from "@/server/shared/failures/appointmentTooSoonFailure";
-import { DoctorNotFoundFailure } from "@/server/shared/failures/doctorNotFoundFailure";
-import { DoctorUnavailableFailure } from "@/server/shared/failures/doctorUnavailableFailure";
-import { PatientNotFoundFailure } from "@/server/shared/failures/patientNotFoundFailure";
-import { PatientUnavailableFailure } from "@/server/shared/failures/patientUnavailableFailure";
-import { ServerFailure } from "@/server/shared/failures/serverFailure";
+import {
+  DoctorsRepository,
+  PatientsRepository,
+  PatternsRepository,
+  AppointmentsRepository,
+} from "@/server/repositories";
+import {
+  AppointmentTooShortFailure,
+  AppointmentTooSoonFailure,
+  DoctorNotFoundFailure,
+  DoctorUnavailableFailure,
+  PatientNotFoundFailure,
+  PatientUnavailableFailure,
+  ServerFailure,
+} from "@/server/shared/failures";
 import { UseCase } from "@/server/shared/protocols/useCase";
-import { AppointmentCreatedSuccess } from "@/server/shared/successes/appointmentCreatedSuccess";
+import { CreatedSuccess } from "@/server/shared/successes/createdSuccess";
 
 export interface CreateAppointmentRequest {
   doctorId: string;
@@ -40,7 +45,7 @@ export class CreateAppointment implements UseCase {
   async execute(
     request: CreateAppointmentRequest,
   ): Promise<
-    | AppointmentCreatedSuccess
+    | CreatedSuccess<AppointmentModel>
     | AppointmentTooSoonFailure
     | AppointmentTooShortFailure
     | DoctorNotFoundFailure
@@ -54,8 +59,8 @@ export class CreateAppointment implements UseCase {
       return appointmentValidation;
     }
 
+    const currentAppointment = appointmentValidation.value;
     const { doctorId, patientId, startTime } = request;
-    const appointment = appointmentValidation.value;
 
     const doctorExistsResult = await this.doctorsRepository.getDoctorById(doctorId);
     if (!doctorExistsResult.ok) {
@@ -90,14 +95,14 @@ export class CreateAppointment implements UseCase {
     if (appointmentsResult.ok) {
       const storedAppointments = appointmentsResult.value;
 
-      const anyConflict = storedAppointments.some((ap) => appointment.isConflicting(ap));
+      const anyConflict = storedAppointments.some((ap) => currentAppointment.isConflicting(ap));
       if (anyConflict) {
         return new PatientUnavailableFailure(patientId, startTime);
       }
     }
 
     const createAppointmentResult =
-      await this.appointmentsRepository.createAppointment(appointment);
+      await this.appointmentsRepository.createAppointment(currentAppointment);
 
     return createAppointmentResult;
   }

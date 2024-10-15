@@ -3,6 +3,7 @@ import { mockAppointment } from "@/server/domain/mocks/appointment.mock";
 import { mockDoctor } from "@/server/domain/mocks/doctor.mock";
 import { mockPatient } from "@/server/domain/mocks/patients.mock";
 import { mockPattern } from "@/server/domain/mocks/pattern.mock";
+import { AppointmentModel } from "@/server/domain/models/appointmentModel";
 import { Slots } from "@/server/domain/slots";
 import { AppointmentsRepository } from "@/server/repositories/appointmentsRepository";
 import { DoctorsRepository } from "@/server/repositories/doctorsRepository";
@@ -10,16 +11,16 @@ import { PatientsRepository } from "@/server/repositories/patientsRepository";
 import { PatternsRepository } from "@/server/repositories/patternsRepository";
 import {
   AppointmentNotFoundFailure,
+  AppointmentTooShortFailure,
   DoctorNotFoundFailure,
   DoctorUnavailableFailure,
   PatientNotFoundFailure,
   PatientUnavailableFailure,
   PatternNotFoundFailure,
+  ServerFailure,
 } from "@/server/shared/failures";
-import { AppointmentTooShortFailure } from "@/server/shared/failures/appointmentTooShortFailure";
-import { ServerFailure } from "@/server/shared/failures/serverFailure";
 import {
-  AppointmentCreatedSuccess,
+  CreatedSuccess,
   AppointmentsFoundSuccess,
   DoctorFoundSuccess,
   PatientFoundSuccess,
@@ -34,7 +35,9 @@ const mockRequest = () => {
   const duration = 30;
   const tomorrow = addDays(new Date(), 1);
   const startTime = faker.date.soon({ refDate: tomorrow });
-  return mockAppointment(startTime, duration);
+  const appointmentMock = mockAppointment(startTime, duration);
+  Reflect.deleteProperty(appointmentMock, "id");
+  return appointmentMock;
 };
 
 const makeDoctorsRepository = () => {
@@ -91,9 +94,8 @@ const makeAppointmentsRepository = () => {
 
     async createAppointment(
       appointment: Appointment,
-    ): Promise<AppointmentCreatedSuccess | ServerFailure> {
-      const appointmentMock = new Appointment(appointment.get());
-      return new AppointmentCreatedSuccess(appointmentMock);
+    ): Promise<CreatedSuccess<AppointmentModel> | ServerFailure> {
+      return new CreatedSuccess({ ...appointment.get(), id: "new_id" });
     }
   }
 
@@ -214,9 +216,8 @@ describe("CreateAppointment Use Case Test Suite", () => {
     const { sut } = makeSut();
 
     const requestMock = mockRequest();
-    const appointmentMock = new Appointment(requestMock);
 
     const result = await sut.execute(requestMock);
-    expect(result).toStrictEqual(new AppointmentCreatedSuccess(appointmentMock));
+    expect(result).toStrictEqual(new CreatedSuccess({ ...requestMock, id: "new_id" }));
   });
 });

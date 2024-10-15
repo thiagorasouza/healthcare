@@ -3,6 +3,7 @@ import { Appwritify, isAppwriteException } from "@/server/frameworks/appwrite/ap
 import { databases, Databases, ID } from "@/server/frameworks/appwrite/appwriteNodeClient";
 import { ServerFailure } from "@/server/shared/failures";
 import { NotFoundFailure } from "@/server/shared/failures/notFoundFailure";
+import { CreatedSuccess } from "@/server/shared/successes/createdSuccess";
 import { FoundSuccess } from "@/server/shared/successes/foundSuccess";
 
 export abstract class AppwriteRepository<T> {
@@ -18,14 +19,20 @@ export abstract class AppwriteRepository<T> {
 
   public abstract map(data: Appwritify<T>): T;
 
-  public async createDocument(data: any, permissions?: string[]) {
-    return await this.db.createDocument(
-      this.databaseId,
-      this.collectionId,
-      ID.unique(),
-      data,
-      permissions,
-    );
+  public async createDocument(data: Omit<T, "id">, permissions?: string[]) {
+    try {
+      const result = (await this.db.createDocument(
+        this.databaseId,
+        this.collectionId,
+        ID.unique(),
+        data,
+        permissions,
+      )) as Appwritify<T>;
+
+      return new CreatedSuccess<T>(this.map(result));
+    } catch (error) {
+      return new ServerFailure(error);
+    }
   }
 
   public async getDocument(id: string) {

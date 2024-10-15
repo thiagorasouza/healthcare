@@ -4,7 +4,6 @@ import { AppointmentModel } from "@/server/domain/models/appointmentModel";
 import { Appwritify } from "@/server/frameworks/appwrite/appwriteHelpers";
 import { AppwriteRepository } from "@/server/frameworks/appwrite/appwriteRepository";
 import { AppointmentsRepository } from "@/server/repositories/appointmentsRepository";
-import { ServerFailure } from "@/server/shared/failures";
 import { NotFoundFailure } from "@/server/shared/failures/notFoundFailure";
 import { Query } from "@/server/frameworks/appwrite/appwriteNodeClient";
 import { FoundSuccess } from "@/server/shared/successes/foundSuccess";
@@ -18,7 +17,7 @@ export class AppwriteAppointmentsRepository
   }
 
   public async createAppointment(appointment: Appointment) {
-    return new ServerFailure("");
+    return await this.createDocument(appointment.get());
   }
 
   public async getAppointmentsByPatientId(patientId: string) {
