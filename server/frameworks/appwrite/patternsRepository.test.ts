@@ -2,13 +2,13 @@
 
 import { mockPattern } from "@/server/domain/mocks/pattern.mock";
 import { PatternModel } from "@/server/domain/models/patternModel";
-import { AppwritePatternsRepository } from "@/server/frameworks/appwrite/appwritePatternsRepository";
+import { PatternsRepository } from "@/server/frameworks/appwrite/patternsRepository";
 import { NotFoundFailure } from "@/server/shared/failures/notFoundFailure";
 import { FoundSuccess } from "@/server/shared/successes/foundSuccess";
 import { afterAll, beforeAll, describe, expect, it } from "@jest/globals";
 
 const makeSut = () => {
-  const sut = new AppwritePatternsRepository();
+  const sut = new PatternsRepository();
   return { sut };
 };
 
@@ -17,7 +17,7 @@ Reflect.deleteProperty(patternMock, "id");
 
 let patternCreated: PatternModel;
 
-describe("AppwritePatternsRepository Test Suite", () => {
+describe("PatternsRepository Test Suite", () => {
   beforeAll(async () => {
     const { sut } = makeSut();
 

@@ -1,16 +1,16 @@
 import { env } from "@/server/config/env";
 import { Appointment } from "@/server/domain/appointment";
 import { AppointmentModel } from "@/server/domain/models/appointmentModel";
-import { Appwritify } from "@/server/frameworks/appwrite/appwriteHelpers";
-import { AppwriteRepository } from "@/server/frameworks/appwrite/appwriteRepository";
-import { AppointmentsRepository } from "@/server/repositories/appointmentsRepository";
+import { Appwritify } from "@/server/frameworks/appwrite/helpers";
+import { Repository } from "@/server/frameworks/appwrite/repository";
+import { AppointmentsRepositoryInterface } from "@/server/repositories/appointmentsRepository";
 import { NotFoundFailure } from "@/server/shared/failures/notFoundFailure";
-import { Query } from "@/server/frameworks/appwrite/appwriteNodeClient";
+import { Query } from "@/server/frameworks/appwrite/nodeClient";
 import { FoundSuccess } from "@/server/shared/successes/foundSuccess";
 
-export class AppwriteAppointmentsRepository
-  extends AppwriteRepository<AppointmentModel>
-  implements AppointmentsRepository
+export class AppointmentsRepository
+  extends Repository<AppointmentModel>
+  implements AppointmentsRepositoryInterface
 {
   constructor() {
     super(env.appointmentsCollectionId);

@@ -2,13 +2,13 @@
 
 import { mockAppointment } from "@/server/domain/mocks/appointment.mock";
 import { AppointmentModel } from "@/server/domain/models/appointmentModel";
-import { AppwriteAppointmentsRepository } from "@/server/frameworks/appwrite/appwriteAppointmentsRepository";
+import { AppointmentsRepository } from "@/server/frameworks/appwrite/appointmentsRepository";
 import { NotFoundFailure } from "@/server/shared/failures/notFoundFailure";
 import { FoundSuccess } from "@/server/shared/successes/foundSuccess";
 import { afterAll, beforeAll, describe, expect, it } from "@jest/globals";
 
 const makeSut = () => {
-  const sut = new AppwriteAppointmentsRepository();
+  const sut = new AppointmentsRepository();
   return { sut };
 };
 
@@ -17,7 +17,7 @@ Reflect.deleteProperty(appointmentMock, "id");
 
 let appointmentCreated: AppointmentModel;
 
-describe("AppwritePatternsRepository Test Suite", () => {
+describe("AppointmentsRepository Test Suite", () => {
   beforeAll(async () => {
     const { sut } = makeSut();
 

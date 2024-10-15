@@ -2,13 +2,13 @@
 
 import { mockDoctor } from "@/server/domain/mocks/doctor.mock";
 import { DoctorModel } from "@/server/domain/models/doctorModel";
-import { AppwriteDoctorsRepository } from "@/server/frameworks/appwrite/appwriteDoctorsRepository";
+import { DoctorsRepository } from "@/server/frameworks/appwrite/doctorsRepository";
 import { NotFoundFailure } from "@/server/shared/failures/notFoundFailure";
 import { FoundSuccess } from "@/server/shared/successes/foundSuccess";
 import { afterAll, beforeAll, expect } from "@jest/globals";
 
 const makeSut = () => {
-  const sut = new AppwriteDoctorsRepository();
+  const sut = new DoctorsRepository();
   return { sut };
 };
 
@@ -17,7 +17,7 @@ Reflect.deleteProperty(doctorMock, "id");
 
 let doctorCreated: DoctorModel;
 
-describe("AppwriteDoctorsRepository Test Suite", () => {
+describe("DoctorsRepository Test Suite", () => {
   beforeAll(async () => {
     const { sut } = makeSut();
 

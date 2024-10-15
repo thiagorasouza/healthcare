@@ -1,15 +1,15 @@
 import { env } from "@/server/config/env";
 import { PatternModel, Weekday } from "@/server/domain/models/patternModel";
-import { AppwriteRepository } from "@/server/frameworks/appwrite/appwriteRepository";
-import { PatternsRepository } from "@/server/repositories/patternsRepository";
-import { Query } from "@/server/frameworks/appwrite/appwriteNodeClient";
-import { Appwritify } from "@/server/frameworks/appwrite/appwriteHelpers";
+import { Repository } from "@/server/frameworks/appwrite/repository";
+import { PatternsRepositoryInterface } from "@/server/repositories/patternsRepository";
+import { Query } from "@/server/frameworks/appwrite/nodeClient";
+import { Appwritify } from "@/server/frameworks/appwrite/helpers";
 import { FoundSuccess } from "@/server/shared/successes/foundSuccess";
 import { NotFoundFailure } from "@/server/shared/failures/notFoundFailure";
 
-export class AppwritePatternsRepository
-  extends AppwriteRepository<PatternModel>
-  implements PatternsRepository
+export class PatternsRepository
+  extends Repository<PatternModel>
+  implements PatternsRepositoryInterface
 {
   constructor() {
     super(env.patternsCollectionId);

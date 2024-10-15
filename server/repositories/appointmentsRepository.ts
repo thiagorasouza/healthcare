@@ -7,7 +7,7 @@ import { FoundSuccess } from "@/server/shared/successes/foundSuccess";
 
 type T = AppointmentModel;
 
-export interface AppointmentsRepository {
+export interface AppointmentsRepositoryInterface {
   getAppointmentsByPatientId(patientId: string): Promise<FoundSuccess<T[]> | NotFoundFailure>;
   createAppointment(appointment: Appointment): Promise<CreatedSuccess<T> | ServerFailure>;
 }

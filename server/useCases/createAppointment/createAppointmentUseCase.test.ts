@@ -5,10 +5,10 @@ import { mockPatient } from "@/server/domain/mocks/patients.mock";
 import { mockPattern } from "@/server/domain/mocks/pattern.mock";
 import { AppointmentModel } from "@/server/domain/models/appointmentModel";
 import { Slots } from "@/server/domain/slots";
-import { AppointmentsRepository } from "@/server/repositories/appointmentsRepository";
-import { DoctorsRepository } from "@/server/repositories/doctorsRepository";
-import { PatientsRepository } from "@/server/repositories/patientsRepository";
-import { PatternsRepository } from "@/server/repositories/patternsRepository";
+import { AppointmentsRepositoryInterface } from "@/server/repositories/appointmentsRepository";
+import { DoctorsRepositoryInterface } from "@/server/repositories/doctorsRepository";
+import { PatientsRepositoryInterface } from "@/server/repositories/patientsRepository";
+import { PatternsRepositoryInterface } from "@/server/repositories/patternsRepository";
 import {
   AppointmentNotFoundFailure,
   AppointmentTooShortFailure,
@@ -26,7 +26,7 @@ import {
   PatientFoundSuccess,
   PatternsFoundSuccess,
 } from "@/server/shared/successes";
-import { CreateAppointment } from "@/server/useCases/createAppointment/createAppointment";
+import { CreateAppointment } from "@/server/useCases/createAppointment/createAppointmentUseCase";
 import { faker } from "@faker-js/faker";
 import { beforeEach, expect, jest } from "@jest/globals";
 import { addDays } from "date-fns";
@@ -41,7 +41,7 @@ const mockRequest = () => {
 };
 
 const makeDoctorsRepository = () => {
-  class DoctorsRepositoryStub implements DoctorsRepository {
+  class DoctorsRepositoryStub implements DoctorsRepositoryInterface {
     async getDoctorById(doctorId: string): Promise<DoctorFoundSuccess | DoctorNotFoundFailure> {
       const doctorMock = mockDoctor();
       doctorMock.id = doctorId;
@@ -53,7 +53,7 @@ const makeDoctorsRepository = () => {
 };
 
 const makePatientsRepository = () => {
-  class PatientsRepositoryStub implements PatientsRepository {
+  class PatientsRepositoryStub implements PatientsRepositoryInterface {
     async getPatientById(patientId: string): Promise<PatientFoundSuccess | PatientNotFoundFailure> {
       const patientMock = mockPatient();
       patientMock.id = patientId;
@@ -65,7 +65,7 @@ const makePatientsRepository = () => {
 };
 
 const makePatternsRepository = () => {
-  class PatternsRepositoryStub implements PatternsRepository {
+  class PatternsRepositoryStub implements PatternsRepositoryInterface {
     async getPatternsByDoctorId(
       doctorId: string,
     ): Promise<PatternsFoundSuccess | PatternNotFoundFailure> {
@@ -81,7 +81,7 @@ const makePatternsRepository = () => {
 };
 
 const makeAppointmentsRepository = () => {
-  class AppointmentsRepositoryStub implements AppointmentsRepository {
+  class AppointmentsRepositoryStub implements AppointmentsRepositoryInterface {
     async getAppointmentsByPatientId(
       patientId: string,
     ): Promise<AppointmentsFoundSuccess | AppointmentNotFoundFailure> {

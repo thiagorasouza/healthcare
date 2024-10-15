@@ -1,12 +1,12 @@
 import { env } from "@/server/config/env";
 import { DoctorModel } from "@/server/domain/models/doctorModel";
-import { Appwritify } from "@/server/frameworks/appwrite/appwriteHelpers";
-import { AppwriteRepository } from "@/server/frameworks/appwrite/appwriteRepository";
-import { DoctorsRepository } from "@/server/repositories/doctorsRepository";
+import { Appwritify } from "@/server/frameworks/appwrite/helpers";
+import { Repository } from "@/server/frameworks/appwrite/repository";
+import { DoctorsRepositoryInterface } from "@/server/repositories/doctorsRepository";
 
-export class AppwriteDoctorsRepository
-  extends AppwriteRepository<DoctorModel>
-  implements DoctorsRepository
+export class DoctorsRepository
+  extends Repository<DoctorModel>
+  implements DoctorsRepositoryInterface
 {
   constructor() {
     super(env.doctorsCollectionId);

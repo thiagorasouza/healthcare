@@ -2,10 +2,10 @@ import { Appointment } from "@/server/domain/appointment";
 import { AppointmentModel } from "@/server/domain/models/appointmentModel";
 import { Slots } from "@/server/domain/slots";
 import {
-  DoctorsRepository,
-  PatientsRepository,
-  PatternsRepository,
-  AppointmentsRepository,
+  DoctorsRepositoryInterface,
+  PatientsRepositoryInterface,
+  PatternsRepositoryInterface,
+  AppointmentsRepositoryInterface,
 } from "@/server/repositories";
 import {
   AppointmentTooShortFailure,
@@ -36,10 +36,10 @@ export interface CreateAppointmentRequest {
 
 export class CreateAppointment implements UseCase {
   constructor(
-    private readonly doctorsRepository: DoctorsRepository,
-    private readonly patientsRepository: PatientsRepository,
-    private readonly patternsRepository: PatternsRepository,
-    private readonly appointmentsRepository: AppointmentsRepository,
+    private readonly doctorsRepository: DoctorsRepositoryInterface,
+    private readonly patientsRepository: PatientsRepositoryInterface,
+    private readonly patternsRepository: PatternsRepositoryInterface,
+    private readonly appointmentsRepository: AppointmentsRepositoryInterface,
   ) {}
 
   async execute(
