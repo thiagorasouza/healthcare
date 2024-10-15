@@ -1,7 +1,7 @@
 import { Failure } from "@/server/core/failure";
 
-export class AppointmentNotFoundFailure extends Failure<string> {
-  constructor(queryId: string) {
-    super(queryId);
+export class AppointmentNotFoundFailure extends Failure<{ id: string }> {
+  constructor(id: string) {
+    super({ id });
   }
 }

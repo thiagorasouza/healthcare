@@ -187,10 +187,20 @@ describe("CreateAppointment Use Case Test Suite", () => {
   });
 
   it("should fail if patient is not available", async () => {
-    const { sut } = makeSut();
+    const { sut, appointmentsRepository } = makeSut();
 
     const requestMock = mockRequest();
-    const failure = new PatientUnavailableFailure(requestMock.patientId, requestMock.startTime);
+
+    const appointmentMock = mockAppointment();
+    jest
+      .spyOn(appointmentsRepository, "getAppointmentsByPatientId")
+      .mockReturnValueOnce(Promise.resolve(new AppointmentsFoundSuccess([appointmentMock])));
+
+    const failure = new PatientUnavailableFailure(
+      requestMock.patientId,
+      requestMock.startTime,
+      appointmentMock,
+    );
 
     jest.spyOn(Appointment.prototype, "isConflicting").mockImplementationOnce(() => true);
 

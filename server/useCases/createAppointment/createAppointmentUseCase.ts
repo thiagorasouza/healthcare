@@ -64,12 +64,12 @@ export class CreateAppointmentUseCase implements UseCase {
 
     const doctorExistsResult = await this.doctorsRepository.getDoctorById(doctorId);
     if (!doctorExistsResult.ok) {
-      return doctorExistsResult;
+      return new DoctorNotFoundFailure(doctorId);
     }
 
     const patientExistsResult = await this.patientsRepository.getPatientById(patientId);
     if (!patientExistsResult.ok) {
-      return patientExistsResult;
+      return new PatientNotFoundFailure(patientId);
     }
 
     const doctorUnavailableFailure = new DoctorUnavailableFailure(doctorId, startTime);
@@ -95,9 +95,11 @@ export class CreateAppointmentUseCase implements UseCase {
     if (appointmentsResult.ok) {
       const storedAppointments = appointmentsResult.value;
 
-      const anyConflict = storedAppointments.some((ap) => currentAppointment.isConflicting(ap));
-      if (anyConflict) {
-        return new PatientUnavailableFailure(patientId, startTime);
+      const conflictingAppointment = storedAppointments.find((ap) =>
+        currentAppointment.isConflicting(ap),
+      );
+      if (conflictingAppointment) {
+        return new PatientUnavailableFailure(patientId, startTime, conflictingAppointment);
       }
     }
 
