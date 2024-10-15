@@ -34,7 +34,7 @@ export interface CreateAppointmentRequest {
 // 5. check if appointment time is possibile for this patient
 // 6. save appointment data
 
-export class CreateAppointment implements UseCase {
+export class CreateAppointmentUseCase implements UseCase {
   constructor(
     private readonly doctorsRepository: DoctorsRepositoryInterface,
     private readonly patientsRepository: PatientsRepositoryInterface,

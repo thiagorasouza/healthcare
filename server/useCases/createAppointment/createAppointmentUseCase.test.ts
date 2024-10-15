@@ -26,7 +26,7 @@ import {
   PatientFoundSuccess,
   PatternsFoundSuccess,
 } from "@/server/shared/successes";
-import { CreateAppointment } from "@/server/useCases/createAppointment/createAppointmentUseCase";
+import { CreateAppointmentUseCase } from "@/server/useCases/createAppointment/createAppointmentUseCase";
 import { faker } from "@faker-js/faker";
 import { beforeEach, expect, jest } from "@jest/globals";
 import { addDays } from "date-fns";
@@ -107,7 +107,7 @@ const makeSut = () => {
   const patientsRepository = mockPatientsRepository();
   const patternsRepository = mockPatternsRepository();
   const appointmentsRepository = mockAppointmentsRepository();
-  const sut = new CreateAppointment(
+  const sut = new CreateAppointmentUseCase(
     doctorsRepository,
     patientsRepository,
     patternsRepository,
