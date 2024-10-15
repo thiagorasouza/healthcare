@@ -13,12 +13,14 @@ const day1Weekday = weekdays[day1().getDay()];
 const day2Weekday = weekdays[day2().getDay()];
 const day3Weekday = weekdays[day3().getDay()];
 
+const DURATION = 30;
+
 export const mockSingleDate = (day: Date, startHour = 10, endHour = 11) => ({
   startDate: day,
   endDate: day,
   startTime: new Date(new Date(day).setHours(startHour, 0, 0, 0)),
   endTime: new Date(new Date(day).setHours(endHour, 0, 0, 0)),
-  duration: 30,
+  duration: DURATION,
   recurring: false,
   weekdays: [],
   doctorId: "any_id",
@@ -34,7 +36,7 @@ export const mockRecurringPattern = (start: Date, end: Date, startTime = 8, endT
     endDate: end,
     startTime: new Date(new Date(start).setHours(startTime, 0, 0, 0)),
     endTime: new Date(new Date(start).setHours(endTime, 0, 0, 0)),
-    duration: 30,
+    duration: DURATION,
     recurring: true,
     weekdays: [startWeekday, dayAfterStartWeekday] as Weekday[],
     doctorId: "any_id",
@@ -280,14 +282,24 @@ describe("Slots Test Suite", () => {
     );
   });
 
-  it("should return false if slot is not valid", () => {
+  it("should return false if slot startTime is not valid", () => {
     const patternsMock = [mockSingleDate(day1(), 10, 12)];
     const slotMock = mockSlot(day1(), 12, 0);
 
     const sut = makeSut();
     sut.source(patternsMock).parse().sort();
 
-    expect(sut.isValid(slotMock)).toBe(false);
+    expect(sut.isValid(slotMock, DURATION)).toBe(false);
+  });
+
+  it("should return false if slot duration is not valid", () => {
+    const patternsMock = [mockSingleDate(day1(), 10, 12)];
+    const slotMock = mockSlot(day1(), 11, 30);
+
+    const sut = makeSut();
+    sut.source(patternsMock).parse().sort();
+
+    expect(sut.isValid(slotMock, DURATION - 5)).toBe(false);
   });
 
   it("should return true if slot is valid", () => {
@@ -297,6 +309,6 @@ describe("Slots Test Suite", () => {
     const sut = makeSut();
     sut.source(patternsMock).parse().sort();
 
-    expect(sut.isValid(slotMock)).toBe(true);
+    expect(sut.isValid(slotMock, DURATION)).toBe(true);
   });
 });

@@ -2,7 +2,7 @@ import { weekdays } from "@/server/config/constants";
 import { PatternModel, Weekday } from "@/server/domain/models/patternModel";
 import { SlotsModel } from "@/server/domain/models/slotsModel";
 import { getDateStr, getHoursStr, getWeekday } from "@/server/shared/helpers/date";
-import { addDays, getDay, isAfter, isBefore, isSameDay, startOfDay } from "date-fns";
+import { addDays, addMinutes, getDay, isAfter, isBefore, isSameDay } from "date-fns";
 
 interface Options {
   start?: Date;
@@ -90,14 +90,15 @@ export class Slots {
     return this.data;
   }
 
-  public isValid(slot: Date) {
-    const dateStr = getDateStr(slot);
-    const hoursStr = getHoursStr(slot);
+  public isValid(startTime: Date, duration: number) {
+    const dateStr = getDateStr(startTime);
+    const startStr = getHoursStr(startTime);
+    const endStr = getHoursStr(addMinutes(startTime, duration));
 
     for (const [date, slots] of this.data.entries()) {
       if (date === dateStr) {
-        const matchingHours = slots.some((slot) => slot[0] === hoursStr);
-        if (matchingHours) {
+        const startMatches = slots.some((slot) => slot[0] === startStr && slot[1] === endStr);
+        if (startMatches) {
           return true;
         }
       }
