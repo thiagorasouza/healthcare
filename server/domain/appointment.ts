@@ -2,8 +2,8 @@ import { MIN_ADVANCE, MIN_DURATION } from "@/server/config/constants";
 import { AppointmentModel } from "@/server/domain/models/appointmentModel";
 import { AppointmentTooShortFailure } from "@/server/shared/failures/appointmentTooShortFailure";
 import { AppointmentTooSoonFailure } from "@/server/shared/failures/appointmentTooSoonFailure";
-import { addMinutes, startOfDay } from "@/server/shared/helpers/dateHelpers";
 import { AppointmentLogicSuccess } from "@/server/shared/successes";
+import { addMinutes, isSameDay } from "date-fns";
 
 export class Appointment {
   private data: AppointmentModel;
@@ -36,7 +36,7 @@ export class Appointment {
     const { startTime, duration } = this.data;
     const newStartTime = newAppointment.startTime;
 
-    if (startOfDay(startTime) !== startOfDay(newStartTime)) {
+    if (!isSameDay(startTime, newStartTime)) {
       return false;
     }
 

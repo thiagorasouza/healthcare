@@ -24,7 +24,7 @@ describe("Appointment Entity Test Suite", () => {
   });
 
   it("validate should return false if appointment is too short", () => {
-    const startTime = addMinutes(new Date(), MIN_ADVANCE);
+    const startTime = addMinutes(new Date(), MIN_ADVANCE + 5);
     const duration = MIN_DURATION - 5;
 
     const appointmentMock = mockAppointment(startTime, duration);
@@ -43,17 +43,19 @@ describe("Appointment Entity Test Suite", () => {
     expect(sut.validate()).toStrictEqual(new AppointmentLogicSuccess(sut));
   });
 
-  it("isConflicting should return false if appointments conflict", () => {
+  it("isConflicting should return true if appointments conflict", () => {
     const day = new Date("2024-01-01T05:00:00.000Z");
     const appointmentMock1 = mockAppointment(set(day, { hours: 10, minutes: 30 }), 30);
+    // console.log("🚀 ~ appointmentMock1:", appointmentMock1);
     const appointmentMock2 = mockAppointment(set(day, { hours: 10, minutes: 45 }), 30);
+    // console.log("🚀 ~ appointmentMock2:", appointmentMock2);
 
     const sut = makeSut(appointmentMock1);
 
     expect(sut.isConflicting(appointmentMock2)).toBe(true);
   });
 
-  it("isConflicting should return true if appointments do not conflict", () => {
+  it("isConflicting should return false if appointments do not conflict", () => {
     const day = new Date("2024-01-01T05:00:00.000Z");
     const appointmentMock1 = mockAppointment(set(day, { hours: 10, minutes: 30 }), 30);
     const appointmentMock2 = mockAppointment(set(day, { hours: 11, minutes: 0 }), 30);
