@@ -1,7 +1,6 @@
 import { env } from "@/server/config/env";
 import { DoctorModel } from "@/server/domain/models/doctorModel";
 import { Appwritify } from "@/server/frameworks/appwrite/appwriteHelpers";
-import { databases } from "@/server/frameworks/appwrite/appwriteNodeClient";
 import { AppwriteRepository } from "@/server/frameworks/appwrite/appwriteRepository";
 import { DoctorsRepository } from "@/server/repositories/doctorsRepository";
 
