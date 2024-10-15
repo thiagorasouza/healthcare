@@ -5,7 +5,6 @@ import BackButton from "@/components/shared/BackButton";
 import DefaultCard from "@/components/shared/DefaultCard";
 import DrawerAnimation from "@/components/shared/DrawerAnimation";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { createAppointment } from "@/lib/actions/createAppointment";
 import { createPatient } from "@/lib/actions/createPatient";
 import { getImageLink } from "@/lib/actions/getImageLink";
 import { getPatternsByDoctorId } from "@/lib/actions/getPatternsByDoctorId";
@@ -21,9 +20,11 @@ import {
   getInitials,
   objectToFormData,
   scrollToTop,
+  subtractTimeStrings,
 } from "@/lib/utils";
+import { createAppointment } from "@/server/actions/createAppointment.action";
 import { format } from "date-fns";
-import { ArrowRight, CalendarDays, Clock } from "lucide-react";
+import { ArrowRight, CalendarDays, Clock, Hourglass } from "lucide-react";
 import Image from "next/image";
 import { useState } from "react";
 
@@ -38,7 +39,7 @@ export default function AppointmentCreator({ doctors }: AppointmentCreatorProps)
   const [doctor, setDoctor] = useState<Doctor | undefined>();
   const [slots, setSlots] = useState<Slots | undefined>();
   const [pickedDate, setPickedDate] = useState<string | undefined>();
-  const [pickedHour, setPickedHour] = useState<string | undefined>();
+  const [pickedHour, setPickedHour] = useState<{ hour: string; duration: number } | undefined>();
 
   async function onDoctorClick(doctor: Doctor) {
     setPickedDate(undefined);
@@ -61,8 +62,8 @@ export default function AppointmentCreator({ doctors }: AppointmentCreatorProps)
     setPickedDate(dateStr);
   }
 
-  function onHourClick(hour: string) {
-    setPickedHour(hour);
+  function onHourClick(hour: string, duration: number) {
+    setPickedHour({ hour, duration });
   }
 
   function onNextClick() {
@@ -78,18 +79,20 @@ export default function AppointmentCreator({ doctors }: AppointmentCreatorProps)
   function onPatientCreated(patient: PatientParsedData) {
     const doctorId = doctor!.$id;
     const patientId = patient.$id;
-    const [hours, minutes] = pickedHour!.split(":").map((x) => Number(x));
+    const [hours, minutes] = pickedHour!.hour.split(":").map((x) => Number(x));
     const startTime = new Date(pickedDate!);
+    const duration = pickedHour!.duration;
     startTime.setHours(hours, minutes, 0, 0);
 
-    createAppointment(objectToFormData({ doctorId, patientId, startTime }));
+    createAppointment(objectToFormData({ doctorId, patientId, startTime, duration }));
   }
 
   const dates = slots && [...slots.keys()].slice(0, MAX_DATES);
   const hours = slots && pickedDate && slots.get(pickedDate);
+  // console.log("🚀 ~ hours:", hours);
 
   return (
-    <div className="mx-auto w-[1200px] w-full px-6">
+    <div className="w-full px-6">
       {step === 1 ? (
         <div className="space-y-20 py-10">
           <section className="text-center">
@@ -138,15 +141,19 @@ export default function AppointmentCreator({ doctors }: AppointmentCreatorProps)
                   {hours && (
                     <Section title="Available hours">
                       <ul className="flex flex-wrap gap-[16px]">
-                        {hours.map(([hour], index) => (
-                          <li key={index}>
-                            <HourCard
-                              hour={hour}
-                              onHourClick={onHourClick}
-                              highlight={hour === pickedHour}
-                            />
-                          </li>
-                        ))}
+                        {hours.map(([hour, end], index) => {
+                          const duration = subtractTimeStrings(hour, end);
+                          return (
+                            <li key={index}>
+                              <HourCard
+                                hour={hour}
+                                duration={duration}
+                                onHourClick={onHourClick}
+                                highlight={hour === pickedHour?.hour}
+                              />
+                            </li>
+                          );
+                        })}
                       </ul>
                     </Section>
                   )}
@@ -155,7 +162,7 @@ export default function AppointmentCreator({ doctors }: AppointmentCreatorProps)
                       <p className="mb-7 leading-relaxed text-gray">
                         {doctor.specialty} appointment with Dr. {getFirstName(doctor.name)}
                         <br />
-                        {format(pickedDate, "PPP")} at {pickedHour}
+                        {format(pickedDate, "PPP")} at {pickedHour!.hour}
                         <br />
                       </p>
                       <NextButton onNextClick={onNextClick} />
@@ -200,7 +207,11 @@ export default function AppointmentCreator({ doctors }: AppointmentCreatorProps)
               </p>
               <p className="flex items-center gap-3">
                 <Clock className="h-4 w-4" />
-                {pickedHour}
+                {pickedHour?.hour}
+              </p>
+              <p className="flex items-center gap-3">
+                <Hourglass className="h-4 w-4" />
+                {pickedHour?.duration} minutes
               </p>
             </div>
             <BackButton label="Change" onBackClick={onBackClick} />
@@ -292,18 +303,19 @@ function DateCard({ dateStr, onDateClick, highlight = false }: DateCardProps) {
 
 interface HourCardProps {
   hour: string;
+  duration: number;
   highlight?: boolean;
-  onHourClick: (hour: string) => void;
+  onHourClick: (hour: string, duration: number) => void;
 }
 
-function HourCard({ hour, highlight, onHourClick }: HourCardProps) {
+function HourCard({ hour, duration, highlight, onHourClick }: HourCardProps) {
   return (
     <div
       className={cn(
         "flex w-[72px] cursor-pointer items-center justify-center rounded-[15px] border-2 border-light-gray py-[9px] font-semibold transition duration-200 hover:scale-110",
         highlight && "border-none bg-yellow text-white",
       )}
-      onClick={() => onHourClick(hour)}
+      onClick={() => onHourClick(hour, duration)}
     >
       {hour}
     </div>

@@ -3,7 +3,7 @@ import { type AppwriteException as WebAppwriteException } from "appwrite";
 import { type ClassValue, clsx } from "clsx";
 import { twMerge } from "tailwind-merge";
 import { SafeParseError, ZodError } from "zod";
-import { Day, getHours, getMinutes, nextDay, subDays } from "date-fns";
+import { Day, differenceInMinutes, getHours, getMinutes, nextDay, parse, subDays } from "date-fns";
 import { Weekday, weekdays } from "@/lib/schemas/patternsSchema";
 
 export function cn(...inputs: ClassValue[]) {
@@ -201,4 +201,18 @@ export function colorize(index: number) {
 
 export function scrollToTop() {
   window.scrollTo({ top: 0, behavior: "smooth" });
+}
+
+export function subtractTimeStrings(startTime: string, endTime: string): number {
+  // Parse the time strings to Date objects (using a reference date, e.g., 1970-01-01)
+  const formatString = "HH:mm";
+  const referenceDate = "1970-01-01"; // a placeholder date for parsing time
+
+  const start = parse(startTime, formatString, new Date(referenceDate));
+  const end = parse(endTime, formatString, new Date(referenceDate));
+
+  // Calculate the difference in minutes
+  const difference = differenceInMinutes(end, start);
+
+  return difference;
 }
