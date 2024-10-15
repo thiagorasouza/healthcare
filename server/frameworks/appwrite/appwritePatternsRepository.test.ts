@@ -2,7 +2,6 @@
 
 import { mockPattern } from "@/server/domain/mocks/pattern.mock";
 import { PatternModel } from "@/server/domain/models/patternModel";
-import { Appwritify } from "@/server/frameworks/appwrite/appwriteHelpers";
 import { AppwritePatternsRepository } from "@/server/frameworks/appwrite/appwritePatternsRepository";
 import { NotFoundFailure } from "@/server/shared/failures/notFoundFailure";
 import { FoundSuccess } from "@/server/shared/successes/foundSuccess";
@@ -16,12 +15,18 @@ const makeSut = () => {
 const patternMock = mockPattern();
 Reflect.deleteProperty(patternMock, "id");
 
-let patternCreated: Appwritify<PatternModel>;
+let patternCreated: PatternModel;
 
 describe("AppwritePatternsRepository Test Suite", () => {
   beforeAll(async () => {
     const { sut } = makeSut();
-    patternCreated = (await sut.createDocument(patternMock)) as Appwritify<PatternModel>;
+
+    const result = await sut.createDocument(patternMock);
+    if (!result.ok) {
+      throw result;
+    }
+
+    patternCreated = result.value;
   });
 
   it("getPatternsByDoctorId should fail if patterns are not found", async () => {
@@ -37,7 +42,7 @@ describe("AppwritePatternsRepository Test Suite", () => {
   it("getPatternsByDoctorId should return patterns if id is found", async () => {
     const { sut } = makeSut();
 
-    const patternId = patternCreated.$id;
+    const patternId = patternCreated.id!;
     const doctorId = patternCreated.doctorId;
     const success = new FoundSuccess<PatternModel[]>([{ ...patternMock, id: patternId }]);
     const result = await sut.getPatternsByDoctorId(doctorId);
@@ -47,6 +52,6 @@ describe("AppwritePatternsRepository Test Suite", () => {
 
   afterAll(async () => {
     const { sut } = makeSut();
-    await sut.deleteDocument(patternCreated.$id);
+    await sut.deleteDocument(patternCreated.id!);
   });
 });

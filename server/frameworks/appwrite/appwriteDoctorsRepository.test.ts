@@ -3,7 +3,6 @@
 import { mockDoctor } from "@/server/domain/mocks/doctor.mock";
 import { DoctorModel } from "@/server/domain/models/doctorModel";
 import { AppwriteDoctorsRepository } from "@/server/frameworks/appwrite/appwriteDoctorsRepository";
-import { Appwritify } from "@/server/frameworks/appwrite/appwriteHelpers";
 import { NotFoundFailure } from "@/server/shared/failures/notFoundFailure";
 import { FoundSuccess } from "@/server/shared/successes/foundSuccess";
 import { afterAll, beforeAll, expect } from "@jest/globals";
@@ -16,12 +15,18 @@ const makeSut = () => {
 const doctorMock = mockDoctor();
 Reflect.deleteProperty(doctorMock, "id");
 
-let doctorCreated: Appwritify<DoctorModel>;
+let doctorCreated: DoctorModel;
 
 describe("AppwriteDoctorsRepository Test Suite", () => {
   beforeAll(async () => {
     const { sut } = makeSut();
-    doctorCreated = (await sut.createDocument(doctorMock)) as Appwritify<DoctorModel>;
+
+    const result = await sut.createDocument(doctorMock);
+    if (!result.ok) {
+      throw result;
+    }
+
+    doctorCreated = result.value;
   });
 
   it("getDoctorById should fail if id is not found", async () => {
@@ -37,7 +42,7 @@ describe("AppwriteDoctorsRepository Test Suite", () => {
   it("getDoctorById should return doctor if id is found", async () => {
     const { sut } = makeSut();
 
-    const doctorId = doctorCreated.$id;
+    const doctorId = doctorCreated.id!;
     const success = new FoundSuccess<DoctorModel>({ ...doctorMock, id: doctorId });
     const result = await sut.getDoctorById(doctorId);
 
@@ -46,6 +51,6 @@ describe("AppwriteDoctorsRepository Test Suite", () => {
 
   afterAll(async () => {
     const { sut } = makeSut();
-    await sut.deleteDocument(doctorCreated.$id);
+    await sut.deleteDocument(doctorCreated.id!);
   });
 });
