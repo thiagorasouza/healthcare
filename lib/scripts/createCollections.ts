@@ -82,8 +82,8 @@ async function createAppointmentsCollection() {
     await databases.createCollection(dbId, colId, "appointments", undefined, true);
     await databases.createStringAttribute(dbId, colId, "doctorId", 100, true);
     await databases.createStringAttribute(dbId, colId, "patientId", 100, true);
-    await databases.createStringAttribute(dbId, colId, "patternId", 100, true);
     await databases.createDatetimeAttribute(dbId, colId, "startTime", true);
+    await databases.createIntegerAttribute(dbId, colId, "duration", true);
 
     console.log("Appointments collection created");
   } catch (error) {
