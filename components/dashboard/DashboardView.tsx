@@ -16,13 +16,17 @@ import {
 } from "@/components/ui/table";
 import DashboardStatsCard from "@/components/dashboard/DashboardStatsCard";
 
-export default function DashboardView() {
+interface DashboardViewProps {
+  doctorsCount: string;
+}
+
+export default function DashboardView({ doctorsCount }: DashboardViewProps) {
   return (
     <div className="space-y-4 md:space-y-8">
       <div className="grid gap-4 md:grid-cols-2 md:gap-8 lg:grid-cols-3">
         <DashboardStatsCard
           title="Doctor"
-          stats="32"
+          stats={doctorsCount}
           growth="+2 since last month"
           Icon={Activity}
           href="/admin/doctors"

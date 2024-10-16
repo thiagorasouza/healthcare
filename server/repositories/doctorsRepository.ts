@@ -1,6 +1,8 @@
-import { DoctorNotFoundFailure } from "@/server/shared/failures";
+import { Success } from "@/server/core/success";
+import { DoctorNotFoundFailure, ServerFailure } from "@/server/shared/failures";
 import { DoctorFoundSuccess } from "@/server/shared/successes";
 
 export interface DoctorsRepositoryInterface {
   getDoctorById(doctorId: string): Promise<DoctorFoundSuccess | DoctorNotFoundFailure>;
+  count(): Promise<Success<number> | ServerFailure>;
 }

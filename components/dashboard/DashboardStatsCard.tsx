@@ -3,7 +3,6 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { ArrowRight } from "lucide-react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
 import { ElementType } from "react";
 
 interface DashboardCardProps {
@@ -21,7 +20,7 @@ export default function DashboardStatsCard({
   Icon,
   href,
 }: DashboardCardProps) {
-  const router = useRouter();
+  const statsError = stats === "error";
 
   return (
     <Link href={href} target="_blank">
@@ -32,8 +31,10 @@ export default function DashboardStatsCard({
             <CardTitle className="text-sm font-medium">{title}</CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{stats}</div>
-            <p className="text-xs text-muted-foreground">{growth}</p>
+            <div className="text-2xl font-bold">{statsError ? "--" : stats}</div>
+            <p className="text-xs text-muted-foreground">
+              {statsError ? "An error ocurred. Please refresh to fetch again" : growth}
+            </p>
           </CardContent>
         </div>
         <div className="ml-auto flex items-center self-stretch bg-muted px-1 transition-all group-hover:px-3">

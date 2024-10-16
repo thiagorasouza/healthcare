@@ -13,6 +13,7 @@ export class DoctorsRepository
   }
 
   public async getDoctorById(doctorId: string) {
+    // console.log("🚀 ~ doctorId:", doctorId);
     return await this.getDocumentById(doctorId);
   }
 

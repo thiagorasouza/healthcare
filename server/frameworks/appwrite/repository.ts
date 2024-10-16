@@ -1,6 +1,7 @@
 import { env } from "@/server/config/env";
+import { Success } from "@/server/core/success";
 import { Appwritify, isAppwriteException } from "@/server/frameworks/appwrite/helpers";
-import { databases, Databases, ID } from "@/server/frameworks/appwrite/nodeClient";
+import { databases, Databases, ID, Query } from "@/server/frameworks/appwrite/nodeClient";
 import { ServerFailure } from "@/server/shared/failures";
 import { NotFoundFailure } from "@/server/shared/failures/notFoundFailure";
 import { CreatedSuccess } from "@/server/shared/successes/createdSuccess";
@@ -55,6 +56,15 @@ export abstract class Repository<T> {
       }
 
       return new FoundSuccess<T>(this.map(result));
+    } catch (error) {
+      return new ServerFailure(error);
+    }
+  }
+
+  public async count() {
+    try {
+      const result = await this.listDocuments([Query.limit(1)]);
+      return new Success(result.total);
     } catch (error) {
       return new ServerFailure(error);
     }

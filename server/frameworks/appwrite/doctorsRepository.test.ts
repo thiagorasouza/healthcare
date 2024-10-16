@@ -49,6 +49,16 @@ describe("DoctorsRepository Test Suite", () => {
     expect(result).toStrictEqual(success);
   });
 
+  it("count should return the document count", async () => {
+    const { sut } = makeSut();
+
+    const result = await sut.count();
+
+    expect(result.ok).toBe(true);
+    // @ts-ignore
+    expect(result?.value).toBeGreaterThanOrEqual(1);
+  });
+
   afterAll(async () => {
     const { sut } = makeSut();
     await sut.deleteDocument(doctorCreated.id!);
