@@ -33,7 +33,7 @@ export default function DashboardStatsCard({
           <CardContent>
             <div className="text-2xl font-bold">{statsError ? "--" : stats}</div>
             <p className="text-xs text-muted-foreground">
-              {statsError ? "An error ocurred. Please refresh to fetch again" : growth}
+              {statsError ? "An error ocurred. Please refresh the page to fetch again" : growth}
             </p>
           </CardContent>
         </div>

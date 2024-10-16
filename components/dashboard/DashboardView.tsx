@@ -18,9 +18,15 @@ import DashboardStatsCard from "@/components/dashboard/DashboardStatsCard";
 
 interface DashboardViewProps {
   doctorsCount: string;
+  patientsCount: string;
+  appointmentsCount: string;
 }
 
-export default function DashboardView({ doctorsCount }: DashboardViewProps) {
+export default function DashboardView({
+  doctorsCount,
+  patientsCount,
+  appointmentsCount,
+}: DashboardViewProps) {
   return (
     <div className="space-y-4 md:space-y-8">
       <div className="grid gap-4 md:grid-cols-2 md:gap-8 lg:grid-cols-3">
@@ -33,14 +39,14 @@ export default function DashboardView({ doctorsCount }: DashboardViewProps) {
         />
         <DashboardStatsCard
           title="Patients"
-          stats="189"
+          stats={patientsCount}
           growth="+5.1% from last month"
           Icon={Users}
           href="/admin/patients"
         />
         <DashboardStatsCard
           title="Appointments"
-          stats="210"
+          stats={appointmentsCount}
           growth="+18.1% from last month"
           Icon={CalendarCheck}
           href="/admin/appointments"
