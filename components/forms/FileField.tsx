@@ -28,7 +28,7 @@ const FileField = ({
 }: FileFieldProps) => {
   const onDrop = useCallback(
     (acceptedFiles: File[]) => {
-      console.log("🚀 ~ acceptedFiles:", acceptedFiles);
+      // console.log("🚀 ~ acceptedFiles:", acceptedFiles);
       form.setValue(name, acceptedFiles[0], { shouldValidate: true });
     },
     [form],

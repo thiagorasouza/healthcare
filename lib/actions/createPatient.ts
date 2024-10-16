@@ -24,7 +24,7 @@ export type CreatePatientResult = Success<PatientParsedData> | Error<string[] | 
 export async function createPatient(formData: FormData): Promise<CreatePatientResult> {
   try {
     const rawData = Object.fromEntries(formData);
-    console.log("🚀 ~ rawData:", rawData);
+    // console.log("🚀 ~ rawData:", rawData);
 
     const validation = patientsZodSchema.safeParse(rawData);
     if (!validation.success) {

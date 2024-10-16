@@ -42,6 +42,9 @@ export default function PatientsForm({
   onSuccess,
   submitLabel = "Submit",
 }: PatientsFormProps) {
+  console.log("🚀 ~ patientData:", patientData);
+  console.log("🚀 ~ identification:", identification);
+
   const [message, setMessage] = useState("");
 
   const form = useForm<PatientZodData>({
@@ -62,8 +65,8 @@ export default function PatientsForm({
   }, [patientData]);
 
   async function onSubmit(submittedData: PatientZodData) {
-    console.log("🚀 ~ submittedData:", submittedData);
-    console.log("🚀 ~ patientData:", patientData);
+    // console.log("🚀 ~ submittedData:", submittedData);
+    // console.log("🚀 ~ patientData:", patientData);
     setMessage("");
     try {
       const formData = objectToFormData(submittedData);

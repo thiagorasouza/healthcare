@@ -1,3 +1,5 @@
+"use server";
+
 import { AppointmentsRepository } from "@/server/frameworks/appwrite/appointmentsRepository";
 import { DoctorsRepository } from "@/server/frameworks/appwrite/doctorsRepository";
 import { PatientsRepository } from "@/server/frameworks/appwrite/patientsRepository";
@@ -7,7 +9,7 @@ import { CreateAppointmentController } from "@/server/useCases/createAppointment
 import { CreateAppointmentUseCase } from "@/server/useCases/createAppointment/createAppointmentUseCase";
 
 export const createAppointment = async (formData: FormData) => {
-  console.log("🚀 ~ formData:", formData);
+  // console.log("🚀 ~ formData:", formData);
 
   const doctorsRepository = new DoctorsRepository();
   const patientsRepository = new PatientsRepository();
@@ -22,7 +24,7 @@ export const createAppointment = async (formData: FormData) => {
   const controller = new CreateAppointmentController(useCase, appointmentValidator);
 
   const result = await controller.handle(formData);
-  console.log("🚀 ~ result:", result);
+  const plainObject = { ...result };
 
-  return result;
+  return plainObject;
 };
