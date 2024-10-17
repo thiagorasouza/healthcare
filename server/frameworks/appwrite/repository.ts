@@ -70,15 +70,25 @@ export abstract class Repository<T> {
     }
   }
 
-  public async listDocuments(queries: string[]) {
+  public async list(queries?: string[]) {
+    try {
+      const result = await this.listDocuments(queries);
+      const mappedDocuments = result.documents.map((doc) => this.map(doc as Appwritify<T>));
+      return new Success(mappedDocuments);
+    } catch (error) {
+      return new ServerFailure(error);
+    }
+  }
+
+  protected async listDocuments(queries?: string[]) {
     return await this.db.listDocuments(this.databaseId, this.collectionId, queries);
   }
 
-  public async updateDocument(id: string, data: any, permissions?: string[]) {
+  protected async updateDocument(id: string, data: any, permissions?: string[]) {
     return await this.db.updateDocument(this.databaseId, this.collectionId, id, data, permissions);
   }
 
-  public async deleteDocument(id: string) {
+  protected async deleteDocument(id: string) {
     return await this.db.deleteDocument(this.databaseId, this.collectionId, id);
   }
 }
