@@ -1,4 +1,4 @@
-import { MIN_ADVANCE, MIN_ADVANCE_UNIT } from "@/server/config/constants";
+import { MIN_ADVANCE, ADVANCE_UNIT } from "@/server/config/constants";
 import { Failure } from "@/server/core/failure";
 
 export class AppointmentTooSoonFailure extends Failure<{
@@ -10,7 +10,7 @@ export class AppointmentTooSoonFailure extends Failure<{
     super({
       startTime,
       minAdvance: MIN_ADVANCE,
-      minAdvanceUnit: MIN_ADVANCE_UNIT,
+      minAdvanceUnit: ADVANCE_UNIT,
     });
   }
 }

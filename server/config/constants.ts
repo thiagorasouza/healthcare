@@ -12,8 +12,8 @@ export const identificationTypes: IdentificationType[] = [
 
 // Minimum appointment duration in minutes
 export const MIN_DURATION = 15;
-export const MIN_DURATION_UNIT = "minutes";
+export const DURATION_UNIT = "minutes";
 
 // Minimum booking advance duration in minutes
 export const MIN_ADVANCE = 60;
-export const MIN_ADVANCE_UNIT = "minutes";
+export const ADVANCE_UNIT = "minutes";
