@@ -70,9 +70,10 @@ export abstract class Repository<T> {
     }
   }
 
-  public async list(queries?: string[]) {
+  public async list(field?: string, values?: string[]) {
     try {
-      const result = await this.listDocuments(queries);
+      const query = field && values ? [Query.equal(field, values)] : undefined;
+      const result = await this.listDocuments(query);
       const mappedDocuments = result.documents.map((doc) => this.map(doc as Appwritify<T>));
       return new Success(mappedDocuments);
     } catch (error) {
