@@ -12,11 +12,6 @@ export class DoctorsRepository
     super(env.doctorsCollectionId);
   }
 
-  public async getDoctorById(doctorId: string) {
-    // console.log("🚀 ~ doctorId:", doctorId);
-    return await this.getDocumentById(doctorId);
-  }
-
   public map(data: Appwritify<DoctorModel>): DoctorModel {
     return {
       id: data.$id,

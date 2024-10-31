@@ -7,7 +7,7 @@ import { NotFoundFailure } from "@/server/shared/failures/notFoundFailure";
 import { CreatedSuccess } from "@/server/shared/successes/createdSuccess";
 import { FoundSuccess } from "@/server/shared/successes/foundSuccess";
 
-export abstract class Repository<T> {
+export abstract class Repository<Model> {
   private readonly db: Databases;
   private readonly databaseId: string;
   private readonly collectionId: string;
@@ -18,9 +18,9 @@ export abstract class Repository<T> {
     this.collectionId = collectionId;
   }
 
-  public abstract map(data: Appwritify<T>): T;
+  public abstract map(data: Appwritify<Model>): Model;
 
-  public async createDocument(data: Omit<T, "id">, permissions?: string[]) {
+  public async create(data: Omit<Model, "id">, permissions?: string[]) {
     try {
       const result = (await this.db.createDocument(
         this.databaseId,
@@ -28,35 +28,28 @@ export abstract class Repository<T> {
         ID.unique(),
         data,
         permissions,
-      )) as Appwritify<T>;
+      )) as Appwritify<Model>;
 
-      return new CreatedSuccess<T>(this.map(result));
+      return new CreatedSuccess<Model>(this.map(result));
     } catch (error) {
       return new ServerFailure(error);
     }
   }
 
-  public async getDocument(id: string) {
+  public async getById(id: string): Promise<FoundSuccess<Model> | NotFoundFailure> {
     try {
-      return await this.db.getDocument(this.databaseId, this.collectionId, id);
+      const result = (await this.db.getDocument(
+        this.databaseId,
+        this.collectionId,
+        id,
+      )) as Appwritify<Model>;
+
+      return new Success<Model>(this.map(result));
     } catch (error) {
       if (isAppwriteException(error) && error.type === "document_not_found") {
-        return null;
-      }
-
-      throw error;
-    }
-  }
-
-  public async getDocumentById(id: string): Promise<FoundSuccess<T> | NotFoundFailure> {
-    try {
-      const result = (await this.getDocument(id)) as Appwritify<T>;
-      if (!result) {
         return new NotFoundFailure(id);
       }
 
-      return new FoundSuccess<T>(this.map(result));
-    } catch (error) {
       return new ServerFailure(error);
     }
   }
@@ -70,26 +63,34 @@ export abstract class Repository<T> {
     }
   }
 
-  public async list(field?: string, values?: string[]) {
+  public async list(queries?: string[]) {
     try {
-      const query = field && values ? [Query.equal(field, values)] : undefined;
-      const result = await this.listDocuments(query);
-      const mappedDocuments = result.documents.map((doc) => this.map(doc as Appwritify<T>));
+      const result = await this.listDocuments(queries);
+      const mappedDocuments = result.documents.map((doc) => this.map(doc as Appwritify<Model>));
       return new Success(mappedDocuments);
     } catch (error) {
       return new ServerFailure(error);
     }
   }
 
+  public async listByField(field?: string, values?: string[]) {
+    const query = field && values ? [Query.equal(field, values)] : undefined;
+    return this.list(query);
+  }
+
+  public async listByIds(values: string[]) {
+    return this.listByField("$id", values);
+  }
+
   protected async listDocuments(queries?: string[]) {
     return await this.db.listDocuments(this.databaseId, this.collectionId, queries);
   }
 
-  protected async updateDocument(id: string, data: any, permissions?: string[]) {
+  public async updateDocument(id: string, data: any, permissions?: string[]) {
     return await this.db.updateDocument(this.databaseId, this.collectionId, id, data, permissions);
   }
 
-  protected async deleteDocument(id: string) {
+  public async deleteDocument(id: string) {
     return await this.db.deleteDocument(this.databaseId, this.collectionId, id);
   }
 }

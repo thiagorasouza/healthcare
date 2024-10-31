@@ -1,10 +1,9 @@
 // HITS THE APPWRITE API
 
+import { Success } from "@/server/core/success";
 import { mockAppointment } from "@/server/domain/mocks/appointment.mock";
 import { AppointmentModel } from "@/server/domain/models/appointmentModel";
 import { AppointmentsRepository } from "@/server/frameworks/appwrite/appointmentsRepository";
-import { NotFoundFailure } from "@/server/shared/failures/notFoundFailure";
-import { FoundSuccess } from "@/server/shared/successes/foundSuccess";
 import { afterAll, beforeAll, describe, expect, it } from "@jest/globals";
 
 const makeSut = () => {
@@ -21,7 +20,7 @@ describe("AppointmentsRepository Test Suite", () => {
   beforeAll(async () => {
     const { sut } = makeSut();
 
-    const result = await sut.createDocument(appointmentMock);
+    const result = await sut.create(appointmentMock);
     if (!result.ok) {
       throw result;
     }
@@ -29,25 +28,22 @@ describe("AppointmentsRepository Test Suite", () => {
     appointmentCreated = result.value;
   });
 
-  it("getAppointmentsByPatientId should fail if appointments are not found", async () => {
+  it("getByPatientId should return an empty array if appointments are not found", async () => {
     const { sut } = makeSut();
 
     const patientId = "non_existent_id";
-    const failure = new NotFoundFailure(patientId);
-    const result = await sut.getAppointmentsByPatientId(patientId);
+    const result = await sut.getByPatientId(patientId);
 
-    expect(result).toStrictEqual(failure);
+    expect(result).toStrictEqual(new Success([]));
   });
 
-  it("getAppointmentsByPatientId should return appointments if id is found", async () => {
+  it("getByPatientId should return appointments if id is found", async () => {
     const { sut } = makeSut();
 
     const appointmentId = appointmentCreated.id!;
     const patientId = appointmentCreated.patientId;
-    const success = new FoundSuccess<AppointmentModel[]>([
-      { ...appointmentMock, id: appointmentId },
-    ]);
-    const result = await sut.getAppointmentsByPatientId(patientId);
+    const success = new Success<AppointmentModel[]>([{ ...appointmentMock, id: appointmentId }]);
+    const result = await sut.getByPatientId(patientId);
 
     expect(result).toStrictEqual(success);
   });

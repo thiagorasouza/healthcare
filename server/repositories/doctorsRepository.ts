@@ -3,6 +3,6 @@ import { DoctorNotFoundFailure, ServerFailure } from "@/server/shared/failures";
 import { DoctorFoundSuccess } from "@/server/shared/successes";
 
 export interface DoctorsRepositoryInterface {
-  getDoctorById(doctorId: string): Promise<DoctorFoundSuccess | DoctorNotFoundFailure>;
+  getById(doctorId: string): Promise<DoctorFoundSuccess | DoctorNotFoundFailure>;
   count(): Promise<Success<number> | ServerFailure>;
 }

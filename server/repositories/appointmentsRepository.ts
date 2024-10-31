@@ -12,6 +12,6 @@ export interface AppointmentsRepositoryInterface {
     doctorId: string,
     startTime: Date,
   ): Promise<FoundSuccess<T[]> | NotFoundFailure>;
-  getAppointmentsByPatientId(patientId: string): Promise<FoundSuccess<T[]> | NotFoundFailure>;
-  createAppointment(appointment: Appointment): Promise<CreatedSuccess<T> | ServerFailure>;
+  getByPatientId(patientId: string): Promise<FoundSuccess<T[]> | NotFoundFailure>;
+  create(appointment: AppointmentModel): Promise<CreatedSuccess<T> | ServerFailure>;
 }

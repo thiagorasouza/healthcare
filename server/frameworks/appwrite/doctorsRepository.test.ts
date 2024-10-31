@@ -1,10 +1,10 @@
 // HITS THE APPWRITE API
 
+import { Success } from "@/server/core/success";
 import { mockDoctor } from "@/server/domain/mocks/doctor.mock";
 import { DoctorModel } from "@/server/domain/models/doctorModel";
 import { DoctorsRepository } from "@/server/frameworks/appwrite/doctorsRepository";
 import { NotFoundFailure } from "@/server/shared/failures/notFoundFailure";
-import { FoundSuccess } from "@/server/shared/successes/foundSuccess";
 import { afterAll, beforeAll, expect } from "@jest/globals";
 
 const makeSut = () => {
@@ -21,7 +21,7 @@ describe("DoctorsRepository Test Suite", () => {
   beforeAll(async () => {
     const { sut } = makeSut();
 
-    const result = await sut.createDocument(doctorMock);
+    const result = await sut.create(doctorMock);
     if (!result.ok) {
       throw result;
     }
@@ -29,22 +29,22 @@ describe("DoctorsRepository Test Suite", () => {
     doctorCreated = result.value;
   });
 
-  it("getDoctorById should fail if id is not found", async () => {
+  it("getById should fail if id is not found", async () => {
     const { sut } = makeSut();
 
     const doctorId = "non_existent_id";
     const failure = new NotFoundFailure(doctorId);
-    const result = await sut.getDoctorById(doctorId);
+    const result = await sut.getById(doctorId);
 
     expect(result).toStrictEqual(failure);
   });
 
-  it("getDoctorById should return doctor if id is found", async () => {
+  it("getById should return doctor if id is found", async () => {
     const { sut } = makeSut();
 
     const doctorId = doctorCreated.id!;
-    const success = new FoundSuccess<DoctorModel>({ ...doctorMock, id: doctorId });
-    const result = await sut.getDoctorById(doctorId);
+    const success = new Success<DoctorModel>({ ...doctorMock, id: doctorId });
+    const result = await sut.getById(doctorId);
 
     expect(result).toStrictEqual(success);
   });

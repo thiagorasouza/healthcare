@@ -1,3 +1,4 @@
+import { Success } from "@/server/core/success";
 import { Appointment } from "@/server/domain/appointment";
 import { mockAppointment } from "@/server/domain/mocks/appointment.mock";
 import { mockDoctor } from "@/server/domain/mocks/doctor.mock";
@@ -44,10 +45,14 @@ const mockRequest = () => {
 
 const mockDoctorsRepository = () => {
   class DoctorsRepositoryStub implements DoctorsRepositoryInterface {
-    async getDoctorById(doctorId: string): Promise<DoctorFoundSuccess | DoctorNotFoundFailure> {
+    async getById(doctorId: string): Promise<DoctorFoundSuccess | DoctorNotFoundFailure> {
       const doctorMock = mockDoctor();
       doctorMock.id = doctorId;
       return new DoctorFoundSuccess(doctorMock);
+    }
+
+    async count(): Promise<Success<number> | ServerFailure> {
+      return new Success(1);
     }
   }
 
@@ -56,7 +61,7 @@ const mockDoctorsRepository = () => {
 
 const mockPatientsRepository = () => {
   class PatientsRepositoryStub implements PatientsRepositoryInterface {
-    async getPatientById(patientId: string): Promise<PatientFoundSuccess | PatientNotFoundFailure> {
+    async getById(patientId: string): Promise<PatientFoundSuccess | PatientNotFoundFailure> {
       const patientMock = mockPatient();
       patientMock.id = patientId;
       return new PatientFoundSuccess(patientMock);
@@ -68,9 +73,7 @@ const mockPatientsRepository = () => {
 
 const mockPatternsRepository = () => {
   class PatternsRepositoryStub implements PatternsRepositoryInterface {
-    async getPatternsByDoctorId(
-      doctorId: string,
-    ): Promise<PatternsFoundSuccess | PatternNotFoundFailure> {
+    async getByDoctorId(doctorId: string): Promise<PatternsFoundSuccess | PatternNotFoundFailure> {
       const patternsMock = [mockPattern(), mockPattern()];
       for (const pattern of patternsMock) {
         pattern.doctorId = doctorId;
@@ -84,7 +87,7 @@ const mockPatternsRepository = () => {
 
 const mockAppointmentsRepository = () => {
   class AppointmentsRepositoryStub implements AppointmentsRepositoryInterface {
-    async getAppointmentsByPatientId(
+    async getByPatientId(
       patientId: string,
     ): Promise<AppointmentsFoundSuccess | AppointmentNotFoundFailure> {
       const appointmentsMock = [mockAppointment(), mockAppointment()];
@@ -101,10 +104,10 @@ const mockAppointmentsRepository = () => {
       return new NotFoundFailure(doctorId);
     }
 
-    async createAppointment(
-      appointment: Appointment,
+    async create(
+      appointment: AppointmentModel,
     ): Promise<CreatedSuccess<AppointmentModel> | ServerFailure> {
-      return new CreatedSuccess({ ...appointment.get(), id: "new_id" });
+      return new CreatedSuccess({ ...appointment, id: "new_id" });
     }
   }
 
@@ -151,7 +154,7 @@ describe("CreateAppointment Use Case Test Suite", () => {
     const requestMock = mockRequest();
     const failure = new DoctorNotFoundFailure(requestMock.doctorId);
 
-    jest.spyOn(doctorsRepository, "getDoctorById").mockReturnValueOnce(Promise.resolve(failure));
+    jest.spyOn(doctorsRepository, "getById").mockReturnValueOnce(Promise.resolve(failure));
 
     const result = await sut.execute(requestMock);
     expect(result).toStrictEqual(failure);
@@ -163,7 +166,7 @@ describe("CreateAppointment Use Case Test Suite", () => {
     const requestMock = mockRequest();
     const failure = new PatientNotFoundFailure(requestMock.patientId);
 
-    jest.spyOn(patientsRepository, "getPatientById").mockReturnValueOnce(Promise.resolve(failure));
+    jest.spyOn(patientsRepository, "getById").mockReturnValueOnce(Promise.resolve(failure));
 
     const result = await sut.execute(requestMock);
     expect(result).toStrictEqual(failure);
@@ -176,7 +179,7 @@ describe("CreateAppointment Use Case Test Suite", () => {
     const failure = new DoctorUnavailableFailure(requestMock.doctorId, requestMock.startTime);
 
     jest
-      .spyOn(patternsRepository, "getPatternsByDoctorId")
+      .spyOn(patternsRepository, "getByDoctorId")
       .mockReturnValueOnce(Promise.resolve(new PatternNotFoundFailure(requestMock.doctorId)));
 
     const result = await sut.execute(requestMock);
@@ -218,7 +221,7 @@ describe("CreateAppointment Use Case Test Suite", () => {
 
     const appointmentMock = mockAppointment();
     jest
-      .spyOn(appointmentsRepository, "getAppointmentsByPatientId")
+      .spyOn(appointmentsRepository, "getByPatientId")
       .mockReturnValueOnce(Promise.resolve(new AppointmentsFoundSuccess([appointmentMock])));
 
     const failure = new PatientUnavailableFailure(
@@ -239,9 +242,7 @@ describe("CreateAppointment Use Case Test Suite", () => {
     const requestMock = mockRequest();
     const failure = new ServerFailure("");
 
-    jest
-      .spyOn(appointmentsRepository, "createAppointment")
-      .mockReturnValueOnce(Promise.resolve(failure));
+    jest.spyOn(appointmentsRepository, "create").mockReturnValueOnce(Promise.resolve(failure));
 
     const result = await sut.execute(requestMock);
     expect(result).toStrictEqual(failure);

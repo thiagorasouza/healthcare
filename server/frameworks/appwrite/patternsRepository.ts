@@ -15,17 +15,8 @@ export class PatternsRepository
     super(env.patternsCollectionId);
   }
 
-  public async getPatternsByDoctorId(doctorId: string) {
-    const result = await this.listDocuments([Query.equal("doctorId", doctorId)]);
-    if (result.total === 0) {
-      return new NotFoundFailure(doctorId);
-    }
-
-    const patterns = result.documents.map((pattern) =>
-      this.map(pattern as Appwritify<PatternModel>),
-    );
-
-    return new FoundSuccess<PatternModel[]>(patterns);
+  public async getByDoctorId(doctorId: string) {
+    return this.listByField("doctorId", [doctorId]);
   }
 
   public map(data: Appwritify<PatternModel>): PatternModel {

@@ -32,13 +32,13 @@ export class ListAppointmentsUseCase implements UseCase {
         patientsIds.add(ap.patientId);
       });
 
-      const doctorsResult = await this.doctorsRepository.list("$id", [...doctorIds]);
+      const doctorsResult = await this.doctorsRepository.listByIds([...doctorIds]);
       if (!doctorsResult.ok) {
         return doctorsResult;
       }
       const doctors = doctorsResult.value;
 
-      const patientsResults = await this.patientsRepository.list("$id", [...patientsIds]);
+      const patientsResults = await this.patientsRepository.listByIds([...patientsIds]);
       if (!patientsResults.ok) {
         return patientsResults;
       }

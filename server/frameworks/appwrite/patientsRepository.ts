@@ -12,10 +12,6 @@ export class PatientsRepository
     super(env.patientsCollectionId);
   }
 
-  async getPatientById(patientId: string) {
-    return await this.getDocumentById(patientId);
-  }
-
   public map(data: Appwritify<PatientModel>): PatientModel {
     return {
       id: data.$id,
