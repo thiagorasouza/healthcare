@@ -3,9 +3,9 @@ import { Weekday } from "@/server/domain/models/patternModel";
 import { Slots } from "@/server/domain/slots";
 import { weekdays } from "@/server/config/constants";
 
-const day1 = () => new Date("2024-01-01T05:00:00.000Z");
-const day2 = () => new Date("2024-01-02T05:00:00.000Z");
-const day3 = () => new Date("2024-01-03T05:00:00.000Z");
+const day1 = () => new Date("2024-01-01T00:00:00.000Z");
+const day2 = () => new Date("2024-01-02T00:00:00.000Z");
+const day3 = () => new Date("2024-01-03T00:00:00.000Z");
 const day1Str = day1().toISOString();
 const day2Str = day2().toISOString();
 const day3Str = day3().toISOString();
