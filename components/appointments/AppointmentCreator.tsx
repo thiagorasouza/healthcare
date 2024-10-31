@@ -1,5 +1,6 @@
 "use client";
 
+import { DoctorsCarousel } from "@/components/appointments/DoctorsCarousel";
 import AlertMessage from "@/components/forms/AlertMessage";
 import PatientsForm from "@/components/patients/PatientsForm";
 import BackButton from "@/components/shared/BackButton";
@@ -16,13 +17,11 @@ import { env } from "@/lib/env";
 import { getSlots, Slots } from "@/lib/processing/getSlots";
 import { unexpectedError } from "@/lib/results";
 import { IdentificationData } from "@/lib/schemas/appointmentsSchema";
-import { type Doctor } from "@/lib/schemas/doctorsSchema";
 import { PatientParsedData } from "@/lib/schemas/patientsSchema";
 import { weekdays } from "@/lib/schemas/patternsSchema";
 import {
   capitalize,
   cn,
-  colorize,
   getFirstName,
   getInitials,
   objectToFormData,
@@ -30,6 +29,7 @@ import {
   subtractTimeStrings,
 } from "@/lib/utils";
 import { createAppointment } from "@/server/actions/createAppointment";
+import { DoctorModel } from "@/server/domain/models/doctorModel";
 import { format, set } from "date-fns";
 import {
   ArrowRight,
@@ -39,19 +39,17 @@ import {
   Hourglass,
   SquarePen,
 } from "lucide-react";
-import Image from "next/image";
 import { useState } from "react";
-import { toast } from "sonner";
 
 const MAX_DATES = 5;
 
 interface AppointmentCreatorProps {
-  doctors: Doctor[];
+  doctors: DoctorModel[] | "error";
 }
 
 export default function AppointmentCreator({ doctors }: AppointmentCreatorProps) {
   const [step, setStep] = useState<number>(1);
-  const [doctor, setDoctor] = useState<Doctor | undefined>();
+  const [doctor, setDoctor] = useState<DoctorModel | undefined>();
   const [slots, setSlots] = useState<Slots | undefined>();
   const [pickedDate, setPickedDate] = useState<string | undefined>();
   const [pickedHour, setPickedHour] = useState<{ hour: string; duration: number } | undefined>();
@@ -60,11 +58,13 @@ export default function AppointmentCreator({ doctors }: AppointmentCreatorProps)
   const [identification, setIdentification] = useState<IdentificationData | undefined>();
   const [message, setMessage] = useState("");
 
-  async function onDoctorClick(doctor: Doctor) {
+  async function onDoctorClick(doctor: DoctorModel) {
+    if (!doctor) return;
+
     setPickedDate(undefined);
     setPickedHour(undefined);
 
-    const result = await getPatternsByDoctorId(doctor.$id);
+    const result = await getPatternsByDoctorId(doctor.id);
     if (!result.success || !result.data) {
       setDoctor(doctor);
       return;
@@ -112,9 +112,11 @@ export default function AppointmentCreator({ doctors }: AppointmentCreatorProps)
   }
 
   async function onBookClick() {
+    if (!doctor) return;
+
     setMessage("");
     try {
-      const doctorId = doctor!.$id;
+      const doctorId = doctor.id;
       const patientId = patientData!.$id;
 
       const [hours, minutes] = pickedHour!.hour.split(":").map((x) => Number(x));
@@ -141,7 +143,10 @@ export default function AppointmentCreator({ doctors }: AppointmentCreatorProps)
 
   const dates = slots && [...slots.keys()].slice(0, MAX_DATES);
   const hours = slots && pickedDate && slots.get(pickedDate);
-  // console.log("🚀 ~ hours:", hours);
+
+  if (doctors === "error") {
+    return;
+  }
 
   return (
     <div className="w-full px-6">
@@ -155,15 +160,8 @@ export default function AppointmentCreator({ doctors }: AppointmentCreatorProps)
               Choose a doctor to see his or her available hours
             </p>
           </section>
-          <section>
-            <ul className="flex justify-between gap-6">
-              {doctors.map((doctor, index) => (
-                <li key={index}>
-                  <DoctorCard index={index} doctor={doctor} onDoctorClick={onDoctorClick} />
-                </li>
-              ))}
-            </ul>
-          </section>
+          <DoctorsCarousel doctors={doctors} onDoctorClick={onDoctorClick} />
+
           {doctor && (
             <DrawerAnimation toggle={!!doctor}>
               <div className="flex gap-[72px]">
@@ -333,48 +331,6 @@ function Section({ title, children }: { title: string; children: React.ReactNode
       <h2 className="mb-[30px] text-lg font-semibold">{title}</h2>
       {children}
     </section>
-  );
-}
-
-interface DoctorCardProps {
-  index: number;
-  doctor: Doctor;
-  onDoctorClick: (doctor: Doctor) => void;
-}
-
-function DoctorCard({ index, doctor, onDoctorClick }: DoctorCardProps) {
-  const picture = getImageLink(doctor.pictureId);
-  const bgColor = colorize(index);
-
-  return (
-    <div
-      className={cn(
-        "relative h-[234px] w-[236px] cursor-pointer rounded-[60px] transition hover:scale-105",
-        bgColor,
-      )}
-      onClick={() => onDoctorClick(doctor)}
-    >
-      <Image
-        src={picture}
-        alt="female doctor"
-        width={472}
-        height={524}
-        className="absolute -top-[28px] left-0 right-0"
-      />
-      <div className="absolute -bottom-[26px] left-[13px] right-[13px] flex h-[70px] items-center gap-3 rounded-[20px] bg-white px-[22px] py-[17px] shadow">
-        <div className="font-semibold">
-          <h3 className="text-md">Dr. {getFirstName(doctor.name)}</h3>
-          <p className="text-xs text-gray">{doctor.specialty}</p>
-        </div>
-        <Image
-          src="/icons/arrow-icon.svg"
-          alt="Right arrow with circle icon"
-          width={31}
-          height={31}
-          className="ml-auto"
-        />
-      </div>
-    </div>
   );
 }
 
