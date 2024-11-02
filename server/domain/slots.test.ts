@@ -282,6 +282,37 @@ describe("Slots Test Suite", () => {
     );
   });
 
+  it("should remove a slot from the list", () => {
+    const singleDateMock = mockSingleDate(day1(), 10, 11);
+    const recurringPatternMock = mockRecurringPattern(day2(), day3(), 8, 10);
+    const patternsMock = [singleDateMock, recurringPatternMock];
+
+    const sut = makeSut();
+
+    const firstSlot = singleDateMock.startTime;
+    sut.source(patternsMock).parse().remove(firstSlot);
+
+    expect(sut.get()).toStrictEqual(
+      new Map(
+        Object.entries({
+          [day1Str]: [["10:30", "11:00"]],
+          [day2Str]: [
+            ["08:00", "08:30"],
+            ["08:30", "09:00"],
+            ["09:00", "09:30"],
+            ["09:30", "10:00"],
+          ],
+          [day3Str]: [
+            ["08:00", "08:30"],
+            ["08:30", "09:00"],
+            ["09:00", "09:30"],
+            ["09:30", "10:00"],
+          ],
+        }),
+      ),
+    );
+  });
+
   it("should return false if slot startTime is not valid", () => {
     const patternsMock = [mockSingleDate(day1(), 10, 12)];
     const slotMock = mockSlot(day1(), 12, 0);

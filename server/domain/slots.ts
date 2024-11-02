@@ -156,6 +156,18 @@ export class Slots {
     this.data.set(dateStr, previousValue ? previousValue.concat(hours) : hours);
   }
 
+  public remove(startTime: Date) {
+    const dateStr = getDateStr(startTime);
+    const hoursStr = getHoursStr(startTime);
+    const previousValue = this.data.get(dateStr);
+    if (!previousValue) return;
+
+    this.data.set(
+      dateStr,
+      previousValue.filter(([start]) => start !== hoursStr),
+    );
+  }
+
   public hoursArray(startTime: Date, endTime: Date, duration: number) {
     const startTimeMs = startTime.getTime();
     const endTimeMs = endTime.getTime();
