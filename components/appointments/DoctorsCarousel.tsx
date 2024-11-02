@@ -1,4 +1,3 @@
-import { Card, CardContent } from "@/components/ui/card";
 import {
   Carousel,
   CarouselContent,
@@ -13,28 +12,28 @@ import Image from "next/image";
 
 interface DoctorCarouselProps {
   doctors: DoctorModel[];
+  doctor?: DoctorModel;
   onDoctorClick: (doctor: DoctorModel) => unknown;
 }
 
-export function DoctorsCarousel({ doctors, onDoctorClick }: DoctorCarouselProps) {
+export function DoctorsCarousel({
+  doctors,
+  doctor: pickedDoctor,
+  onDoctorClick,
+}: DoctorCarouselProps) {
   return (
-    <Carousel opts={{ loop: true, align: "start", slidesToScroll: "auto" }}>
+    <Carousel opts={{ loop: true, align: "start", slidesToScroll: "auto", duration: 35 }}>
       <CarouselPrevious />
       <CarouselContent>
-        {/* {Array.from({ length: 5 }).map((_, index) => (
-          <CarouselItem key={index}>
-            <div className="p-1">
-              <Card>
-                <CardContent className="flex aspect-square items-center justify-center">
-                  <span className="text-4xl font-semibold">{index + 1}</span>
-                </CardContent>
-              </Card>
-            </div>
-          </CarouselItem>
-        ))} */}
         {doctors.map((doctor, index) => (
           <CarouselItem key={index} className="md:basis-1/2 lg:basis-1/3 xl:basis-1/4">
-            <DoctorCard index={index} doctor={doctor} onDoctorClick={onDoctorClick} />
+            <DoctorCard
+              index={index}
+              doctor={doctor}
+              active={!!pickedDoctor && doctor.id === pickedDoctor.id}
+              muted={!!pickedDoctor && doctor.id !== pickedDoctor.id}
+              onDoctorClick={onDoctorClick}
+            />
           </CarouselItem>
         ))}
       </CarouselContent>
@@ -43,32 +42,24 @@ export function DoctorsCarousel({ doctors, onDoctorClick }: DoctorCarouselProps)
   );
 }
 
-// opts={{
-//   align: "start",
-//   loop: true,
-//   slidesToScroll: 1,
-//   duration: 35,
-// }}
-
-{
-  /* <DoctorCard index={index} doctor={doctor} onDoctorClick={onDoctorClick} />; */
-}
-
 interface DoctorCardProps {
   index: number;
   doctor: DoctorModel;
+  muted: boolean;
+  active: boolean;
   onDoctorClick: (doctor: DoctorModel) => unknown;
 }
 
-function DoctorCard({ index, doctor, onDoctorClick }: DoctorCardProps) {
+function DoctorCard({ index, doctor, active, muted, onDoctorClick }: DoctorCardProps) {
   const picture = getImageLink(doctor.pictureId);
   const bgColor = colorize(index);
 
   return (
-    <div className="relative h-[300px] pt-[28px]">
+    <div className={cn("relative h-[320px] pt-[28px]", { "grayscale hover:grayscale-0": muted })}>
       <div
         className={cn(
           "relative mx-auto h-[234px] w-[236px] cursor-pointer rounded-[60px] transition hover:scale-105",
+          { "scale-105": active },
           bgColor,
         )}
         onClick={() => onDoctorClick(doctor)}
@@ -80,6 +71,7 @@ function DoctorCard({ index, doctor, onDoctorClick }: DoctorCardProps) {
           height={524}
           className="absolute -top-[28px] left-0 right-0"
         />
+
         <div className={bgColor}></div>
         <div className="absolute -bottom-[26px] left-[13px] right-[13px] flex h-[70px] items-center gap-3 rounded-[20px] bg-white px-[22px] py-[17px] shadow">
           <div className="font-semibold">

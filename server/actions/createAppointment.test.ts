@@ -2,11 +2,8 @@
 
 import { objectToFormData } from "@/lib/utils";
 import { createAppointment } from "@/server/actions/createAppointment";
-import { mockAppointment } from "@/server/domain/mocks/appointment.mock";
 import { AppointmentModel } from "@/server/domain/models/appointmentModel";
-import { faker } from "@faker-js/faker";
 import { describe, expect, it } from "@jest/globals";
-import { addDays } from "date-fns";
 
 const mockRequest = () => {
   const formData = objectToFormData({
