@@ -17,6 +17,10 @@ export class AppointmentsRepository
     return this.listByField("patientId", [patientId]);
   }
 
+  public async getByDoctorId(doctorId: string) {
+    return this.listByField("doctorId", [doctorId]);
+  }
+
   public async getByDoctorIdAndStartTime(doctorId: string, startTime: Date) {
     return this.list([
       Query.and([
