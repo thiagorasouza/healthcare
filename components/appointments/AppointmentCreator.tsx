@@ -149,7 +149,7 @@ export default function AppointmentCreator({ doctors }: AppointmentCreatorProps)
   }
 
   return (
-    <div className="w-full px-6">
+    <div>
       {step === 1 ? (
         <div className="space-y-20 py-10">
           <section className="text-center">

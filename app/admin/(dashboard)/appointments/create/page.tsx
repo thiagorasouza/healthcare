@@ -9,7 +9,7 @@ export default async function CreateAppointmentPage() {
   const doctors = doctorsResult.ok ? doctorsResult.value : "error";
 
   return (
-    <div className="mx-auto w-[1200px]">
+    <div className="w-full">
       <AppointmentCreator doctors={doctors} />
     </div>
   );
