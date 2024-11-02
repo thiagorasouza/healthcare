@@ -149,7 +149,7 @@ export default function AppointmentCreator({ doctors }: AppointmentCreatorProps)
   }
 
   return (
-    <div>
+    <>
       {step === 1 ? (
         <div className="space-y-20 py-10">
           <section className="text-center">
@@ -317,7 +317,7 @@ export default function AppointmentCreator({ doctors }: AppointmentCreatorProps)
       ) : (
         <div>Appointment Booked </div>
       )}
-    </div>
+    </>
   );
 }
 

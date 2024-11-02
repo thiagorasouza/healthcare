@@ -1,3 +1,4 @@
+import { Card, CardContent } from "@/components/ui/card";
 import {
   Carousel,
   CarouselContent,
@@ -17,26 +18,40 @@ interface DoctorCarouselProps {
 
 export function DoctorsCarousel({ doctors, onDoctorClick }: DoctorCarouselProps) {
   return (
-    <Carousel
-      opts={{
-        align: "start",
-        loop: true,
-        slidesToScroll: 3,
-        duration: 35,
-      }}
-      className="mx-auto w-[1100px]"
-    >
+    <Carousel opts={{ loop: true, align: "start", slidesToScroll: "auto" }}>
+      <CarouselPrevious />
       <CarouselContent>
+        {/* {Array.from({ length: 5 }).map((_, index) => (
+          <CarouselItem key={index}>
+            <div className="p-1">
+              <Card>
+                <CardContent className="flex aspect-square items-center justify-center">
+                  <span className="text-4xl font-semibold">{index + 1}</span>
+                </CardContent>
+              </Card>
+            </div>
+          </CarouselItem>
+        ))} */}
         {doctors.map((doctor, index) => (
-          <CarouselItem key={index} className="basis-1/4">
+          <CarouselItem key={index} className="md:basis-1/2 lg:basis-1/3 xl:basis-1/4">
             <DoctorCard index={index} doctor={doctor} onDoctorClick={onDoctorClick} />
           </CarouselItem>
         ))}
       </CarouselContent>
-      <CarouselPrevious />
       <CarouselNext />
     </Carousel>
   );
+}
+
+// opts={{
+//   align: "start",
+//   loop: true,
+//   slidesToScroll: 1,
+//   duration: 35,
+// }}
+
+{
+  /* <DoctorCard index={index} doctor={doctor} onDoctorClick={onDoctorClick} />; */
 }
 
 interface DoctorCardProps {

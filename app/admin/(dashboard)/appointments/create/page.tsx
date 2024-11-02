@@ -8,9 +8,5 @@ export default async function CreateAppointmentPage() {
   const doctorsResult = await getDoctors();
   const doctors = doctorsResult.ok ? doctorsResult.value : "error";
 
-  return (
-    <div className="w-full">
-      <AppointmentCreator doctors={doctors} />
-    </div>
-  );
+  return <AppointmentCreator doctors={doctors} />;
 }

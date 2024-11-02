@@ -19,7 +19,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={cn(inter.className, "pb-12")}>
+      <body className={cn(inter.className)}>
         {children}
         <Toaster />
       </body>

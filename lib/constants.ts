@@ -17,10 +17,6 @@ export const adminNavbarLinks = [
     label: "Appointments",
     href: "/admin/appointments",
   },
-  {
-    label: "Create Appointment",
-    href: "/admin/appointments/create",
-  },
 ];
 
 export const genderTypes = [
