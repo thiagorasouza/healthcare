@@ -1,3 +1,5 @@
+"use server";
+
 import { AppointmentsRepository } from "@/server/frameworks/appwrite/appointmentsRepository";
 import { DoctorsRepository } from "@/server/frameworks/appwrite/doctorsRepository";
 import { PatternsRepository } from "@/server/frameworks/appwrite/patternsRepository";
