@@ -11,7 +11,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { PlusCircle, SquarePen, Trash, Trash2 } from "lucide-react";
+import { PlusCircle, Trash2 } from "lucide-react";
 import Link from "next/link";
 import { AppointmentHydrated } from "@/server/domain/models/appointmentHydrated";
 import { ReactNode } from "react";
@@ -124,6 +124,7 @@ function Structure({ children }: { children: ReactNode }) {
         <CardTitle>Appointments</CardTitle>
         <CardDescription>Recently scheduled appointments</CardDescription>
       </CardHeader>
+
       <CardContent>{children}</CardContent>
     </Card>
   );
