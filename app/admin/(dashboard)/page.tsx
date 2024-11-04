@@ -1,7 +1,7 @@
 "use server";
 
 import DashboardView from "@/components/dashboard/DashboardView";
-import { countAppointments } from "@/server/actions/countAppointments";
+import { countAppointments } from "@/server/actions/countAppointments.bypass";
 import { countDoctors } from "@/server/actions/countDoctors.bypass";
 import { countPatients } from "@/server/actions/countPatients.bypass";
 

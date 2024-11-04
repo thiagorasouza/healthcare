@@ -50,6 +50,6 @@ describe("PatternsRepository Test Suite", () => {
 
   afterAll(async () => {
     const { sut } = makeSut();
-    await sut.deleteDocument(patternCreated.id!);
+    await sut.delete(patternCreated.id!);
   });
 });

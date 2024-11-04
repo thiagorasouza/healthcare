@@ -32,7 +32,8 @@ export abstract class Repository<Model> {
 
       return new CreatedSuccess<Model>(this.map(result));
     } catch (error) {
-      return new ServerFailure(error);
+      console.log(error);
+      return new ServerFailure("Appwrite error");
     }
   }
 
@@ -50,7 +51,8 @@ export abstract class Repository<Model> {
         return new NotFoundFailure(id);
       }
 
-      return new ServerFailure(error);
+      console.log(error);
+      return new ServerFailure("Appwrite error");
     }
   }
 
@@ -59,7 +61,8 @@ export abstract class Repository<Model> {
       const result = await this.listDocuments([Query.limit(1)]);
       return new Success(result.total);
     } catch (error) {
-      return new ServerFailure(error);
+      console.log(error);
+      return new ServerFailure("Appwrite error");
     }
   }
 
@@ -69,7 +72,8 @@ export abstract class Repository<Model> {
       const mappedDocuments = result.documents.map((doc) => this.map(doc as Appwritify<Model>));
       return new Success(mappedDocuments);
     } catch (error) {
-      return new ServerFailure(error);
+      console.log(error);
+      return new ServerFailure("Appwrite error");
     }
   }
 
@@ -90,7 +94,13 @@ export abstract class Repository<Model> {
     return await this.db.updateDocument(this.databaseId, this.collectionId, id, data, permissions);
   }
 
-  public async deleteDocument(id: string) {
-    return await this.db.deleteDocument(this.databaseId, this.collectionId, id);
+  public async delete(id: string) {
+    try {
+      await this.db.deleteDocument(this.databaseId, this.collectionId, id);
+      return new Success("");
+    } catch (error) {
+      console.log(error);
+      return new ServerFailure("Appwrite error");
+    }
   }
 }

@@ -11,12 +11,14 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { PlusCircle } from "lucide-react";
+import { PlusCircle, Trash, Trash2 } from "lucide-react";
 import Link from "next/link";
 import { AppointmentHydrated } from "@/server/domain/models/appointmentHydrated";
 import { ReactNode } from "react";
 import ErrorCard from "@/components/shared/ErrorCard";
 import { displayDate, displayDuration, displayTime } from "@/server/shared/helpers/date";
+import { deleteAppointment } from "@/server/actions/deleteAppointment.bypass";
+import { objectToFormData } from "@/lib/utils";
 
 interface AppointmentTableProps {
   appointments: AppointmentHydrated[] | "error";
@@ -24,6 +26,16 @@ interface AppointmentTableProps {
 
 export default function AppointmentsTable({ appointments }: AppointmentTableProps) {
   const hasError = appointments === "error";
+
+  async function onDelete(id: string) {
+    try {
+      const deleteResult = await deleteAppointment(objectToFormData({ id }));
+      console.log("🚀 ~ deleteResult:", deleteResult);
+    } catch (error) {
+      console.log("🚀 ~ error:", error);
+    }
+  }
+
   if (hasError) {
     return (
       <ErrorCard text="Unable to query for appointments at this time. Please try again later." />
@@ -55,6 +67,7 @@ export default function AppointmentsTable({ appointments }: AppointmentTableProp
             <TableHead>Date</TableHead>
             <TableHead>Hours</TableHead>
             <TableHead>Duration</TableHead>
+            <TableHead>Actions</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
@@ -70,6 +83,12 @@ export default function AppointmentsTable({ appointments }: AppointmentTableProp
               <TableCell>{displayDate(ap.startTime)}</TableCell>
               <TableCell>{displayTime(ap.startTime)}</TableCell>
               <TableCell>{displayDuration(ap.duration)}</TableCell>
+              <TableCell>
+                <Button size="sm" variant="destructive" onClick={() => onDelete(ap.id)}>
+                  <Trash2 className="mr-1 h-4 w-4" />
+                  Delete
+                </Button>
+              </TableCell>
             </TableRow>
           ))}
         </TableBody>

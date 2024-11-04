@@ -61,6 +61,6 @@ describe("DoctorsRepository Test Suite", () => {
 
   afterAll(async () => {
     const { sut } = makeSut();
-    await sut.deleteDocument(doctorCreated.id!);
+    await sut.delete(doctorCreated.id! + "a");
   });
 });

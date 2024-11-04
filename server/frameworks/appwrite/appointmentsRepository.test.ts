@@ -50,6 +50,6 @@ describe("AppointmentsRepository Test Suite", () => {
 
   afterAll(async () => {
     const { sut } = makeSut();
-    await sut.deleteDocument(appointmentCreated.id!);
+    await sut.delete(appointmentCreated.id!);
   });
 });
