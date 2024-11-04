@@ -6,7 +6,6 @@ export async function bypassBoilerplate<T, K>(repository: T, method: keyof T) {
   const controller = new BypassController(useCase);
 
   const result = (await controller.handle()) as K;
-  const plainObject = { ...result };
-
+  const plainObject = Object.assign({}, result);
   return plainObject;
 }

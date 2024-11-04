@@ -16,7 +16,6 @@ export const listAppointments = async () => {
   );
 
   const result = await useCase.execute();
-  const plainObject = { ...result };
-
+  const plainObject = Object.assign({}, result);
   return plainObject;
 };

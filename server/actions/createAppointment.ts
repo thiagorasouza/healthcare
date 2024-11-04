@@ -24,7 +24,6 @@ export const createAppointment = async (formData: FormData) => {
   const controller = new CreateAppointmentController(useCase, appointmentValidator);
 
   const result = await controller.handle(formData);
-  const plainObject = { ...result };
-
+  const plainObject = Object.assign({}, result);
   return plainObject;
 };

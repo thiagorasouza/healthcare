@@ -2,5 +2,7 @@ import { DoctorsRepository } from "@/server/frameworks/appwrite/doctorsRepositor
 
 export const getDoctors = async () => {
   const repository = new DoctorsRepository();
-  return await repository.list();
+  const result = await repository.list();
+  const plainObject = Object.assign({}, result);
+  return plainObject;
 };

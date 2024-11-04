@@ -19,7 +19,6 @@ export const getSlots = async (formData: FormData) => {
   const controller = new GetSlotsController(useCase, getSlotsValidator);
 
   const result = await controller.handle(formData);
-  const plainObject = { ...result };
-
+  const plainObject = Object.assign({}, result);
   return plainObject;
 };

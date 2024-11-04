@@ -4,5 +4,7 @@ import { DoctorsRepository } from "@/server/frameworks/appwrite/doctorsRepositor
 
 export const countDoctors = async () => {
   const repository = new DoctorsRepository();
-  return await repository.count();
+  const result = await repository.count();
+  const plainObject = Object.assign({}, result);
+  return plainObject;
 };
