@@ -75,6 +75,7 @@ export class CreateAppointmentUseCase implements UseCase {
     const doctorUnavailableFailure = new DoctorUnavailableFailure(doctorId, startTime);
 
     const doctorPatternsResult = await this.patternsRepository.getByDoctorId(doctorId);
+    // console.log("🚀 ~ doctorPatternsResult:", doctorPatternsResult);
     if (!doctorPatternsResult.ok) {
       return doctorUnavailableFailure;
     }
@@ -84,6 +85,7 @@ export class CreateAppointmentUseCase implements UseCase {
       .date(startTime)
       .parse()
       .isValid(startTime, duration);
+    // console.log("🚀 ~ isSlotValid:", isSlotValid);
 
     if (!isSlotValid) {
       return doctorUnavailableFailure;
@@ -93,12 +95,11 @@ export class CreateAppointmentUseCase implements UseCase {
       doctorId,
       startTime,
     );
-    if (doctorAppointmentResult.ok) {
+    if (doctorAppointmentResult.ok && doctorAppointmentResult.value.length > 0) {
       return doctorUnavailableFailure;
     }
 
     const patientAppointmentsResult = await this.appointmentsRepository.getByPatientId(patientId);
-
     if (patientAppointmentsResult.ok) {
       const storedAppointments = patientAppointmentsResult.value;
 

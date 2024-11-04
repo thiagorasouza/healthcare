@@ -29,16 +29,16 @@ interface PatientCreatorProps {
   doctor: DoctorModel;
   date?: string;
   hour?: { hour: string; duration: number };
-  onBackClick: () => void;
-  onCompletion: (patient: PatientParsedData) => void;
+  // onBackClick: () => void;
+  onBooked: (patient: PatientParsedData) => void;
 }
 
 export function PatientCreator({
   doctor,
   date,
   hour,
-  onBackClick,
-  onCompletion,
+  // onBackClick,
+  onBooked,
 }: PatientCreatorProps) {
   const [showPatientForm, setShowPatientForm] = useState(true);
   const [patientData, setPatientData] = useState<PatientParsedData | undefined>();
@@ -82,7 +82,7 @@ export function PatientCreator({
         return;
       }
 
-      onCompletion(patientData!);
+      onBooked(patientData!);
     } catch (error) {
       console.log(error);
 
@@ -127,7 +127,7 @@ export function PatientCreator({
               {hour?.duration} minutes
             </p>
           </div>
-          <BackButton label="Change" onBackClick={onBackClick} />
+          {/* <BackButton label="Change" onBackClick={onBackClick} /> */}
         </DefaultCard>
         <DefaultCard
           title="Patient details"

@@ -12,15 +12,23 @@ interface Props {
   doctor: DoctorModel;
   slots: SlotsModel;
   slot?: {
-    date: string;
+    date?: string;
     hour?: string;
     duration?: number;
   };
   onDateClick: (dateStr: string) => void;
   onHourClick: (hour: string, duration: number) => void;
+  onNextClick: () => void;
 }
 
-export function SlotSelector({ slots, doctor, slot, onDateClick, onHourClick }: Props) {
+export function SlotSelector({
+  slots,
+  doctor,
+  slot,
+  onDateClick,
+  onHourClick,
+  onNextClick,
+}: Props) {
   const dates = [...slots.keys()].slice(0, MAX_DATES);
   const hours = (slot?.date && slots.get(slot.date)) || [];
 
@@ -38,12 +46,15 @@ export function SlotSelector({ slots, doctor, slot, onDateClick, onHourClick }: 
         <Column>
           {slot?.date && <HourPicker hours={hours} onHourClick={onHourClick} hour={slot.hour} />}
           {slot?.date && slot.hour && (
-            <Summary
-              name={doctor.name}
-              specialty={doctor.specialty}
-              date={slot.date}
-              hour={slot.hour}
-            />
+            <>
+              <Summary
+                name={doctor.name}
+                specialty={doctor.specialty}
+                date={slot.date}
+                hour={slot.hour}
+              />
+              <NextButton onNextClick={onNextClick} />
+            </>
           )}
         </Column>
       </div>
@@ -180,7 +191,6 @@ function Summary({
         {format(date, "PPP")} at {hour}
         <br />
       </p>
-      <NextButton onNextClick={() => null} />
     </Section>
   );
 }

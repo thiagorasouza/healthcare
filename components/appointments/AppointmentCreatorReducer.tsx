@@ -4,7 +4,7 @@ import { SlotsModel } from "@/server/domain/models/slotsModel";
 const undefinedProps = {
   doctor: undefined,
   slots: undefined,
-  slot: undefined,
+  slot: { date: undefined, hour: undefined, duration: undefined },
 };
 
 export const initialState: State = {
@@ -13,10 +13,30 @@ export const initialState: State = {
 };
 
 type State =
-  | { phase: "doctor_selection"; doctor: undefined; slots: undefined; slot: undefined }
-  | { phase: "slots_error"; doctor: undefined; slots: undefined; slot: undefined }
-  | { phase: "date_selection"; doctor: DoctorModel; slots: SlotsModel; slot: undefined }
-  | { phase: "hour_selection"; doctor: DoctorModel; slots: SlotsModel; slot: { date: string } }
+  | {
+      phase: "doctor_selection";
+      doctor: undefined;
+      slots: undefined;
+      slot: { date: undefined; hour: undefined; duration: undefined };
+    }
+  | {
+      phase: "slots_error";
+      doctor: undefined;
+      slots: undefined;
+      slot: { date: undefined; hour: undefined; duration: undefined };
+    }
+  | {
+      phase: "date_selection";
+      doctor: DoctorModel;
+      slots: SlotsModel;
+      slot: { date: undefined; hour: undefined; duration: undefined };
+    }
+  | {
+      phase: "hour_selection";
+      doctor: DoctorModel;
+      slots: SlotsModel;
+      slot: { date: string; hour: undefined; duration: undefined };
+    }
   | {
       phase: "summary";
       doctor: DoctorModel;
@@ -55,7 +75,7 @@ export function reducer(state: State, action: Action): State {
       return {
         ...state,
         phase: "hour_selection",
-        slot: { date: action.payload.date },
+        slot: { date: action.payload.date, hour: undefined, duration: undefined },
       };
     case "set_hour_duration":
       if (state.phase !== "hour_selection") throw new Error("Invalid applcation flow.");
