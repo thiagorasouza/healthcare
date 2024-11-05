@@ -6,7 +6,7 @@ export const mockPatient = () => ({
   id: faker.string.uuid(),
   name: faker.person.fullName(),
   email: faker.internet.email(),
-  phone: faker.phone.number(),
+  phone: faker.helpers.fromRegExp("+3519[0-9]{8}"),
   birthdate: faker.date.birthdate(),
   gender: faker.helpers.arrayElement(genders) as Gender,
   address: faker.location.streetAddress(),

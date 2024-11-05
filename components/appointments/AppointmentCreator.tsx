@@ -12,7 +12,7 @@ import { PatientParsedData } from "@/lib/schemas/patientsSchema";
 import DefaultCard from "@/components/shared/DefaultCard";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { getImageLink } from "@/lib/actions/getImageLink";
-import { getInitials } from "@/lib/utils";
+import { getInitials, scrollToTop } from "@/lib/utils";
 import { ArrowUpRight, CalendarDays, CircleUserRound, Clock, Hourglass } from "lucide-react";
 import { format } from "date-fns";
 import { Button } from "@/components/ui/button";
@@ -52,6 +52,7 @@ export default function AppointmentCreator({ doctors }: { doctors: DoctorModel[]
 
   function onNextClick() {
     setShowPatientCreator(true);
+    scrollToTop();
   }
 
   function onBooked(patientData: PatientParsedData) {
@@ -108,11 +109,11 @@ export default function AppointmentCreator({ doctors }: { doctors: DoctorModel[]
             {state.slot.duration} minutes
           </p>
         </div>
-        <Button asChild>
+        {/* <Button asChild>
           <Link href="/admin/appointments" className="flex items-center">
             <ArrowUpRight className="h-4 w-4" /> View All Appointments
           </Link>
-        </Button>
+        </Button> */}
       </DefaultCard>
     );
   }

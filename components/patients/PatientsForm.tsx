@@ -26,6 +26,9 @@ import { unexpectedError } from "@/lib/results";
 import { CreatePatientResult } from "@/lib/actions/createPatient";
 import DateField from "@/components/forms/DateField";
 import { UpdatePatientResult } from "@/lib/actions/updatePatient";
+import { mockPatient } from "@/server/domain/mocks/patients.mock";
+import { Button } from "@/components/ui/button";
+import { FlaskConicalIcon } from "lucide-react";
 
 interface PatientsFormProps {
   data?: PatientParsedData;
@@ -42,15 +45,38 @@ export default function PatientsForm({
   onSuccess,
   submitLabel = "Submit",
 }: PatientsFormProps) {
-  console.log("🚀 ~ patientData:", patientData);
-  console.log("🚀 ~ identification:", identification);
+  // console.log("🚀 ~ patientData:", patientData);
+  // console.log("🚀 ~ identification:", identification);
 
   const [message, setMessage] = useState("");
+  const [testData, setTestData] = useState<PatientParsedData>();
+  console.log("🚀 ~ testData:", testData);
 
   const form = useForm<PatientZodData>({
     resolver: zodResolver(patientsZodSchema),
     defaultValues: patientData || patientZodDefaultValues,
   });
+  // console.log("🚀 ~ form:", form.getValues());
+
+  function autofill() {
+    const patientMock = mockPatient();
+    ["id", "authId", "identificationId"].map((key) => Reflect.deleteProperty(patientMock, key));
+    patientMock["usageConsent"] = true;
+    patientMock["privacyConsent"] = true;
+
+    form.reset(patientMock);
+
+    fetch("/pdf/test_pdf.pdf")
+      .then((result) => result.blob())
+      .then((blob) => {
+        const mockFile = new File([blob], "test_pdf.pdf", { type: "application/pdf" });
+
+        form.setValue("identification", mockFile, {
+          shouldValidate: true,
+        });
+      })
+      .catch(console.log);
+  }
 
   useEffect(() => {
     if (!patientData?.identificationId || !identification) return;
@@ -97,6 +123,22 @@ export default function PatientsForm({
   return (
     <Form {...form}>
       <AlertMessage message={message} />
+      <div className="mb-4">
+        <div className="relative mb-4">
+          <div className="absolute inset-0 flex items-center">
+            <span className="w-full border-t"></span>
+          </div>
+          <div className="relative flex justify-center text-xs uppercase">
+            <span className="bg-background px-2 text-muted-foreground">Testing options</span>
+          </div>
+        </div>
+        <Button type="button" className="mb-6 w-full" onClick={autofill}>
+          <FlaskConicalIcon className="mr-2 h-4 w-4" /> Fill form with test data
+        </Button>
+        <div className="inset-0 flex items-center">
+          <span className="w-full border-t"></span>
+        </div>
+      </div>
       <form onSubmit={form.handleSubmit(onSubmit)} className="flex flex-col gap-3 md:gap-6">
         <TextField
           name="name"

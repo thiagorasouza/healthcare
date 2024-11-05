@@ -32,6 +32,7 @@ export function RadioField({
   form,
   className,
 }: RadioFieldProps) {
+  console.log(`Radio field ${name}:`, form.getValues(name));
   return (
     <FormField
       control={form.control}
@@ -42,6 +43,7 @@ export function RadioField({
           <FormControl>
             <RadioGroup
               onValueChange={field.onChange}
+              value={field.value}
               defaultValue={field.value}
               className="flex gap-3"
             >
