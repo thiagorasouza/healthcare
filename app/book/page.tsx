@@ -7,5 +7,9 @@ export default async function BookPage() {
   const doctorsResult = await getDoctors();
   const doctors = doctorsResult.ok ? doctorsResult.value : "error";
 
-  return <AppointmentCreator doctors={doctors} />;
+  return (
+    <div className="bg-black">
+      <AppointmentCreator doctors={doctors} />
+    </div>
+  );
 }
