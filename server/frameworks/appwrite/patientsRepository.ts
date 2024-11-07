@@ -1,4 +1,5 @@
 import { env } from "@/server/config/env";
+import { Success } from "@/server/core/success";
 import { PatientModel } from "@/server/domain/models/patientModel";
 import { Appwritify } from "@/server/frameworks/appwrite/helpers";
 import { Repository } from "@/server/frameworks/appwrite/repository";
@@ -10,6 +11,11 @@ export class PatientsRepository
 {
   constructor() {
     super(env.patientsCollectionId);
+  }
+
+  public async getByEmail(email: string) {
+    const result = await this.listByField("email", [email]);
+    return result.ok ? new Success(result.value[0]) : result;
   }
 
   public map(data: Appwritify<PatientModel>): PatientModel {

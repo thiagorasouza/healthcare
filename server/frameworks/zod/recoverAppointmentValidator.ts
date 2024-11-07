@@ -1,0 +1,12 @@
+import { GenericValidator } from "@/server/frameworks/zod/genericValidator";
+import { RecoverAppointmentRequest } from "@/server/useCases/recoverAppointment/recoverAppointmentUseCase";
+import { z } from "zod";
+
+export const recoverAppointmentSchema = z.object({
+  email: z.string(),
+  birthdate: z.coerce.date(),
+});
+
+export const recoverAppointmentValidator = new GenericValidator<RecoverAppointmentRequest>(
+  recoverAppointmentSchema,
+);
