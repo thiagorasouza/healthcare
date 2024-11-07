@@ -71,14 +71,23 @@ export function reducer(state: State, action: Action): State {
         phase: "slots_error",
       };
     case "set_date":
-      if (state.phase !== "date_selection") throw new Error("Invalid applcation flow.");
+      if (
+        state.phase !== "date_selection" &&
+        state.phase !== "hour_selection" &&
+        state.phase !== "summary"
+      ) {
+        throw new Error("Invalid application flow.");
+      }
       return {
         ...state,
         phase: "hour_selection",
+        doctor: state.doctor,
         slot: { date: action.payload.date, hour: undefined, duration: undefined },
       };
     case "set_hour_duration":
-      if (state.phase !== "hour_selection") throw new Error("Invalid applcation flow.");
+      if (state.phase !== "hour_selection" && state.phase !== "summary") {
+        throw new Error("Invalid applcation flow.");
+      }
       return {
         ...state,
         phase: "summary",
