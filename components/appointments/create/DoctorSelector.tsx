@@ -11,7 +11,7 @@ interface DoctorSelectorProps {
 
 export function DoctorSelector({ doctors, doctor, onDoctorClick }: DoctorSelectorProps) {
   return (
-    <div className="space-y-20 py-10">
+    <div className="space-y-12 py-10">
       <section className="text-center">
         <h1 className="mb-2 text-2xl font-bold">
           Let&apos;s find your <span className="text-yellow">top doctor</span>
