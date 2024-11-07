@@ -1,5 +1,6 @@
 "use server";
 
+import { Calendar, CalendarDays } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 
@@ -23,33 +24,27 @@ const OnboardingPage = () => {
           </header>
           <ul className="hidden font-medium md:flex md:gap-8">
             <li>
-              <Link className="text-black" href="#">
-                How it Works
+              <Link className="text-black" href="/">
+                Home
               </Link>
             </li>
             <li>
-              <Link className="text-black" href="#">
-                Doctors
+              <Link className="text-black" href="/book">
+                Book an Appointment
               </Link>
             </li>
             <li>
-              <Link className="text-black" href="#">
-                Pricing
+              <Link className="text-black" href="/admin">
+                Dashboard
               </Link>
             </li>
           </ul>
           <button className="flex h-[52px] items-center gap-[9px] rounded-full bg-white p-[5px] focus:outline-none">
             <div className="flex h-[42px] w-[42px] items-center justify-center rounded-full bg-yellow">
-              <Image
-                src="/img/user.svg"
-                alt="user icon"
-                width={25}
-                height={25}
-                className="mt-[1px] text-white"
-              />
+              <CalendarDays className="h-4 w-4 text-white" />
             </div>
             <span className="mr-[27px] hidden font-semibold text-yellow md:block">
-              <Link href="/admin">My Area</Link>
+              <Link href="/appointment">Appointment Details</Link>
             </span>
           </button>
         </nav>
@@ -74,7 +69,7 @@ const OnboardingPage = () => {
                 />
               </div>
               <span className="mr-[27px] text-[17px] font-medium text-white">
-                Get An Appointment
+                Book An Appointment
               </span>
             </button>
           </Link>
