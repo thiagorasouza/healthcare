@@ -62,6 +62,7 @@ const config = {
         "light-gray": "var(--light-gray)",
         yellow: "var(--yellow)",
         gray: "var(--gray)",
+        "dark-gray": "var(--dark-gray)",
       },
       borderRadius: {
         lg: "var(--radius)",
@@ -84,7 +85,7 @@ const config = {
       },
     },
   },
-  plugins: [require("tailwindcss-animate")],
+  plugins: [require("tailwindcss-animate"), require("tailwind-scrollbar")],
   safelist: [
     "bg-light-purple",
     "bg-dark-purple",

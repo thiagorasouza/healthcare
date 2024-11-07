@@ -29,18 +29,18 @@ export default async function BookPage() {
                 <Pointer className="h-5 w-5" />
                 <div>Doctor</div>
               </li>
-              <li className="flex cursor-pointer items-center gap-4 p-3 text-gray">
+              <li className="text-dark-gray flex cursor-pointer items-center gap-4 p-3">
                 <CalendarDays className="h-5 w-5" />
                 <div>Date</div>
               </li>
-              <li className="flex cursor-pointer items-center gap-4 p-3 text-gray">
+              <li className="text-dark-gray flex cursor-pointer items-center gap-4 p-3">
                 <Clock className="h-5 w-5" />
                 <div>Hours</div>
               </li>
             </ul>
           </nav>
         </aside>
-        <main className="max-w-7xl rounded-3xl bg-white px-14 py-5">
+        <main className="max-w-7xl rounded-3xl bg-white px-6 py-14">
           <AppointmentCreator doctors={doctors} />
         </main>
       </div>

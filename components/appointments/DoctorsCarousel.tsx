@@ -55,7 +55,7 @@ function DoctorCard({ index, doctor, active, muted, onDoctorClick }: DoctorCardP
   const bgColor = colorize(index);
 
   return (
-    <div className={cn("relative h-[320px] pt-[28px]", { "grayscale hover:grayscale-0": muted })}>
+    <div className={cn("relative h-[298px] pt-[28px]", { "grayscale hover:grayscale-0": muted })}>
       <div
         className={cn(
           "relative mx-auto h-[234px] w-[236px] cursor-pointer rounded-[60px] transition hover:scale-105",

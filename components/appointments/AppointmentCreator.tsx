@@ -119,7 +119,7 @@ export default function AppointmentCreator({ doctors }: { doctors: DoctorModel[]
   }
 
   return !showPatientCreator ? (
-    <>
+    <div className="flex flex-col gap-10">
       <DoctorSelector doctors={doctors} doctor={state.doctor} onDoctorClick={onDoctorClick} />
       {state.doctor && state.slots && (
         <SlotSelector
@@ -131,7 +131,7 @@ export default function AppointmentCreator({ doctors }: { doctors: DoctorModel[]
           onNextClick={onNextClick}
         />
       )}
-    </>
+    </div>
   ) : (
     <PatientCreator
       doctor={state.doctor!}

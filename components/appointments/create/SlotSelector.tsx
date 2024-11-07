@@ -34,7 +34,7 @@ export function SlotSelector({
 
   return (
     <DrawerAnimation toggle={!!doctor}>
-      <div className="flex gap-[72px]">
+      <div className="flex gap-[72px] px-12">
         <Column>
           <Information bio={doctor.bio} />
           <DatePicker
@@ -196,13 +196,13 @@ function Summary({
 }
 
 function Column({ children }: { children: React.ReactNode }) {
-  return <div className="flex-1 space-y-[30px]">{children}</div>;
+  return <div className="flex-1 space-y-8">{children}</div>;
 }
 
 function Section({ title, children }: { title: string; children: React.ReactNode }) {
   return (
     <section>
-      <h2 className="mb-[30px] text-lg font-semibold">{title}</h2>
+      <h2 className="mb-8 text-lg font-semibold">{title}</h2>
       {children}
     </section>
   );
