@@ -2,11 +2,16 @@
 
 import { DoctorSelector } from "@/components/appointments/create/DoctorSelector";
 import { DoctorModel } from "@/server/domain/models/doctorModel";
-import { useReducer } from "react";
+import { Dispatch, useReducer } from "react";
 import { SlotSelector } from "@/components/appointments/create/SlotSelector";
 import { getSlots } from "@/server/actions/getSlots";
 import { objectToFormData } from "@/server/shared/helpers/utils";
-import { initialState, reducer } from "@/components/appointments/AppointmentCreatorReducer";
+import {
+  Action,
+  initialState,
+  reducer,
+  State,
+} from "@/components/appointments/AppointmentCreatorReducer";
 import { PatientCreator } from "@/components/appointments/create/PatientCreator";
 import { PatientParsedData } from "@/lib/schemas/patientsSchema";
 import DefaultCard from "@/components/shared/DefaultCard";
@@ -16,9 +21,13 @@ import { getInitials, scrollToTop } from "@/lib/utils";
 import { CalendarDays, CircleUserRound, Clock, Hourglass } from "lucide-react";
 import { format } from "date-fns";
 
-export default function AppointmentCreator({ doctors }: { doctors: DoctorModel[] | "error" }) {
-  const [state, dispatch] = useReducer(reducer, initialState);
+interface AppointmentCreatorProps {
+  doctors: DoctorModel[] | "error";
+  state: State;
+  dispatch: Dispatch<Action>;
+}
 
+export default function AppointmentCreator({ doctors, state, dispatch }: AppointmentCreatorProps) {
   async function onDoctorClick(doctor: DoctorModel) {
     if (state.phase === "date_selection" && state.doctor.id === doctor.id) {
       dispatch({ type: "remove_doctor" });

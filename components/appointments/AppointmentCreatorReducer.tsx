@@ -13,7 +13,7 @@ export const initialState: State = {
   phase: "doctor_selection",
 };
 
-type State =
+export type State =
   | {
       phase: "doctor_selection";
       doctor: undefined;
@@ -52,7 +52,7 @@ type State =
       slot: { date: string; hour: string; duration: number };
     };
 
-type Action =
+export type Action =
   | { type: "remove_doctor" }
   | { type: "set_doctor"; payload: { doctor: DoctorModel; slots: SlotsModel } }
   | { type: "set_date"; payload: { date: string } }
