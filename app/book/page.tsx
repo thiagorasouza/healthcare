@@ -40,7 +40,7 @@ export default async function BookPage() {
             </ul>
           </nav>
         </aside>
-        <main className="max-w-7xl rounded-3xl bg-white px-6 py-14">
+        <main className="w-full max-w-7xl rounded-3xl bg-white px-6 py-14">
           <AppointmentCreator doctors={doctors} />
         </main>
       </div>

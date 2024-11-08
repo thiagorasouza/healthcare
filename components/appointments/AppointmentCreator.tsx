@@ -2,7 +2,7 @@
 
 import { DoctorSelector } from "@/components/appointments/create/DoctorSelector";
 import { DoctorModel } from "@/server/domain/models/doctorModel";
-import { useReducer, useState } from "react";
+import { useReducer } from "react";
 import { SlotSelector } from "@/components/appointments/create/SlotSelector";
 import { getSlots } from "@/server/actions/getSlots";
 import { objectToFormData } from "@/server/shared/helpers/utils";
@@ -13,16 +13,11 @@ import DefaultCard from "@/components/shared/DefaultCard";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { getImageLink } from "@/lib/actions/getImageLink";
 import { getInitials, scrollToTop } from "@/lib/utils";
-import { ArrowUpRight, CalendarDays, CircleUserRound, Clock, Hourglass } from "lucide-react";
+import { CalendarDays, CircleUserRound, Clock, Hourglass } from "lucide-react";
 import { format } from "date-fns";
-import { Button } from "@/components/ui/button";
-import Link from "next/link";
 
 export default function AppointmentCreator({ doctors }: { doctors: DoctorModel[] | "error" }) {
   const [state, dispatch] = useReducer(reducer, initialState);
-  const [showPatientCreator, setShowPatientCreator] = useState(false);
-  const [booked, setBooked] = useState(false);
-  const [patientData, setPatientData] = useState<PatientParsedData | undefined>();
 
   async function onDoctorClick(doctor: DoctorModel) {
     if (state.phase === "date_selection" && state.doctor.id === doctor.id) {
@@ -51,20 +46,56 @@ export default function AppointmentCreator({ doctors }: { doctors: DoctorModel[]
   }
 
   function onNextClick() {
-    setShowPatientCreator(true);
+    dispatch({ type: "show_patient_form" });
     scrollToTop();
   }
 
+  function onChangeClick() {}
+
   function onBooked(patientData: PatientParsedData) {
-    setBooked(true);
-    setPatientData(patientData);
+    dispatch({ type: "show_end", payload: { patient: patientData } });
   }
 
   if (doctors === "error") {
     return;
   }
 
-  if (booked) {
+  if (
+    state.phase === "doctor_selection" ||
+    state.phase === "date_selection" ||
+    state.phase === "hour_selection" ||
+    state.phase === "summary"
+  ) {
+    return (
+      <div className="flex flex-col gap-10">
+        <DoctorSelector doctors={doctors} doctor={state.doctor} onDoctorClick={onDoctorClick} />
+        {state.doctor && state.slots && (
+          <SlotSelector
+            doctor={state.doctor}
+            slots={state.slots}
+            slot={state.slot}
+            onDateClick={onDateClick}
+            onHourClick={onHourClick}
+            onNextClick={onNextClick}
+          />
+        )}
+      </div>
+    );
+  }
+
+  if (state.phase === "patient_creation") {
+    return (
+      <PatientCreator
+        doctor={state.doctor!}
+        date={state.slot!.date}
+        hour={{ hour: state.slot.hour!, duration: state.slot.duration! }}
+        onBooked={onBooked}
+        onChangeClick={onChangeClick}
+      />
+    );
+  }
+
+  if (state.phase === "end") {
     return (
       <DefaultCard
         title="Appointment Booked"
@@ -89,9 +120,9 @@ export default function AppointmentCreator({ doctors }: { doctors: DoctorModel[]
             <CircleUserRound className="h-9 w-9" />
           </div>
           <div>
-            <p className="font-semibold">{patientData!.name}</p>
+            <p className="font-semibold">{state.patient.name}</p>
             <p className="text-sm">
-              {patientData!.email} | {patientData!.phone}
+              {state.patient.email} | {state.patient.phone}
             </p>
           </div>
         </div>
@@ -117,27 +148,4 @@ export default function AppointmentCreator({ doctors }: { doctors: DoctorModel[]
       </DefaultCard>
     );
   }
-
-  return !showPatientCreator ? (
-    <div className="flex flex-col gap-10">
-      <DoctorSelector doctors={doctors} doctor={state.doctor} onDoctorClick={onDoctorClick} />
-      {state.doctor && state.slots && (
-        <SlotSelector
-          doctor={state.doctor}
-          slots={state.slots}
-          slot={state.slot}
-          onDateClick={onDateClick}
-          onHourClick={onHourClick}
-          onNextClick={onNextClick}
-        />
-      )}
-    </div>
-  ) : (
-    <PatientCreator
-      doctor={state.doctor!}
-      date={state.slot!.date}
-      hour={{ hour: state.slot.hour!, duration: state.slot.duration! }}
-      onBooked={onBooked}
-    />
-  );
 }

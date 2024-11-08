@@ -29,7 +29,7 @@ interface PatientCreatorProps {
   doctor: DoctorModel;
   date?: string;
   hour?: { hour: string; duration: number };
-  // onBackClick: () => void;
+  onChangeClick: () => void;
   onBooked: (patient: PatientParsedData) => void;
 }
 
@@ -37,7 +37,7 @@ export function PatientCreator({
   doctor,
   date,
   hour,
-  // onBackClick,
+  onChangeClick,
   onBooked,
 }: PatientCreatorProps) {
   const [showPatientForm, setShowPatientForm] = useState(true);
@@ -127,7 +127,7 @@ export function PatientCreator({
               {hour?.duration} minutes
             </p>
           </div>
-          {/* <BackButton label="Change" onBackClick={onBackClick} /> */}
+          <BackButton label="Change" onBackClick={onChangeClick} />
         </DefaultCard>
         <DefaultCard
           title="Patient details"

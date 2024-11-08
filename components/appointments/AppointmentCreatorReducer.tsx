@@ -1,3 +1,4 @@
+import { PatientParsedData } from "@/lib/schemas/patientsSchema";
 import { DoctorModel } from "@/server/domain/models/doctorModel";
 import { SlotsModel } from "@/server/domain/models/slotsModel";
 
@@ -42,6 +43,19 @@ type State =
       doctor: DoctorModel;
       slots: SlotsModel;
       slot: { date: string; hour: string; duration: number };
+    }
+  | {
+      phase: "patient_creation";
+      doctor: DoctorModel;
+      slots: SlotsModel;
+      slot: { date: string; hour: string; duration: number };
+    }
+  | {
+      phase: "end";
+      doctor: DoctorModel;
+      patient: PatientParsedData;
+      slots: SlotsModel;
+      slot: { date: string; hour: string; duration: number };
     };
 
 type Action =
@@ -49,7 +63,9 @@ type Action =
   | { type: "set_doctor"; payload: { doctor: DoctorModel; slots: SlotsModel } }
   | { type: "slots_error" }
   | { type: "set_date"; payload: { date: string } }
-  | { type: "set_hour_duration"; payload: { hour: string; duration: number } };
+  | { type: "set_hour_duration"; payload: { hour: string; duration: number } }
+  | { type: "show_patient_form" }
+  | { type: "show_end"; payload: { patient: PatientParsedData } };
 
 export function reducer(state: State, action: Action): State {
   switch (action.type) {
@@ -97,6 +113,25 @@ export function reducer(state: State, action: Action): State {
           duration: action.payload.duration,
         },
       };
+    case "show_patient_form": {
+      if (state.phase !== "summary") {
+        throw new Error("Invalid applcation flow.");
+      }
+      return {
+        ...state,
+        phase: "patient_creation",
+      };
+    }
+    case "show_end": {
+      if (state.phase !== "patient_creation") {
+        throw new Error("Invalid applcation flow.");
+      }
+      return {
+        ...state,
+        phase: "end",
+        patient: action.payload.patient,
+      };
+    }
     default:
       throw new Error("Invalid reducer dispatch.");
   }

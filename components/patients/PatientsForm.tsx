@@ -50,7 +50,7 @@ export default function PatientsForm({
 
   const [message, setMessage] = useState("");
   const [testData, setTestData] = useState<PatientParsedData>();
-  console.log("🚀 ~ testData:", testData);
+  // console.log("🚀 ~ testData:", testData);
 
   const form = useForm<PatientZodData>({
     resolver: zodResolver(patientsZodSchema),
