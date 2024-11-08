@@ -1,14 +1,49 @@
 "use client";
 
 import AppointmentCreator from "@/components/appointments/AppointmentCreator";
-import { initialState, reducer } from "@/components/appointments/AppointmentCreatorReducer";
+import { initialState, reducer, State } from "@/components/appointments/AppointmentCreatorReducer";
+import { cn } from "@/lib/utils";
 import { DoctorModel } from "@/server/domain/models/doctorModel";
-import { CalendarDays, Clock, Pointer } from "lucide-react";
+import { BadgeCheck, CalendarDays, Check, Clock, Notebook, Pointer, UserRound } from "lucide-react";
 import Image from "next/image";
-import { useReducer } from "react";
+import { ReactNode, useReducer } from "react";
+
+interface MenuItem {
+  icon: ReactNode;
+  text: string;
+  phase: State["phase"];
+}
 
 export function BookingView({ doctors }: { doctors: DoctorModel[] | "error" }) {
   const [state, dispatch] = useReducer(reducer, initialState);
+
+  const menu: MenuItem[] = [
+    {
+      icon: <Pointer />,
+      text: "Doctor",
+      phase: "doctor_selection",
+    },
+    {
+      icon: <CalendarDays />,
+      text: "Date",
+      phase: "date_selection",
+    },
+    {
+      icon: <Clock />,
+      text: "Hour",
+      phase: "hour_selection",
+    },
+    {
+      icon: <UserRound />,
+      text: "Patient",
+      phase: "patient_creation",
+    },
+    {
+      icon: <BadgeCheck />,
+      text: "Booked",
+      phase: "end",
+    },
+  ];
 
   return (
     <div className="min-h-screen w-full bg-[#212121]">
@@ -26,18 +61,20 @@ export function BookingView({ doctors }: { doctors: DoctorModel[] | "error" }) {
           </header>
           <nav>
             <ul className="ml-6 flex flex-col gap-2 text-base font-semibold text-white">
-              <li className="flex cursor-pointer items-center gap-4 p-3 text-dark-purple">
-                <Pointer className="h-5 w-5" />
-                <div>Doctor</div>
-              </li>
-              <li className="flex cursor-pointer items-center gap-4 p-3 text-dark-gray">
-                <CalendarDays className="h-5 w-5" />
-                <div>Date</div>
-              </li>
-              <li className="flex cursor-pointer items-center gap-4 p-3 text-dark-gray">
-                <Clock className="h-5 w-5" />
-                <div>Hours</div>
-              </li>
+              {menu.map((item, index) => (
+                <li
+                  key={index}
+                  className={cn(
+                    "flex items-center gap-4 p-3 text-dark-gray transition duration-700 [&>svg]:h-5 [&>svg]:w-5",
+                    {
+                      "text-dark-purple": item.phase === state.phase,
+                    },
+                  )}
+                >
+                  {item.icon}
+                  <p>{item.text}</p>
+                </li>
+              ))}
             </ul>
           </nav>
         </aside>
