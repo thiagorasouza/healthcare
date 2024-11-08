@@ -30,7 +30,6 @@ export default function AppointmentCreator({ doctors }: { doctors: DoctorModel[]
     );
 
     if (!slotsResult.ok) {
-      dispatch({ type: "slots_error" });
       return;
     }
 
@@ -50,7 +49,12 @@ export default function AppointmentCreator({ doctors }: { doctors: DoctorModel[]
     scrollToTop();
   }
 
-  function onChangeClick() {}
+  function onChangeClick() {
+    dispatch({
+      type: "set_hour_duration",
+      payload: { hour: state.slot.hour!, duration: state.slot.duration! },
+    });
+  }
 
   function onBooked(patientData: PatientParsedData) {
     dispatch({ type: "show_end", payload: { patient: patientData } });

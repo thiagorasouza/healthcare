@@ -21,12 +21,6 @@ type State =
       slot: { date: undefined; hour: undefined; duration: undefined };
     }
   | {
-      phase: "slots_error";
-      doctor: undefined;
-      slots: undefined;
-      slot: { date: undefined; hour: undefined; duration: undefined };
-    }
-  | {
       phase: "date_selection";
       doctor: DoctorModel;
       slots: SlotsModel;
@@ -61,7 +55,6 @@ type State =
 type Action =
   | { type: "remove_doctor" }
   | { type: "set_doctor"; payload: { doctor: DoctorModel; slots: SlotsModel } }
-  | { type: "slots_error" }
   | { type: "set_date"; payload: { date: string } }
   | { type: "set_hour_duration"; payload: { hour: string; duration: number } }
   | { type: "show_patient_form" }
@@ -81,11 +74,6 @@ export function reducer(state: State, action: Action): State {
         doctor: action.payload.doctor,
         slots: action.payload.slots,
       };
-    case "slots_error":
-      return {
-        ...undefinedProps,
-        phase: "slots_error",
-      };
     case "set_date":
       if (
         state.phase !== "date_selection" &&
@@ -101,7 +89,7 @@ export function reducer(state: State, action: Action): State {
         slot: { date: action.payload.date, hour: undefined, duration: undefined },
       };
     case "set_hour_duration":
-      if (state.phase !== "hour_selection" && state.phase !== "summary") {
+      if (state.phase === "date_selection" || state.phase === "doctor_selection") {
         throw new Error("Invalid applcation flow.");
       }
       return {
