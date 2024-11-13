@@ -1,6 +1,6 @@
 "use client";
 
-import PatientsForm from "@/components/patients/PatientsForm";
+import PatientsForm from "@/components/patients/PatientForm";
 import DefaultCard from "@/components/shared/DefaultCard";
 import { updatePatient } from "@/lib/actions/updatePatient";
 import { IdentificationData, PatientParsedData } from "@/lib/schemas/patientsSchema";

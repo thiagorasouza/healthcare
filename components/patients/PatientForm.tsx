@@ -24,11 +24,9 @@ import { CreatePatientResult } from "@/lib/actions/createPatient";
 import DateField from "@/components/forms/DateField";
 import { UpdatePatientResult } from "@/lib/actions/updatePatient";
 import { mockPatient } from "@/server/domain/mocks/patients.mock";
-import { Button } from "@/components/ui/button";
-import { FlaskConicalIcon } from "lucide-react";
 import { TestingOption } from "@/components/shared/TestingOption";
 
-interface PatientsForm2Props {
+interface PatientFormProps {
   form: UseFormReturn<PatientZodData>;
   data?: PatientParsedData;
   identification?: IdentificationData;
@@ -37,17 +35,28 @@ interface PatientsForm2Props {
   submitLabel?: string;
 }
 
-export default function PatientsForm({
+export default function PatientForm({
   form,
   data: patientData,
   identification,
   action,
   onSuccess,
   submitLabel = "Submit",
-}: PatientsForm2Props) {
+}: PatientFormProps) {
   const [message, setMessage] = useState("");
 
-  function autofill() {
+  useEffect(() => {
+    if (!patientData?.identificationId || !identification) return;
+
+    const currentFileName = identification?.name;
+    const mockFile = new File([new Blob()], currentFileName, { type: "application/pdf" });
+
+    form.setValue("identification", mockFile, {
+      shouldValidate: true,
+    });
+  }, [patientData, form, identification]);
+
+  function fillWithTestingData() {
     const patientMock = mockPatient();
     ["id", "authId", "identificationId"].map((key) => Reflect.deleteProperty(patientMock, key));
     patientMock["usageConsent"] = true;
@@ -62,17 +71,6 @@ export default function PatientsForm({
       })
       .catch(console.log);
   }
-
-  useEffect(() => {
-    if (!patientData?.identificationId || !identification) return;
-
-    const currentFileName = identification?.name;
-    const mockFile = new File([new Blob()], currentFileName, { type: "application/pdf" });
-
-    form.setValue("identification", mockFile, {
-      shouldValidate: true,
-    });
-  }, [patientData]);
 
   async function onSubmit(submittedData: PatientZodData) {
     setMessage("");
@@ -103,7 +101,11 @@ export default function PatientsForm({
     <div className="p-6">
       <Form {...form}>
         <AlertMessage message={message} />
-        <TestingOption feature="Fill form with testing data" onClick={autofill} className="mb-4" />
+        <TestingOption
+          feature="Fill form with testing data"
+          onClick={fillWithTestingData}
+          className="mb-4"
+        />
         <form onSubmit={form.handleSubmit(onSubmit)} className="flex flex-col gap-3 md:gap-6">
           <TextField
             name="name"

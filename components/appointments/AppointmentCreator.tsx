@@ -16,7 +16,7 @@ import {
 import SummaryCard from "@/components/appointments/create/SummaryCard";
 import { set } from "date-fns";
 import { createAppointment } from "@/server/actions/createAppointment";
-import PatientsForm from "@/components/patients/PatientsForm";
+import PatientForm from "@/components/patients/PatientForm";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { createPatient } from "@/lib/actions/createPatient";
@@ -141,7 +141,7 @@ export default function AppointmentCreator({ doctors, state, dispatch }: Appoint
           onBookClick={onBookClick}
           onBackClick={onBackClick}
         />
-        <PatientsForm
+        <PatientForm
           form={form}
           action={createPatient}
           onSuccess={onPatientCreated}
