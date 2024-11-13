@@ -15,6 +15,7 @@ import { format } from "date-fns";
 import { ArrowLeft, ArrowRight, CalendarDays, Clock, Cross, User } from "lucide-react";
 
 interface SummaryCardProps {
+  title?: string;
   doctor: DoctorModel;
   slot: {
     date: string;
@@ -27,6 +28,7 @@ interface SummaryCardProps {
 }
 
 export default function SummaryCard({
+  title = "Summary",
   doctor,
   slot,
   patient,
@@ -39,7 +41,7 @@ export default function SummaryCard({
   const idTypeLabel = patient && idLabels[patient?.identificationType];
 
   return (
-    <>
+    <div>
       <div className="mb-4 flex items-center gap-2">
         <Button
           variant="ghost"
@@ -48,10 +50,10 @@ export default function SummaryCard({
         >
           <ArrowLeft className="h-5 w-5" />
         </Button>
-        <h1 className="text-2xl font-bold">Summary</h1>
+        <h1 className="text-2xl font-bold">{title}</h1>
       </div>
-      <div className="grid grid-cols-12 items-start gap-6">
-        <div className="col-span-3 flex flex-col gap-4">
+      <div className="flex gap-6">
+        <div className="flex flex-col gap-4">
           <h2 className="text-xl font-medium text-gray">Appointment</h2>
           <DoctorCard colorIndex={3} doctor={doctor} fixed={true} className="" />
           <div className="flex w-fit items-center gap-4 rounded-3xl p-5 pr-7 shadow">
@@ -75,7 +77,7 @@ export default function SummaryCard({
           {/* <BackButton label="Change" /> */}
         </div>
         {patient && (
-          <DrawerAnimation mode="horizontal" toggle={!!patient} className="col-span-9 self-stretch">
+          <DrawerAnimation mode="horizontal" toggle={!!patient} className="flex-1">
             <div className="flex h-full flex-col gap-5">
               <h2 className="text-xl font-medium text-gray">Patient</h2>
               <div className="flex flex-col gap-1 rounded-3xl px-6 py-5 pr-7 shadow">
@@ -123,6 +125,6 @@ export default function SummaryCard({
           </DrawerAnimation>
         )}
       </div>
-    </>
+    </div>
   );
 }

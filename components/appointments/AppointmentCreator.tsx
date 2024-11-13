@@ -116,14 +116,23 @@ export default function AppointmentCreator({ doctors, state, dispatch }: Appoint
 
   if (state.phase === "patient_creation") {
     return (
-      <PatientCreator
-        doctor={state.doctor!}
-        date={state.slot!.date}
-        hour={{ hour: state.slot.hour, duration: state.slot.duration }}
-        onBooked={onBooked}
-        onChangeClick={onChangeClick}
-        onPatientCreated={onPatientCreated}
-      />
+      <div className="flex gap-4">
+        <SummaryCard
+          title="Patient"
+          doctor={state.doctor}
+          slot={state.slot}
+          onBookClick={onBookClick}
+          onBackClick={onBackClick}
+        />
+        <PatientCreator
+          doctor={state.doctor!}
+          date={state.slot!.date}
+          hour={{ hour: state.slot.hour, duration: state.slot.duration }}
+          onBooked={onBooked}
+          onChangeClick={onChangeClick}
+          onPatientCreated={onPatientCreated}
+        />
+      </div>
     );
   }
 
