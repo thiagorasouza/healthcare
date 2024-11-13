@@ -26,6 +26,7 @@ import { UpdatePatientResult } from "@/lib/actions/updatePatient";
 import { mockPatient } from "@/server/domain/mocks/patients.mock";
 import { Button } from "@/components/ui/button";
 import { FlaskConicalIcon } from "lucide-react";
+import { TestingOption } from "@/components/shared/TestingOption";
 
 interface PatientsForm2Props {
   form: UseFormReturn<PatientZodData>;
@@ -102,22 +103,7 @@ export default function PatientsForm({
     <div className="p-6">
       <Form {...form}>
         <AlertMessage message={message} />
-        <div className="mb-4">
-          <div className="relative mb-4">
-            <div className="absolute inset-0 flex items-center">
-              <span className="w-full border-t"></span>
-            </div>
-            <div className="relative flex justify-center text-xs uppercase">
-              <span className="bg-background px-2 text-muted-foreground">Testing options</span>
-            </div>
-          </div>
-          <Button type="button" className="mb-6 w-full" onClick={autofill}>
-            <FlaskConicalIcon className="mr-2 h-4 w-4" /> Fill form with test data
-          </Button>
-          <div className="inset-0 flex items-center">
-            <span className="w-full border-t"></span>
-          </div>
-        </div>
+        <TestingOption feature="Fill form with testing data" onClick={autofill} className="mb-4" />
         <form onSubmit={form.handleSubmit(onSubmit)} className="flex flex-col gap-3 md:gap-6">
           <TextField
             name="name"
