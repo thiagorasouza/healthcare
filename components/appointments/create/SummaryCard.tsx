@@ -1,12 +1,8 @@
 import { DoctorCard } from "@/components/appointments/create/DoctorCard";
-import BackButton from "@/components/shared/BackButton";
-import DefaultCard from "@/components/shared/DefaultCard";
 import DrawerAnimation from "@/components/shared/DrawerAnimation";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
-import { getImageLink } from "@/lib/actions/getImageLink";
 import { PatientParsedData } from "@/lib/schemas/patientsSchema";
-import { cn, colorize, getInitials } from "@/lib/utils";
+import { cn, colorize } from "@/lib/utils";
 import { idLabels } from "@/server/config/constants";
 import { DoctorModel } from "@/server/domain/models/doctorModel";
 import { displayDate } from "@/server/shared/helpers/date";
