@@ -60,6 +60,7 @@ export type Action =
   | { type: "set_hour_duration"; payload: { hour: string; duration: number } }
   | { type: "show_patient_form" }
   | { type: "change_slot" }
+  | { type: "back_to_patient_creation" }
   | { type: "show_summary"; payload: { patient: PatientParsedData } }
   | { type: "show_confirmation" };
 
@@ -107,6 +108,14 @@ export function reducer(state: State, action: Action): State {
       return {
         ...state,
         phase: "hour_selection",
+      };
+    case "back_to_patient_creation":
+      if (state.phase !== "summary") {
+        throw new Error("Invalid applcation flow.");
+      }
+      return {
+        ...state,
+        phase: "patient_creation",
       };
     case "show_summary": {
       if (state.phase !== "patient_creation") {

@@ -49,6 +49,12 @@ export default function AppointmentCreator({ doctors, state, dispatch }: Appoint
     dispatch({ type: "change_slot" });
   }
 
+  function onBackClick(from: "patient_creation" | "summary") {
+    if (from === "summary") {
+      dispatch({ type: "back_to_patient_creation" });
+    }
+  }
+
   function onPatientCreated(patient: PatientParsedData) {
     dispatch({ type: "show_summary", payload: { patient } });
   }
@@ -128,6 +134,7 @@ export default function AppointmentCreator({ doctors, state, dispatch }: Appoint
         slot={state.slot}
         patient={state.patient}
         onBookClick={onBookClick}
+        onBackClick={onBackClick}
       />
     );
   }

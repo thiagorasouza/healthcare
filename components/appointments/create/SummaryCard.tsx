@@ -12,16 +12,7 @@ import { DoctorModel } from "@/server/domain/models/doctorModel";
 import { displayDate } from "@/server/shared/helpers/date";
 import { format } from "date-fns";
 
-import {
-  ArrowRight,
-  CalendarDays,
-  CircleUserRound,
-  Clock,
-  Cross,
-  Hourglass,
-  User,
-  UserCircle,
-} from "lucide-react";
+import { ArrowLeft, ArrowRight, CalendarDays, Clock, Cross, User } from "lucide-react";
 
 interface SummaryCardProps {
   doctor: DoctorModel;
@@ -32,9 +23,16 @@ interface SummaryCardProps {
   };
   patient?: PatientParsedData;
   onBookClick: () => void;
+  onBackClick: (from: "patient_creation" | "summary") => void;
 }
 
-export default function SummaryCard({ doctor, slot, patient, onBookClick }: SummaryCardProps) {
+export default function SummaryCard({
+  doctor,
+  slot,
+  patient,
+  onBookClick,
+  onBackClick,
+}: SummaryCardProps) {
   const dateBgColor = colorize(1);
   const hourBgColor = colorize(2);
 
@@ -42,7 +40,16 @@ export default function SummaryCard({ doctor, slot, patient, onBookClick }: Summ
 
   return (
     <>
-      <h1 className="mb-4 text-2xl font-bold">Summary</h1>
+      <div className="mb-4 flex items-center gap-2">
+        <Button
+          variant="ghost"
+          className="aspect-square rounded-full p-2"
+          onClick={() => onBackClick(patient ? "summary" : "patient_creation")}
+        >
+          <ArrowLeft className="h-5 w-5" />
+        </Button>
+        <h1 className="text-2xl font-bold">Summary</h1>
+      </div>
       <div className="grid grid-cols-12 items-start gap-6">
         <div className="col-span-3 flex flex-col gap-4">
           <h2 className="text-xl font-medium text-gray">Appointment</h2>
