@@ -1,55 +1,58 @@
-import { PatientParsedData } from "@/lib/schemas/patientsSchema";
+import { PatientParsedData, PatientZodData } from "@/lib/schemas/patientsSchema";
 import { DoctorModel } from "@/server/domain/models/doctorModel";
 import { SlotsModel } from "@/server/domain/models/slotsModel";
 
-const undefinedProps = {
-  doctor: undefined,
-  slots: undefined,
-  slot: { date: undefined, hour: undefined, duration: undefined },
-};
-
 export const initialState: State = {
-  ...undefinedProps,
   phase: "doctor_selection",
 };
 
 export type State =
   | {
       phase: "doctor_selection";
-      doctor: undefined;
-      slots: undefined;
-      slot: { date: undefined; hour: undefined; duration: undefined };
+      doctor?: DoctorModel;
+      slots?: SlotsModel;
+      patientFormSave?: PatientZodData;
+      patient?: PatientParsedData;
+      slot?: { date?: string; hour?: string; duration?: number };
     }
   | {
       phase: "date_selection";
       doctor: DoctorModel;
       slots: SlotsModel;
-      slot: { date: undefined; hour: undefined; duration: undefined };
+      patientFormSave?: PatientZodData;
+      patient?: PatientParsedData;
+      slot?: { date?: string; hour?: string; duration?: number };
     }
   | {
       phase: "hour_selection";
       doctor: DoctorModel;
       slots: SlotsModel;
+      patientFormSave?: PatientZodData;
+      patient?: PatientParsedData;
       slot: { date: string; hour?: string; duration?: number };
     }
   | {
       phase: "patient_creation";
       doctor: DoctorModel;
       slots: SlotsModel;
+      patientFormSave?: PatientZodData;
+      patient?: PatientParsedData;
       slot: { date: string; hour: string; duration: number };
     }
   | {
       phase: "summary";
       doctor: DoctorModel;
-      patient: PatientParsedData;
       slots: SlotsModel;
+      patientFormSave?: PatientZodData;
+      patient: PatientParsedData;
       slot: { date: string; hour: string; duration: number };
     }
   | {
       phase: "confirmation";
       doctor: DoctorModel;
-      patient: PatientParsedData;
       slots: SlotsModel;
+      patientFormSave?: PatientZodData;
+      patient: PatientParsedData;
       slot: { date: string; hour: string; duration: number };
     };
 
@@ -58,7 +61,8 @@ export type Action =
   | { type: "set_doctor"; payload: { doctor: DoctorModel; slots: SlotsModel } }
   | { type: "set_date"; payload: { date: string } }
   | { type: "set_hour_duration"; payload: { hour: string; duration: number } }
-  | { type: "back_to_hour_selection" }
+  | { type: "back_to_hour_selection"; payload: { patientFormSave: PatientZodData } }
+  | { type: "set_patient_form_save"; payload: { patientFormSave: PatientZodData } }
   | { type: "back_to_patient_creation" }
   | { type: "show_summary"; payload: { patient: PatientParsedData } }
   | { type: "show_confirmation" };
@@ -66,13 +70,20 @@ export type Action =
 export function reducer(state: State, action: Action): State {
   switch (action.type) {
     case "remove_doctor":
+      if (
+        state.phase !== "doctor_selection" &&
+        state.phase !== "date_selection" &&
+        state.phase !== "hour_selection"
+      ) {
+        throw new Error("Invalid application flow.");
+      }
       return {
-        ...undefinedProps,
+        ...state,
         phase: "doctor_selection",
       };
     case "set_doctor":
       return {
-        ...undefinedProps,
+        ...state,
         phase: "date_selection",
         doctor: action.payload.doctor,
         slots: action.payload.slots,
@@ -85,7 +96,7 @@ export function reducer(state: State, action: Action): State {
         ...state,
         phase: "hour_selection",
         doctor: state.doctor,
-        slot: { date: action.payload.date, hour: undefined, duration: undefined },
+        slot: { date: action.payload.date },
       };
     case "set_hour_duration":
       if (state.phase !== "hour_selection" && state.phase !== "patient_creation") {
@@ -108,6 +119,12 @@ export function reducer(state: State, action: Action): State {
         ...state,
         phase: "hour_selection",
       };
+    case "set_patient_form_save":
+      if (state.phase !== "patient_creation") {
+        throw new Error("Invalid applcation flow.");
+      }
+      console.log("set_patient_form_save");
+      return { ...state };
     case "back_to_patient_creation":
       if (state.phase !== "summary") {
         throw new Error("Invalid applcation flow.");

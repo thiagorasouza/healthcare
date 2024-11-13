@@ -6,13 +6,10 @@ import {
   allowedFileTypes,
   maxFileSize,
   PatientZodData,
-  patientZodDefaultValues,
-  patientsZodSchema,
   PatientParsedData,
   IdentificationData,
 } from "@/lib/schemas/patientsSchema";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
+import { UseFormReturn } from "react-hook-form";
 import { RadioField } from "@/components/forms/RadioField";
 import SubmitButton from "@/components/forms/SubmitButton";
 import { SelectField } from "@/components/forms/SelectField";
@@ -30,7 +27,8 @@ import { mockPatient } from "@/server/domain/mocks/patients.mock";
 import { Button } from "@/components/ui/button";
 import { FlaskConicalIcon } from "lucide-react";
 
-interface PatientsFormProps {
+interface PatientsForm2Props {
+  form: UseFormReturn<PatientZodData>;
   data?: PatientParsedData;
   identification?: IdentificationData;
   action: (form: FormData) => Promise<CreatePatientResult | UpdatePatientResult>;
@@ -39,24 +37,14 @@ interface PatientsFormProps {
 }
 
 export default function PatientsForm({
+  form,
   data: patientData,
   identification,
   action,
   onSuccess,
   submitLabel = "Submit",
-}: PatientsFormProps) {
-  // console.log("🚀 ~ patientData:", patientData);
-  // console.log("🚀 ~ identification:", identification);
-
+}: PatientsForm2Props) {
   const [message, setMessage] = useState("");
-  const [testData, setTestData] = useState<PatientParsedData>();
-  // console.log("🚀 ~ testData:", testData);
-
-  const form = useForm<PatientZodData>({
-    resolver: zodResolver(patientsZodSchema),
-    defaultValues: patientData || patientZodDefaultValues,
-  });
-  // console.log("🚀 ~ form:", form.getValues());
 
   function autofill() {
     const patientMock = mockPatient();
@@ -64,16 +52,12 @@ export default function PatientsForm({
     patientMock["usageConsent"] = true;
     patientMock["privacyConsent"] = true;
 
-    form.reset(patientMock);
-
     fetch("/pdf/test_pdf.pdf")
       .then((result) => result.blob())
       .then((blob) => {
-        const mockFile = new File([blob], "test_pdf.pdf", { type: "application/pdf" });
+        const identification = new File([blob], "test_pdf.pdf", { type: "application/pdf" });
 
-        form.setValue("identification", mockFile, {
-          shouldValidate: true,
-        });
+        form.reset({ ...patientMock, identification });
       })
       .catch(console.log);
   }
@@ -83,7 +67,6 @@ export default function PatientsForm({
 
     const currentFileName = identification?.name;
     const mockFile = new File([new Blob()], currentFileName, { type: "application/pdf" });
-    // Object.defineProperty(mockFile, "size", { value: 1, configurable: true });
 
     form.setValue("identification", mockFile, {
       shouldValidate: true,
@@ -91,8 +74,6 @@ export default function PatientsForm({
   }, [patientData]);
 
   async function onSubmit(submittedData: PatientZodData) {
-    // console.log("🚀 ~ submittedData:", submittedData);
-    // console.log("🚀 ~ patientData:", patientData);
     setMessage("");
     try {
       const formData = objectToFormData(submittedData);
@@ -102,7 +83,6 @@ export default function PatientsForm({
       }
 
       const result = await action(formData);
-      // console.log("🚀 ~ result:", result);
       if (result.success && result.data) {
         onSuccess(result.data);
         return;
@@ -118,129 +98,129 @@ export default function PatientsForm({
     }
   }
 
-  // console.log("Identification File:", form.getValues("identification"));
-
   return (
-    <Form {...form}>
-      <AlertMessage message={message} />
-      <div className="mb-4">
-        <div className="relative mb-4">
-          <div className="absolute inset-0 flex items-center">
+    <div className="p-6">
+      <Form {...form}>
+        <AlertMessage message={message} />
+        <div className="mb-4">
+          <div className="relative mb-4">
+            <div className="absolute inset-0 flex items-center">
+              <span className="w-full border-t"></span>
+            </div>
+            <div className="relative flex justify-center text-xs uppercase">
+              <span className="bg-background px-2 text-muted-foreground">Testing options</span>
+            </div>
+          </div>
+          <Button type="button" className="mb-6 w-full" onClick={autofill}>
+            <FlaskConicalIcon className="mr-2 h-4 w-4" /> Fill form with test data
+          </Button>
+          <div className="inset-0 flex items-center">
             <span className="w-full border-t"></span>
           </div>
-          <div className="relative flex justify-center text-xs uppercase">
-            <span className="bg-background px-2 text-muted-foreground">Testing options</span>
+        </div>
+        <form onSubmit={form.handleSubmit(onSubmit)} className="flex flex-col gap-3 md:gap-6">
+          <TextField
+            name="name"
+            label="Name"
+            form={form}
+            placeholder="John Doe"
+            description="Full name as in your identification document"
+          />
+          <div className="flex gap-6">
+            <TextField
+              form={form}
+              name="email"
+              label="Email"
+              placeholder="john@email.com"
+              description="This will be used for logging in"
+            />
+            <TextField
+              form={form}
+              name="phone"
+              label="Phone"
+              placeholder="+351 000 000 000"
+              description="Must include country code"
+            />
           </div>
-        </div>
-        <Button type="button" className="mb-6 w-full" onClick={autofill}>
-          <FlaskConicalIcon className="mr-2 h-4 w-4" /> Fill form with test data
-        </Button>
-        <div className="inset-0 flex items-center">
-          <span className="w-full border-t"></span>
-        </div>
-      </div>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="flex flex-col gap-3 md:gap-6">
-        <TextField
-          name="name"
-          label="Name"
-          form={form}
-          placeholder="John Doe"
-          description="Full name as in your identification document"
-        />
-        <div className="flex gap-6">
+          <div className="flex gap-6">
+            <DateField
+              name="birthdate"
+              label="Birthdate"
+              placeholder="Pick your birthdate"
+              form={form}
+              className="flex-1"
+            />
+            <RadioField
+              name="gender"
+              label="Gender"
+              form={form}
+              options={genderTypes}
+              className="flex-1"
+            />
+          </div>
           <TextField
+            name="address"
+            label="Address"
             form={form}
-            name="email"
-            label="Email"
-            placeholder="john@email.com"
-            description="This will be used for logging in"
+            placeholder="90210 Hollywood Boulevard"
+            description="Full address"
           />
-          <TextField
+          <div className="flex gap-6">
+            <TextField
+              name="insuranceProvider"
+              label="Insurance Provider"
+              form={form}
+              placeholder="BlueCross"
+              description="Your insurance provider, if any (optional)"
+            />
+            <TextField
+              name="insuranceNumber"
+              label="Insurance Number"
+              form={form}
+              placeholder="0123456789"
+              description="Your insurance number, if any (optional)"
+            />
+          </div>
+          <div className="flex gap-6">
+            <SelectField
+              name="identificationType"
+              label="Identification Type"
+              form={form}
+              placeholder="Select and identification type"
+              options={idTypes}
+              className="flex-1"
+            />
+            <TextField
+              name="identificationNumber"
+              label="Identification Number"
+              form={form}
+              placeholder="0123456789"
+              description="Your id number (may contain letters)"
+              className="flex-1"
+            />
+          </div>
+          <FileField
+            placeholder="Upload your identification document"
+            name="identification"
+            accept={allowedFileTypes}
+            maxSize={maxFileSize}
+            image={false}
             form={form}
-            name="phone"
-            label="Phone"
-            placeholder="+351 000 000 000"
-            description="Must include country code"
           />
-        </div>
-        <div className="flex gap-6">
-          <DateField
-            name="birthdate"
-            label="Birthdate"
-            placeholder="Pick your birthdate"
+          <CheckboxField
+            name="usageConsent"
+            label="I accept the storage and use of my information for medical treatment purposes"
+            description="All your data will be securely stored in our servers and shared with the doctors you chose to schedule an appointment with."
             form={form}
-            className="flex-1"
           />
-          <RadioField
-            name="gender"
-            label="Gender"
+          <CheckboxField
+            name="privacyConsent"
+            label="I have read and I accept the Terms & Conditions and the Privacy Policy"
             form={form}
-            options={genderTypes}
-            className="flex-1"
           />
-        </div>
-        <TextField
-          name="address"
-          label="Address"
-          form={form}
-          placeholder="90210 Hollywood Boulevard"
-          description="Full address"
-        />
-        <div className="flex gap-6">
-          <TextField
-            name="insuranceProvider"
-            label="Insurance Provider"
-            form={form}
-            placeholder="BlueCross"
-            description="Your insurance provider, if any (optional)"
-          />
-          <TextField
-            name="insuranceNumber"
-            label="Insurance Number"
-            form={form}
-            placeholder="0123456789"
-            description="Your insurance number, if any (optional)"
-          />
-        </div>
-        <div className="flex gap-6">
-          <SelectField
-            name="identificationType"
-            label="Identification Type"
-            form={form}
-            placeholder="Select and identification type"
-            options={idTypes}
-            className="flex-1"
-          />
-          <TextField
-            name="identificationNumber"
-            label="Identification Number"
-            form={form}
-            placeholder="0123456789"
-            description="Your id number (may contain letters)"
-            className="flex-1"
-          />
-        </div>
-        <FileField
-          placeholder="Upload your identification document"
-          name="identification"
-          accept={allowedFileTypes}
-          maxSize={maxFileSize}
-          image={false}
-          form={form}
-        />
-        <CheckboxField
-          name="usageConsent"
-          label="I accept the storage and use of my information for medical treatment purposes"
-          description="All your data will be securely stored in our servers and shared with the doctors you chose to schedule an appointment with."
-          form={form}
-        />
-        <CheckboxField
-          name="privacyConsent"
-          label="I have read and I accept the Terms & Conditions and the Privacy Policy"
-          form={form}
-        />
-        <SubmitButton label={submitLabel} form={form} />
-      </form>
-    </Form>
+          <SubmitButton label={submitLabel} form={form} />
+        </form>
+      </Form>
+    </div>
   );
 }

@@ -7,11 +7,19 @@ import { SlotSelector } from "@/components/appointments/create/SlotSelector";
 import { getSlots } from "@/server/actions/getSlots";
 import { objectToFormData } from "@/server/shared/helpers/utils";
 import { Action, State } from "@/components/appointments/AppointmentCreatorReducer";
-import { PatientCreator } from "@/components/appointments/create/PatientCreator";
-import { PatientParsedData } from "@/lib/schemas/patientsSchema";
+import {
+  PatientParsedData,
+  patientsZodSchema,
+  PatientZodData,
+  patientZodDefaultValues,
+} from "@/lib/schemas/patientsSchema";
 import SummaryCard from "@/components/appointments/create/SummaryCard";
 import { set } from "date-fns";
 import { createAppointment } from "@/server/actions/createAppointment";
+import PatientsForm from "@/components/patients/PatientsForm";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { createPatient } from "@/lib/actions/createPatient";
 
 interface AppointmentCreatorProps {
   doctors: DoctorModel[] | "error";
@@ -20,6 +28,11 @@ interface AppointmentCreatorProps {
 }
 
 export default function AppointmentCreator({ doctors, state, dispatch }: AppointmentCreatorProps) {
+  const form = useForm<PatientZodData>({
+    resolver: zodResolver(patientsZodSchema),
+    defaultValues: state.patientFormSave || patientZodDefaultValues,
+  });
+
   async function onDoctorClick(doctor: DoctorModel) {
     if (state.phase === "date_selection" && state.doctor.id === doctor.id) {
       dispatch({ type: "remove_doctor" });
@@ -50,7 +63,12 @@ export default function AppointmentCreator({ doctors, state, dispatch }: Appoint
       dispatch({ type: "back_to_patient_creation" });
     }
     if (from === "patient_creation") {
-      dispatch({ type: "back_to_hour_selection" });
+      dispatch({
+        type: "back_to_hour_selection",
+        payload: {
+          patientFormSave: form.getValues(),
+        },
+      });
     }
   }
 
@@ -115,7 +133,7 @@ export default function AppointmentCreator({ doctors, state, dispatch }: Appoint
 
   if (state.phase === "patient_creation") {
     return (
-      <div className="flex gap-4">
+      <div className="flex gap-8">
         <SummaryCard
           title="Patient"
           doctor={state.doctor}
@@ -123,12 +141,11 @@ export default function AppointmentCreator({ doctors, state, dispatch }: Appoint
           onBookClick={onBookClick}
           onBackClick={onBackClick}
         />
-        <PatientCreator
-          doctor={state.doctor!}
-          date={state.slot!.date}
-          hour={{ hour: state.slot.hour, duration: state.slot.duration }}
-          onBooked={onBooked}
-          onPatientCreated={onPatientCreated}
+        <PatientsForm
+          form={form}
+          action={createPatient}
+          onSuccess={onPatientCreated}
+          submitLabel="Save"
         />
       </div>
     );
