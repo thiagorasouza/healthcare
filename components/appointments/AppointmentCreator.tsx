@@ -45,13 +45,12 @@ export default function AppointmentCreator({ doctors, state, dispatch }: Appoint
     dispatch({ type: "set_hour_duration", payload: { hour, duration } });
   }
 
-  function onChangeClick() {
-    dispatch({ type: "change_slot" });
-  }
-
   function onBackClick(from: "patient_creation" | "summary") {
     if (from === "summary") {
       dispatch({ type: "back_to_patient_creation" });
+    }
+    if (from === "patient_creation") {
+      dispatch({ type: "back_to_hour_selection" });
     }
   }
 
@@ -129,7 +128,6 @@ export default function AppointmentCreator({ doctors, state, dispatch }: Appoint
           date={state.slot!.date}
           hour={{ hour: state.slot.hour, duration: state.slot.duration }}
           onBooked={onBooked}
-          onChangeClick={onChangeClick}
           onPatientCreated={onPatientCreated}
         />
       </div>

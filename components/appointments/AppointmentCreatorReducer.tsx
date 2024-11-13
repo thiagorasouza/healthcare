@@ -58,8 +58,7 @@ export type Action =
   | { type: "set_doctor"; payload: { doctor: DoctorModel; slots: SlotsModel } }
   | { type: "set_date"; payload: { date: string } }
   | { type: "set_hour_duration"; payload: { hour: string; duration: number } }
-  | { type: "show_patient_form" }
-  | { type: "change_slot" }
+  | { type: "back_to_hour_selection" }
   | { type: "back_to_patient_creation" }
   | { type: "show_summary"; payload: { patient: PatientParsedData } }
   | { type: "show_confirmation" };
@@ -101,7 +100,7 @@ export function reducer(state: State, action: Action): State {
           duration: action.payload.duration,
         },
       };
-    case "change_slot":
+    case "back_to_hour_selection":
       if (state.phase !== "patient_creation") {
         throw new Error("Invalid applcation flow.");
       }
