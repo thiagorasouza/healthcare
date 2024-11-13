@@ -2,24 +2,16 @@
 
 import { DoctorSelector } from "@/components/appointments/create/DoctorSelector";
 import { DoctorModel } from "@/server/domain/models/doctorModel";
-import { Dispatch, useReducer } from "react";
+import { Dispatch } from "react";
 import { SlotSelector } from "@/components/appointments/create/SlotSelector";
 import { getSlots } from "@/server/actions/getSlots";
 import { objectToFormData } from "@/server/shared/helpers/utils";
-import {
-  Action,
-  initialState,
-  reducer,
-  State,
-} from "@/components/appointments/AppointmentCreatorReducer";
+import { Action, State } from "@/components/appointments/AppointmentCreatorReducer";
 import { PatientCreator } from "@/components/appointments/create/PatientCreator";
 import { PatientParsedData } from "@/lib/schemas/patientsSchema";
-import DefaultCard from "@/components/shared/DefaultCard";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { getImageLink } from "@/lib/actions/getImageLink";
-import { getInitials, scrollToTop } from "@/lib/utils";
-import { CalendarDays, CircleUserRound, Clock, Hourglass } from "lucide-react";
-import { format } from "date-fns";
+import SummaryCard from "@/components/appointments/create/SummaryCard";
+import { set } from "date-fns";
+import { createAppointment } from "@/server/actions/createAppointment";
 
 interface AppointmentCreatorProps {
   doctors: DoctorModel[] | "error";
@@ -53,20 +45,42 @@ export default function AppointmentCreator({ doctors, state, dispatch }: Appoint
     dispatch({ type: "set_hour_duration", payload: { hour, duration } });
   }
 
-  function onNextClick() {
-    dispatch({ type: "show_patient_form" });
-    scrollToTop();
+  function onChangeClick() {
+    dispatch({ type: "change_slot" });
   }
 
-  function onChangeClick() {
-    dispatch({
-      type: "set_hour_duration",
-      payload: { hour: state.slot.hour!, duration: state.slot.duration! },
-    });
+  function onPatientCreated(patient: PatientParsedData) {
+    dispatch({ type: "show_summary", payload: { patient } });
+  }
+
+  async function onBookClick() {
+    if (state.phase !== "summary") return;
+
+    try {
+      const doctorId = state.doctor.id;
+      const patientId = state.patient.$id;
+
+      const [hours, minutes] = state.slot.hour.split(":").map((x) => Number(x));
+      const startTime = set(new Date(state.slot.date), {
+        hours,
+        minutes,
+        seconds: 0,
+        milliseconds: 0,
+      });
+
+      const duration = state.slot.duration;
+
+      const result = await createAppointment(
+        objectToFormData({ doctorId, patientId, startTime, duration }),
+      );
+      console.log("🚀 ~ result:", result);
+    } catch (error) {
+      console.log(error);
+    }
   }
 
   function onBooked(patientData: PatientParsedData) {
-    dispatch({ type: "show_end", payload: { patient: patientData } });
+    dispatch({ type: "show_summary", payload: { patient: patientData } });
   }
 
   if (doctors === "error") {
@@ -76,8 +90,7 @@ export default function AppointmentCreator({ doctors, state, dispatch }: Appoint
   if (
     state.phase === "doctor_selection" ||
     state.phase === "date_selection" ||
-    state.phase === "hour_selection" ||
-    state.phase === "summary"
+    state.phase === "hour_selection"
   ) {
     return (
       <div className="flex flex-col gap-10">
@@ -89,7 +102,6 @@ export default function AppointmentCreator({ doctors, state, dispatch }: Appoint
             slot={state.slot}
             onDateClick={onDateClick}
             onHourClick={onHourClick}
-            onNextClick={onNextClick}
           />
         )}
       </div>
@@ -101,64 +113,26 @@ export default function AppointmentCreator({ doctors, state, dispatch }: Appoint
       <PatientCreator
         doctor={state.doctor!}
         date={state.slot!.date}
-        hour={{ hour: state.slot.hour!, duration: state.slot.duration! }}
+        hour={{ hour: state.slot.hour, duration: state.slot.duration }}
         onBooked={onBooked}
         onChangeClick={onChangeClick}
+        onPatientCreated={onPatientCreated}
       />
     );
   }
 
-  if (state.phase === "end") {
+  if (state.phase === "summary") {
     return (
-      <DefaultCard
-        title="Appointment Booked"
-        description="Your appointment was booked successfully"
-        className="col-span-4 self-start"
-      >
-        <div className="mb-8 flex items-center gap-3">
-          <Avatar>
-            <AvatarImage src={getImageLink(state.doctor!.pictureId)} />
-            <AvatarFallback>{getInitials(state.doctor!.name)}</AvatarFallback>
-          </Avatar>
-          <div className="font-semibold">
-            <p className="text-lg">{`Dr. ${state.doctor!.name}`}</p>
-            <p className="text-sm text-gray">{state.doctor!.specialty}</p>
-          </div>
-          <div>
-            <p></p>
-          </div>
-        </div>
-        <div className="mb-8 flex items-center gap-3 self-start">
-          <div>
-            <CircleUserRound className="h-9 w-9" />
-          </div>
-          <div>
-            <p className="font-semibold">{state.patient.name}</p>
-            <p className="text-sm">
-              {state.patient.email} | {state.patient.phone}
-            </p>
-          </div>
-        </div>
-        <div className="mb-8 space-y-2 text-sm">
-          <p className="flex items-center gap-3">
-            <CalendarDays className="h-4 w-4" />
-            {format(new Date(state.slot.date!), "PPP")}
-          </p>
-          <p className="flex items-center gap-3">
-            <Clock className="h-4 w-4" />
-            {state.slot.hour}
-          </p>
-          <p className="flex items-center gap-3">
-            <Hourglass className="h-4 w-4" />
-            {state.slot.duration} minutes
-          </p>
-        </div>
-        {/* <Button asChild>
-          <Link href="/admin/appointments" className="flex items-center">
-            <ArrowUpRight className="h-4 w-4" /> View All Appointments
-          </Link>
-        </Button> */}
-      </DefaultCard>
+      <SummaryCard
+        doctor={state.doctor}
+        slot={state.slot}
+        patient={state.patient}
+        onBookClick={onBookClick}
+      />
     );
+  }
+
+  if (state.phase === "confirmation") {
+    return <div>Confirmation</div>;
   }
 }

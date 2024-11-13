@@ -10,6 +10,13 @@ export const identificationTypes: IdentificationType[] = [
   "other",
 ];
 
+export const idLabels = {
+  identityCard: "Identity Card",
+  driversLicense: "Driver's License",
+  passport: "Passport",
+  other: "Other",
+};
+
 // Minimum appointment duration in minutes
 export const MIN_DURATION = 15;
 export const DURATION_UNIT = "minutes";

@@ -30,13 +30,7 @@ export type State =
       phase: "hour_selection";
       doctor: DoctorModel;
       slots: SlotsModel;
-      slot: { date: string; hour: undefined; duration: undefined };
-    }
-  | {
-      phase: "summary";
-      doctor: DoctorModel;
-      slots: SlotsModel;
-      slot: { date: string; hour: string; duration: number };
+      slot: { date: string; hour?: string; duration?: number };
     }
   | {
       phase: "patient_creation";
@@ -45,7 +39,14 @@ export type State =
       slot: { date: string; hour: string; duration: number };
     }
   | {
-      phase: "end";
+      phase: "summary";
+      doctor: DoctorModel;
+      patient: PatientParsedData;
+      slots: SlotsModel;
+      slot: { date: string; hour: string; duration: number };
+    }
+  | {
+      phase: "confirmation";
       doctor: DoctorModel;
       patient: PatientParsedData;
       slots: SlotsModel;
@@ -58,7 +59,9 @@ export type Action =
   | { type: "set_date"; payload: { date: string } }
   | { type: "set_hour_duration"; payload: { hour: string; duration: number } }
   | { type: "show_patient_form" }
-  | { type: "show_end"; payload: { patient: PatientParsedData } };
+  | { type: "change_slot" }
+  | { type: "show_summary"; payload: { patient: PatientParsedData } }
+  | { type: "show_confirmation" };
 
 export function reducer(state: State, action: Action): State {
   switch (action.type) {
@@ -75,11 +78,7 @@ export function reducer(state: State, action: Action): State {
         slots: action.payload.slots,
       };
     case "set_date":
-      if (
-        state.phase !== "date_selection" &&
-        state.phase !== "hour_selection" &&
-        state.phase !== "summary"
-      ) {
+      if (state.phase !== "date_selection" && state.phase !== "hour_selection") {
         throw new Error("Invalid application flow.");
       }
       return {
@@ -89,35 +88,43 @@ export function reducer(state: State, action: Action): State {
         slot: { date: action.payload.date, hour: undefined, duration: undefined },
       };
     case "set_hour_duration":
-      if (state.phase === "date_selection" || state.phase === "doctor_selection") {
+      if (state.phase !== "hour_selection" && state.phase !== "patient_creation") {
         throw new Error("Invalid applcation flow.");
       }
       return {
         ...state,
-        phase: "summary",
+        phase: "patient_creation",
         slot: {
           date: state.slot.date,
           hour: action.payload.hour,
           duration: action.payload.duration,
         },
       };
-    case "show_patient_form": {
-      if (state.phase !== "summary") {
-        throw new Error("Invalid applcation flow.");
-      }
-      return {
-        ...state,
-        phase: "patient_creation",
-      };
-    }
-    case "show_end": {
+    case "change_slot":
       if (state.phase !== "patient_creation") {
         throw new Error("Invalid applcation flow.");
       }
       return {
         ...state,
-        phase: "end",
+        phase: "hour_selection",
+      };
+    case "show_summary": {
+      if (state.phase !== "patient_creation") {
+        throw new Error("Invalid applcation flow.");
+      }
+      return {
+        ...state,
+        phase: "summary",
         patient: action.payload.patient,
+      };
+    }
+    case "show_confirmation": {
+      if (state.phase !== "summary") {
+        throw new Error("Invalid applcation flow.");
+      }
+      return {
+        ...state,
+        phase: "confirmation",
       };
     }
     default:

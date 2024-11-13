@@ -15,14 +15,7 @@ import { getInitials, objectToFormData } from "@/lib/utils";
 import { createAppointment } from "@/server/actions/createAppointment";
 import { DoctorModel } from "@/server/domain/models/doctorModel";
 import { format, set } from "date-fns";
-import {
-  ArrowRight,
-  CalendarDays,
-  CircleUserRound,
-  Clock,
-  Hourglass,
-  SquarePen,
-} from "lucide-react";
+import { ArrowRight, CalendarDays, Clock, Hourglass, SquarePen } from "lucide-react";
 import { useState } from "react";
 
 interface PatientCreatorProps {
@@ -31,6 +24,7 @@ interface PatientCreatorProps {
   hour?: { hour: string; duration: number };
   onChangeClick: () => void;
   onBooked: (patient: PatientParsedData) => void;
+  onPatientCreated: (patient: PatientParsedData) => void;
 }
 
 export function PatientCreator({
@@ -39,13 +33,15 @@ export function PatientCreator({
   hour,
   onChangeClick,
   onBooked,
+  onPatientCreated,
 }: PatientCreatorProps) {
   const [showPatientForm, setShowPatientForm] = useState(true);
   const [patientData, setPatientData] = useState<PatientParsedData | undefined>();
   const [identification, setIdentification] = useState<IdentificationData | undefined>();
   const [message, setMessage] = useState("");
 
-  async function onPatientCreated(patient: PatientParsedData) {
+  async function onPatientCreatedOld(patient: PatientParsedData) {
+    onPatientCreated(patient);
     setShowPatientForm(false);
     setPatientData(patient);
 
@@ -136,28 +132,14 @@ export function PatientCreator({
           }
           className="col-span-8"
         >
-          {showPatientForm ? (
+          {showPatientForm && (
             <PatientsForm
               data={patientData}
               identification={identification}
               action={patientData ? updatePatient : createPatient}
-              onSuccess={onPatientCreated}
+              onSuccess={onPatientCreatedOld}
               submitLabel="Save"
             />
-          ) : patientData ? (
-            <div className="flex items-center gap-3">
-              <div>
-                <CircleUserRound className="h-9 w-9" />
-              </div>
-              <div>
-                <p className="font-semibold">{patientData.name}</p>
-                <p className="text-sm">
-                  {patientData.email} | {patientData.phone}
-                </p>
-              </div>
-            </div>
-          ) : (
-            <p>Error retrieving saved patient. Please edit below</p>
           )}
           {!showPatientForm && (
             <div className="mt-7 flex">

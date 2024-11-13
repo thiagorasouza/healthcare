@@ -11,3 +11,7 @@ export function objectToFormData(obj: object) {
 
   return formData;
 }
+
+export function formatList(arr: string[]) {
+  return new Intl.ListFormat("en-US", { style: "long", type: "conjunction" }).format(arr);
+}

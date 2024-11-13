@@ -4,7 +4,7 @@ import AppointmentCreator from "@/components/appointments/AppointmentCreator";
 import { initialState, reducer, State } from "@/components/appointments/AppointmentCreatorReducer";
 import { cn } from "@/lib/utils";
 import { DoctorModel } from "@/server/domain/models/doctorModel";
-import { BadgeCheck, CalendarDays, Check, Clock, Notebook, Pointer, UserRound } from "lucide-react";
+import { BadgeCheck, CalendarDays, Clock, Pointer, UserRound } from "lucide-react";
 import Image from "next/image";
 import { ReactNode, useReducer } from "react";
 
@@ -40,8 +40,8 @@ export function BookingView({ doctors }: { doctors: DoctorModel[] | "error" }) {
     },
     {
       icon: <BadgeCheck />,
-      text: "Booked",
-      phase: "end",
+      text: "Summary",
+      phase: "summary",
     },
   ];
 
@@ -78,7 +78,7 @@ export function BookingView({ doctors }: { doctors: DoctorModel[] | "error" }) {
             </ul>
           </nav>
         </aside>
-        <main className="w-full max-w-7xl rounded-3xl bg-white px-6 py-14">
+        <main className="w-full max-w-7xl rounded-3xl bg-white p-6 px-8 pb-8">
           <AppointmentCreator doctors={doctors} state={state} dispatch={dispatch} />
         </main>
       </div>

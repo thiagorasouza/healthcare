@@ -1,8 +1,6 @@
 import DrawerAnimation from "@/components/shared/DrawerAnimation";
-import { capitalize, cn, getFirstName, subtractTimeStrings } from "@/lib/utils";
+import { capitalize, cn, subtractTimeStrings } from "@/lib/utils";
 import { weekdays } from "@/server/config/constants";
-import { format } from "date-fns";
-import { ArrowRight } from "lucide-react";
 import { SlotsModel } from "@/server/domain/models/slotsModel";
 import { DoctorModel } from "@/server/domain/models/doctorModel";
 
@@ -18,17 +16,9 @@ interface Props {
   };
   onDateClick: (dateStr: string) => void;
   onHourClick: (hour: string, duration: number) => void;
-  onNextClick: () => void;
 }
 
-export function SlotSelector({
-  slots,
-  doctor,
-  slot,
-  onDateClick,
-  onHourClick,
-  onNextClick,
-}: Props) {
+export function SlotSelector({ slots, doctor, slot, onDateClick, onHourClick }: Props) {
   const dates = [...slots.keys()].slice(0, MAX_DATES);
   const hours = (slot?.date && slots.get(slot.date)) || [];
 
@@ -45,17 +35,6 @@ export function SlotSelector({
         </Column>
         <Column>
           {slot?.date && <HourPicker hours={hours} onHourClick={onHourClick} hour={slot.hour} />}
-          {slot?.date && slot.hour && (
-            <>
-              <Summary
-                name={doctor.name}
-                specialty={doctor.specialty}
-                date={slot.date}
-                hour={slot.hour}
-              />
-              <NextButton onNextClick={onNextClick} />
-            </>
-          )}
         </Column>
       </div>
     </DrawerAnimation>
@@ -172,29 +151,6 @@ function Information({ bio }: { bio: string }) {
   );
 }
 
-function Summary({
-  name,
-  specialty,
-  date,
-  hour,
-}: {
-  name: string;
-  specialty: string;
-  date: string;
-  hour: string;
-}) {
-  return (
-    <Section title="Summary">
-      <p className="mb-7 leading-relaxed text-gray">
-        {specialty} appointment with Dr. {getFirstName(name)}
-        <br />
-        {format(date, "PPP")} at {hour}
-        <br />
-      </p>
-    </Section>
-  );
-}
-
 function Column({ children }: { children: React.ReactNode }) {
   return <div className="flex-1 space-y-8">{children}</div>;
 }
@@ -208,16 +164,16 @@ function Section({ title, children }: { title: string; children: React.ReactNode
   );
 }
 
-function NextButton({ onNextClick }: { onNextClick: () => void }) {
-  return (
-    <div
-      className="flex h-[50px] w-[140px] cursor-pointer items-center gap-[16px] rounded-full bg-dark-purple p-[5px] transition hover:bg-darker-purple"
-      onClick={onNextClick}
-    >
-      <div className="flex h-[40px] w-[40px] items-center justify-center rounded-full bg-white">
-        <ArrowRight className="h-[19px] w-[19px] text-dark-purple" />
-      </div>
-      <div className="text-[18px] font-medium text-white">Next</div>
-    </div>
-  );
-}
+// function NextButton({ onNextClick }: { onNextClick: () => void }) {
+//   return (
+//     <div
+//       className="flex h-[50px] w-[140px] cursor-pointer items-center gap-[16px] rounded-full bg-dark-purple p-[5px] transition hover:bg-darker-purple"
+//       onClick={onNextClick}
+//     >
+//       <div className="flex h-[40px] w-[40px] items-center justify-center rounded-full bg-white">
+//         <ArrowRight className="h-[19px] w-[19px] text-dark-purple" />
+//       </div>
+//       <div className="text-[18px] font-medium text-white">Next</div>
+//     </div>
+//   );
+// }

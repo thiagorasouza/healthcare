@@ -9,7 +9,7 @@ export default function BackButton({
   onBackClick: () => void;
 }) {
   return (
-    <Button variant="outline" className="flex items-center" onClick={onBackClick}>
+    <Button variant="outline" className="flex w-fit items-center" onClick={onBackClick}>
       <ArrowLeft className="mr-2 h-4 w-4" />
       {label ?? "Back"}
     </Button>
