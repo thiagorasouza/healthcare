@@ -19,5 +19,3 @@ export interface PatientModel {
   privacyConsent: boolean;
   authId: string;
 }
-
-export type PatientData = Omit<PatientModel, "id">;

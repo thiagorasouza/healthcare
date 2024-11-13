@@ -8,5 +8,3 @@ export interface DoctorModel {
   pictureId: string;
   authId: string;
 }
-
-export type DoctorData = Omit<DoctorModel, "id">;
