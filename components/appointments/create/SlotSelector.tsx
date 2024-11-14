@@ -1,8 +1,9 @@
 import DrawerAnimation from "@/components/shared/DrawerAnimation";
 import { capitalize, cn, subtractTimeStrings } from "@/lib/utils";
-import { weekdays } from "@/server/config/constants";
+import { MIN_ADVANCE, weekdays } from "@/server/config/constants";
 import { SlotsModel } from "@/server/domain/models/slotsModel";
 import { DoctorModel } from "@/server/domain/models/doctorModel";
+import { addMinutes, isBefore, isToday, parse } from "date-fns";
 
 const MAX_DATES = 5;
 
@@ -20,7 +21,17 @@ interface Props {
 
 export function SlotSelector({ slots, doctor, slot, onDateClick, onHourClick }: Props) {
   const dates = [...slots.keys()].slice(0, MAX_DATES);
-  const hours = (slot?.date && slots.get(slot.date)) || [];
+  const dateSelected = slot?.date;
+
+  let hours = (dateSelected && slots.get(dateSelected)) || [];
+
+  if (dateSelected && isToday(dateSelected)) {
+    const minAdvance = addMinutes(new Date(), MIN_ADVANCE);
+    hours = hours.filter(([hourStr]) => {
+      const hourDate = parse(hourStr, "HH:mm", new Date());
+      return isBefore(minAdvance, hourDate);
+    });
+  }
 
   return (
     <DrawerAnimation toggle={!!doctor}>
