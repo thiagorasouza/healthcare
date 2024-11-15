@@ -1,4 +1,5 @@
 import { ADVANCE_UNIT, DURATION_UNIT, MIN_ADVANCE, MIN_DURATION } from "@/server/config/constants";
+import { Failure } from "@/server/core/failure";
 import {
   AppointmentTooShortFailure,
   AppointmentTooSoonFailure,
@@ -20,4 +21,8 @@ export const errorMsgs = {
     "This patient has appointment that conflict with the appointment you are trying to schedule. Please review your submission.",
   [ServerFailure.name]:
     "Our servers failed while trying to complete your request. Please try again once more. If this error keeps popping up, please try again later.",
+};
+
+export const displayError = <T>(failure?: Failure<T>): string => {
+  return !!failure ? errorMsgs[failure.error.code] : "Unknown error";
 };

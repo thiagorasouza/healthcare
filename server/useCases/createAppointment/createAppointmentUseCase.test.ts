@@ -2,7 +2,7 @@ import { Success } from "@/server/core/success";
 import { Appointment } from "@/server/domain/appointment";
 import { mockAppointment } from "@/server/domain/mocks/appointment.mock";
 import { mockDoctor } from "@/server/domain/mocks/doctor.mock";
-import { mockPatient } from "@/server/domain/mocks/patients.mock";
+import { mockPatientModel } from "@/server/domain/mocks/patient.mock";
 import { mockPattern } from "@/server/domain/mocks/pattern.mock";
 import { AppointmentModel } from "@/server/domain/models/appointmentModel";
 import { Slots } from "@/server/domain/slots";
@@ -62,7 +62,7 @@ const mockDoctorsRepository = () => {
 const mockPatientsRepository = () => {
   class PatientsRepositoryStub implements PatientsRepositoryInterface {
     async getById(patientId: string): Promise<PatientFoundSuccess | PatientNotFoundFailure> {
-      const patientMock = mockPatient();
+      const patientMock = mockPatientModel();
       patientMock.id = patientId;
       return new PatientFoundSuccess(patientMock);
     }

@@ -2,12 +2,7 @@
 
 import TextField from "@/components/forms/TextField";
 import { Form } from "@/components/ui/form";
-import {
-  allowedFileTypes,
-  IdentificationData,
-  maxFileSize,
-  PatientZodData,
-} from "@/lib/schemas/patientsSchema";
+import { allowedFileTypes, maxFileSize, PatientZodData } from "@/lib/schemas/patientsSchema";
 import { UseFormReturn } from "react-hook-form";
 import { RadioField } from "@/components/forms/RadioField";
 import SubmitButton from "@/components/forms/SubmitButton";
@@ -18,83 +13,90 @@ import { CheckboxField } from "@/components/forms/CheckboxField";
 import AlertMessage from "@/components/forms/AlertMessage";
 import { useEffect, useState } from "react";
 import { objectToFormData } from "@/lib/utils";
-import { unexpectedError } from "@/lib/results";
-import { CreatePatientResult } from "@/lib/actions/createPatient";
 import DateField from "@/components/forms/DateField";
-import { UpdatePatientResult } from "@/lib/actions/updatePatient";
-import { mockPatient } from "@/server/domain/mocks/patients.mock";
+import { mockPatientData } from "@/server/domain/mocks/patient.mock";
 import { TestingOption } from "@/components/shared/TestingOption";
 import { PatientData } from "@/server/domain/models/patientData";
 import { PatientModel } from "@/server/domain/models/patientModel";
+import { getFile } from "@/server/actions/getFile.bypass";
+import { displayError } from "@/server/config/errors";
+import { mockSizeZeroPDF } from "@/server/domain/mocks/file.mock";
+import { createPatient } from "@/server/actions/createPatient";
+import { ErrorDialog } from "@/components/shared/ErrorDialog";
 
-interface PatientFormProps {
+export interface CreatePatientProps {
+  mode: "create";
   form: UseFormReturn<PatientData>;
-  data?: PatientModel;
-  identification?: IdentificationData;
-  action: (form: FormData) => Promise<CreatePatientResult | UpdatePatientResult>;
-  onSuccess: (data: PatientModel) => void;
-  submitLabel?: string;
+  patient?: undefined;
+  onPatientSaved: (data: PatientModel) => void;
+}
+
+export interface UpdatePatientProps {
+  mode: "update";
+  form: UseFormReturn<PatientData>;
+  patient: Required<PatientModel>;
+  onPatientSaved: (data: PatientModel) => void;
 }
 
 export default function PatientForm({
   form,
-  data: patientData,
-  identification,
-  action,
-  onSuccess,
-  submitLabel = "Submit",
-}: PatientFormProps) {
+  mode,
+  patient,
+  onPatientSaved,
+}: CreatePatientProps | UpdatePatientProps) {
   const [message, setMessage] = useState("");
 
+  // Creates a mock PDF from patient.identificationId when editting a patient
   useEffect(() => {
-    if (!patientData?.identificationId || !identification) return;
+    if (mode !== "update") return;
 
-    const currentFileName = identification?.name;
-    const mockFile = new File([new Blob()], currentFileName, { type: "application/pdf" });
+    const getIdentification = async () => {
+      const identificationResult = await getFile(
+        objectToFormData({ id: patient.identificationId }),
+      );
 
-    form.setValue("identification", mockFile, {
-      shouldValidate: true,
-    });
-  }, [patientData, form, identification]);
-
-  function fillWithTestingData() {
-    const patientMock = mockPatient();
-    ["id", "authId", "identificationId"].map((key) => Reflect.deleteProperty(patientMock, key));
-    patientMock["usageConsent"] = true;
-    patientMock["privacyConsent"] = true;
-
-    fetch("/pdf/test_pdf.pdf")
-      .then((result) => result.blob())
-      .then((blob) => {
-        const identification = new File([blob], "test_pdf.pdf", { type: "application/pdf" });
-
-        form.reset({ ...patientMock, identification });
-      })
-      .catch(console.log);
-  }
-
-  async function onSubmit(submittedData: PatientZodData) {
-    setMessage("");
-    try {
-      const formData = objectToFormData(submittedData);
-      if (patientData?.id && patientData?.authId) {
-        formData.append("patientId", patientData.id);
-        formData.append("authId", patientData.authId);
-      }
-
-      const result = await action(formData);
-      console.log("🚀 ~ result:", result);
-      if (result.success && result.data) {
-        onSuccess(result.data);
+      if (!identificationResult.ok) {
+        setMessage(displayError(identificationResult));
         return;
       }
 
-      setMessage(result.message);
-      window.scrollTo({ top: 0, behavior: "smooth" });
+      const { name: fileName } = identificationResult.value;
+
+      form.setValue("identification", mockSizeZeroPDF(fileName), {
+        shouldValidate: true,
+      });
+
+      getIdentification();
+    };
+  }, [form, mode, patient?.identificationId]);
+
+  async function fillWithTestingData() {
+    const patientDataMock = await mockPatientData();
+    form.reset({ ...patientDataMock });
+  }
+
+  async function onSubmit(data: PatientZodData) {
+    setMessage("");
+    try {
+      const formData = objectToFormData(data);
+
+      if (mode === "create") {
+        const createPatientResult = await createPatient(formData);
+        console.log("🚀 ~ createPatientResult:", createPatientResult);
+
+        if (!createPatientResult.ok) {
+          setMessage(displayError(createPatientResult));
+          return;
+        }
+
+        onPatientSaved(createPatientResult.value);
+      } else if (mode === "update") {
+        // formData.append("patientId", patient.id);
+      }
     } catch (error) {
       console.log(error);
-
-      setMessage(unexpectedError().message);
+      setMessage(displayError());
+    } finally {
       window.scrollTo({ top: 0, behavior: "smooth" });
     }
   }
@@ -102,7 +104,7 @@ export default function PatientForm({
   return (
     <div className="p-6">
       <Form {...form}>
-        <AlertMessage message={message} />
+        {message && <ErrorDialog message={message} />}
         <TestingOption
           feature="Fill form with testing data"
           onClick={fillWithTestingData}
@@ -208,7 +210,7 @@ export default function PatientForm({
             label="I have read and I accept the Terms & Conditions and the Privacy Policy"
             form={form}
           />
-          <SubmitButton label={submitLabel} form={form} />
+          <SubmitButton label="Save" form={form} />
         </form>
       </Form>
     </div>

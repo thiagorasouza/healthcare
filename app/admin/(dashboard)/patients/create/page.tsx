@@ -15,7 +15,7 @@ export default function CreatePatientsPage() {
   return (
     <div className="mx-auto max-w-3xl">
       <DefaultCard title="New Patient" description="Create a new patient">
-        <PatientsForm action={createPatient} onSuccess={onSuccess} />
+        <PatientsForm action={createPatient} onPatientSaved={onSuccess} />
       </DefaultCard>
     </div>
   );

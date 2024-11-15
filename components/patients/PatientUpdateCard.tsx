@@ -20,9 +20,9 @@ export default function PatientUpdateCard({ data, identification }: PatientUpdat
   return (
     <DefaultCard title="Edit Patient" description="Make changes to this patient details">
       <PatientsForm
-        data={data}
+        patient={data}
         action={updatePatient}
-        onSuccess={onSuccess}
+        onPatientSaved={onSuccess}
         identification={identification}
       />
     </DefaultCard>

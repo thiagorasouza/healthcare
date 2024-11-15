@@ -6,6 +6,8 @@ import { patientValidator } from "@/server/frameworks/zod/patientValidator";
 import { CreatePatientController } from "@/server/useCases/createPatient/createPatientController";
 import { CreatePatientUseCase } from "@/server/useCases/createPatient/createPatientUseCase";
 
+export type CreatePatientResult = ReturnType<typeof createPatient>;
+
 export const createPatient = async (formData: FormData) => {
   // console.log("🚀 ~ formData:", formData);
 

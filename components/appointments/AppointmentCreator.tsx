@@ -148,12 +148,7 @@ export default function AppointmentCreator({ doctors, state, dispatch }: Appoint
           onBookClick={onBookClick}
           onBackClick={onBackClick}
         />
-        <PatientForm
-          form={form}
-          action={createPatient}
-          onSuccess={onPatientCreated}
-          submitLabel="Save"
-        />
+        <PatientForm mode="create" form={form} onPatientSaved={onPatientCreated} />
       </div>
     );
   }
