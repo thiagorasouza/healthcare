@@ -45,7 +45,6 @@ async function createPatientCollection() {
     await databases.createStringAttribute(dbId, colId, "identificationId", 100, true);
     await databases.createBooleanAttribute(dbId, colId, "usageConsent", true);
     await databases.createBooleanAttribute(dbId, colId, "privacyConsent", true);
-    await databases.createStringAttribute(dbId, colId, "authId", 100, true);
 
     console.log("Patients collection created");
   } catch (error) {
@@ -92,6 +91,6 @@ async function createAppointmentsCollection() {
 }
 
 // createDoctorCollection();
-// createPatientCollection();
+createPatientCollection();
 // createPatternsCollection();
-createAppointmentsCollection();
+// createAppointmentsCollection();

@@ -34,7 +34,6 @@ export class PatientsRepository
       identificationId: data.identificationId,
       usageConsent: data.usageConsent,
       privacyConsent: data.privacyConsent,
-      authId: data.authId,
     };
   }
 }
