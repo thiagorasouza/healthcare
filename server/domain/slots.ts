@@ -115,7 +115,7 @@ export class Slots {
     }
 
     const dateStr = getDateStr(startDate);
-    const hoursArray = this.hoursArray(startTime, endTime, duration);
+    const hoursArray = this.getHoursArray(startTime, endTime, duration);
 
     this.add(dateStr, hoursArray);
   }
@@ -132,7 +132,7 @@ export class Slots {
   private parseRecurringPattern(pattern: PatternModel) {
     const { startDate, endDate, startTime, endTime, duration, weekdays } = pattern;
 
-    const hoursArray = this.hoursArray(startTime, endTime, duration);
+    const hoursArray = this.getHoursArray(startTime, endTime, duration);
 
     let date = startDate;
     while (date <= endDate) {
@@ -168,7 +168,7 @@ export class Slots {
     );
   }
 
-  public hoursArray(startTime: Date, endTime: Date, duration: number) {
+  public getHoursArray(startTime: Date, endTime: Date, duration: number) {
     const startTimeMs = startTime.getTime();
     const endTimeMs = endTime.getTime();
     const diffMs = endTimeMs - startTimeMs;
