@@ -4,6 +4,7 @@ import { MIN_ADVANCE, weekdays } from "@/server/config/constants";
 import { SlotsModel } from "@/server/domain/models/slotsModel";
 import { DoctorModel } from "@/server/domain/models/doctorModel";
 import { addMinutes, isBefore, isToday, parse } from "date-fns";
+import { CalendarX } from "lucide-react";
 
 const MAX_DATES = 5;
 
@@ -61,7 +62,7 @@ interface DatePickerProps {
 function DatePicker({ dates, date, onDateClick }: DatePickerProps) {
   return (
     <Section title="Pick a date">
-      {dates ? (
+      {dates.length > 0 ? (
         <ul className="flex gap-[18px]">
           {dates.map((dateStr, index) => (
             <li key={index}>
@@ -74,7 +75,12 @@ function DatePicker({ dates, date, onDateClick }: DatePickerProps) {
           ))}
         </ul>
       ) : (
-        <p>No dates available for this doctor</p>
+        <>
+          <p className="flex items-center text-gray">
+            <CalendarX className="align mr-2 inline h-5 w-5 text-yellow" />{" "}
+            <span className="font-medium">No dates available for this doctor yet.</span>
+          </p>
+        </>
       )}
     </Section>
   );
@@ -174,17 +180,3 @@ function Section({ title, children }: { title: string; children: React.ReactNode
     </section>
   );
 }
-
-// function NextButton({ onNextClick }: { onNextClick: () => void }) {
-//   return (
-//     <div
-//       className="flex h-[50px] w-[140px] cursor-pointer items-center gap-[16px] rounded-full bg-dark-purple p-[5px] transition hover:bg-darker-purple"
-//       onClick={onNextClick}
-//     >
-//       <div className="flex h-[40px] w-[40px] items-center justify-center rounded-full bg-white">
-//         <ArrowRight className="h-[19px] w-[19px] text-dark-purple" />
-//       </div>
-//       <div className="text-[18px] font-medium text-white">Next</div>
-//     </div>
-//   );
-// }

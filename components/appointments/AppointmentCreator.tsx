@@ -23,6 +23,7 @@ import { displayError } from "@/server/config/errors";
 import { joinDateTime } from "@/server/shared/helpers/date";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft } from "lucide-react";
+import { scrollToTop } from "@/lib/utils";
 
 interface AppointmentCreatorProps {
   doctors: DoctorModel[] | "error";
@@ -58,6 +59,7 @@ export default function AppointmentCreator({ doctors, state, dispatch }: Appoint
 
   function onHourClick(hour: string, duration: number) {
     dispatch({ type: "set_hour_duration", payload: { hour, duration } });
+    scrollToTop();
   }
 
   function onBackClick() {
@@ -116,7 +118,7 @@ export default function AppointmentCreator({ doctors, state, dispatch }: Appoint
     state.phase === "hour_selection"
   ) {
     return (
-      <div className="flex flex-col gap-10">
+      <div className="flex flex-col gap-10 pb-12 pt-8">
         <DoctorSelector doctors={doctors} doctor={state.doctor} onDoctorClick={onDoctorClick} />
         {state.doctor && state.slots && (
           <SlotSelector

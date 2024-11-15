@@ -2,6 +2,7 @@
 
 import AppointmentCreator from "@/components/appointments/AppointmentCreator";
 import { initialState, reducer, State } from "@/components/appointments/AppointmentCreatorReducer";
+import { ErrorScreen } from "@/components/shared/ErrorScreen";
 import { cn } from "@/lib/utils";
 import { DoctorModel } from "@/server/domain/models/doctorModel";
 import { BadgeCheck, CalendarDays, Clock, Pointer, UserRound } from "lucide-react";
@@ -79,7 +80,21 @@ export function BookingView({ doctors }: { doctors: DoctorModel[] | "error" }) {
           </nav>
         </aside>
         <main className="w-full max-w-7xl rounded-3xl bg-white p-6 px-8 pb-8">
-          <AppointmentCreator doctors={doctors} state={state} dispatch={dispatch} />
+          {doctors === "error" ? (
+            <ErrorScreen
+              title="Server Error"
+              message="It looks like the server couldn't fetch the information required to load this page.
+          Please try again."
+            />
+          ) : doctors.length === 0 ? (
+            <ErrorScreen
+              title="Error"
+              message="Sorry, there are no doctors available."
+              refresh={false}
+            />
+          ) : (
+            <AppointmentCreator doctors={doctors} state={state} dispatch={dispatch} />
+          )}
         </main>
       </div>
     </div>
