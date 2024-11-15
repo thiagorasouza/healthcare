@@ -78,13 +78,9 @@ export function reducer(state: State, action: Action): State {
       ) {
         throw new Error("Invalid application flow.");
       }
-      return {
-        ...state,
-        phase: "doctor_selection",
-      };
+      return initialState;
     case "set_doctor":
       return {
-        ...state,
         phase: "date_selection",
         doctor: action.payload.doctor,
         slots: action.payload.slots,
@@ -101,7 +97,7 @@ export function reducer(state: State, action: Action): State {
       };
     case "set_hour_duration":
       if (state.phase !== "hour_selection" && state.phase !== "patient_creation") {
-        throw new Error("Invalid applcation flow.");
+        throw new Error("Invalid application flow.");
       }
       return {
         ...state,
