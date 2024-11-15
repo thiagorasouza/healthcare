@@ -30,6 +30,16 @@ export class StorageRepository implements StorageRepositoryInterface {
     }
   }
 
+  public async get(id: string) {
+    try {
+      const result = (await this.storage.getFile(this.bucketId, id)) as AppwritifyFile<FileModel>;
+      return new Success(this.map(result));
+    } catch (error) {
+      console.log(error);
+      return new ServerFailure("Appwrite error");
+    }
+  }
+
   public map(data: AppwritifyFile<FileModel>): FileModel {
     return {
       id: data.$id,
