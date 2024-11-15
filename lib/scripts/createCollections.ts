@@ -1,14 +1,15 @@
-import { databases } from "@/lib/appwrite/adminClient";
+import { databases, ID } from "@/lib/appwrite/adminClient";
 import { genderTypes, idTypes } from "@/lib/constants";
 import { env } from "@/lib/env";
 
 const dbId = env.databaseId;
 
 async function createDoctorCollection() {
-  const colId = env.doctorsCollectionId;
+  // const colId = env.doctorsCollectionId;
+  const colId = ID.unique();
 
   try {
-    await databases.deleteCollection(dbId, colId);
+    // await databases.deleteCollection(dbId, colId);
     await databases.createCollection(dbId, colId, "doctors", undefined, true);
     await databases.createStringAttribute(dbId, colId, "name", 100, true);
     await databases.createEmailAttribute(dbId, colId, "email", true);
@@ -27,10 +28,11 @@ async function createDoctorCollection() {
 async function createPatientCollection() {
   const idTypesArr = idTypes.map((idType) => idType.value);
   const genderTypesArr = genderTypes.map((genderTypes) => genderTypes.value);
-  const colId = env.patientsCollectionId;
+  // const colId = env.patientsCollectionId;
+  const colId = ID.unique();
 
   try {
-    await databases.deleteCollection(dbId, colId);
+    // await databases.deleteCollection(dbId, colId);
     await databases.createCollection(dbId, colId, "patients", undefined, true);
     await databases.createStringAttribute(dbId, colId, "name", 100, true);
     await databases.createEmailAttribute(dbId, colId, "email", true);
@@ -53,10 +55,11 @@ async function createPatientCollection() {
 }
 
 async function createPatternsCollection() {
-  const colId = env.patternsCollectionId;
+  // const colId = env.patternsCollectionId;
+  const colId = ID.unique();
 
   try {
-    await databases.deleteCollection(dbId, colId);
+    // await databases.deleteCollection(dbId, colId);
     await databases.createCollection(dbId, colId, "patterns", undefined, true);
     await databases.createDatetimeAttribute(dbId, colId, "startDate", true);
     await databases.createDatetimeAttribute(dbId, colId, "endDate", true);
@@ -74,10 +77,11 @@ async function createPatternsCollection() {
 }
 
 async function createAppointmentsCollection() {
-  const colId = env.appointmentsCollectionId;
+  // const colId = env.appointmentsCollectionId;
+  const colId = ID.unique();
 
   try {
-    await databases.deleteCollection(dbId, colId);
+    // await databases.deleteCollection(dbId, colId);
     await databases.createCollection(dbId, colId, "appointments", undefined, true);
     await databases.createStringAttribute(dbId, colId, "doctorId", 100, true);
     await databases.createStringAttribute(dbId, colId, "patientId", 100, true);
@@ -90,7 +94,7 @@ async function createAppointmentsCollection() {
   }
 }
 
-// createDoctorCollection();
+createDoctorCollection();
 createPatientCollection();
-// createPatternsCollection();
-// createAppointmentsCollection();
+createPatternsCollection();
+createAppointmentsCollection();
