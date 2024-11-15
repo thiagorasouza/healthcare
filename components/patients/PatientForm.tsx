@@ -2,7 +2,6 @@
 
 import TextField from "@/components/forms/TextField";
 import { Form } from "@/components/ui/form";
-import { allowedFileTypes, maxFileSize, PatientZodData } from "@/lib/schemas/patientsSchema";
 import { UseFormReturn } from "react-hook-form";
 import { RadioField } from "@/components/forms/RadioField";
 import SubmitButton from "@/components/forms/SubmitButton";
@@ -10,7 +9,6 @@ import { SelectField } from "@/components/forms/SelectField";
 import { genderTypes, idTypes } from "@/lib/constants";
 import FileField from "@/components/forms/FileField";
 import { CheckboxField } from "@/components/forms/CheckboxField";
-import AlertMessage from "@/components/forms/AlertMessage";
 import { useEffect, useState } from "react";
 import { objectToFormData } from "@/lib/utils";
 import DateField from "@/components/forms/DateField";
@@ -23,6 +21,7 @@ import { displayError } from "@/server/config/errors";
 import { mockSizeZeroPDF } from "@/server/domain/mocks/file.mock";
 import { createPatient } from "@/server/actions/createPatient";
 import { ErrorDialog } from "@/components/shared/ErrorDialog";
+import { allowedFileTypes, maxFileSize } from "@/server/config/constants";
 
 export interface CreatePatientProps {
   mode: "create";
@@ -75,7 +74,7 @@ export default function PatientForm({
     form.reset({ ...patientDataMock });
   }
 
-  async function onSubmit(data: PatientZodData) {
+  async function onSubmit(data: PatientData) {
     setMessage("");
     try {
       const formData = objectToFormData(data);
@@ -91,7 +90,7 @@ export default function PatientForm({
 
         onPatientSaved(createPatientResult.value);
       } else if (mode === "update") {
-        // formData.append("patientId", patient.id);
+        // TODO
       }
     } catch (error) {
       console.log(error);
