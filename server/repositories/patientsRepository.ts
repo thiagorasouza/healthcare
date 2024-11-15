@@ -1,9 +1,8 @@
 import { Success } from "@/server/core/success";
 import { PatientModel } from "@/server/domain/models/patientModel";
-import { NotFoundFailure, PatientNotFoundFailure, ServerFailure } from "@/server/shared/failures";
-import { PatientFoundSuccess } from "@/server/shared/successes";
+import { RepositoryInterface } from "@/server/repositories/repository";
+import { ServerFailure } from "@/server/shared/failures";
 
-export interface PatientsRepositoryInterface {
-  getById(patientId: string): Promise<PatientFoundSuccess | PatientNotFoundFailure>;
+export interface PatientsRepositoryInterface extends RepositoryInterface<PatientModel> {
   getByEmail(email: string): Promise<Success<PatientModel> | ServerFailure>;
 }
