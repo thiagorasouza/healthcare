@@ -1,5 +1,5 @@
 import { DURATION_UNIT, weekdays } from "@/server/config/constants";
-import { startOfDay } from "date-fns";
+import { set, startOfDay } from "date-fns";
 
 export function getHoursStr(date: Date) {
   // console.log("🚀 ~ date:", date);
@@ -7,6 +7,21 @@ export function getHoursStr(date: Date) {
     hour: "2-digit",
     minute: "2-digit",
     hour12: false,
+  });
+}
+
+export function getHourMinNums(hourStr: string) {
+  return hourStr.split(":").map((x) => Number(x));
+}
+
+export function joinDateTime(date: string, hourStr: string) {
+  const [hours, minutes] = getHourMinNums(hourStr);
+
+  return set(new Date(date), {
+    hours,
+    minutes,
+    seconds: 0,
+    milliseconds: 0,
   });
 }
 

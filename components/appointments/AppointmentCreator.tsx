@@ -13,15 +13,14 @@ import {
   patientZodDefaultValues,
 } from "@/lib/schemas/patientsSchema";
 import SummaryCard from "@/components/appointments/create/SummaryCard";
-import { set } from "date-fns";
 import { createAppointment } from "@/server/actions/createAppointment";
 import PatientForm from "@/components/patients/PatientForm";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { createPatient } from "@/lib/actions/createPatient";
 import { PatientModel } from "@/server/domain/models/patientModel";
 import { ErrorDialog } from "@/components/shared/ErrorDialog";
-import { errorMsgs } from "@/server/config/errors";
+import { displayError } from "@/server/config/errors";
+import { joinDateTime } from "@/server/shared/helpers/date";
 
 interface AppointmentCreatorProps {
   doctors: DoctorModel[] | "error";
@@ -46,12 +45,9 @@ export default function AppointmentCreator({ doctors, state, dispatch }: Appoint
     const slotsResult = await getSlots(
       objectToFormData({ doctorId: doctor.id, startDate: new Date() }),
     );
-
-    if (!slotsResult.ok) {
-      return;
+    if (slotsResult.ok) {
+      dispatch({ type: "set_doctor", payload: { doctor, slots: slotsResult.value } });
     }
-
-    dispatch({ type: "set_doctor", payload: { doctor, slots: slotsResult.value } });
   }
 
   function onDateClick(date: string) {
@@ -63,9 +59,6 @@ export default function AppointmentCreator({ doctors, state, dispatch }: Appoint
   }
 
   function onBackClick(from: "patient_creation" | "summary") {
-    if (from === "summary") {
-      dispatch({ type: "back_to_patient_creation" });
-    }
     if (from === "patient_creation") {
       dispatch({
         type: "back_to_hour_selection",
@@ -74,9 +67,12 @@ export default function AppointmentCreator({ doctors, state, dispatch }: Appoint
         },
       });
     }
+    if (from === "summary") {
+      dispatch({ type: "back_to_patient_creation" });
+    }
   }
 
-  function onPatientCreated(patient: PatientModel) {
+  function onPatientSaved(patient: PatientModel) {
     dispatch({ type: "show_summary", payload: { patient } });
   }
 
@@ -87,33 +83,26 @@ export default function AppointmentCreator({ doctors, state, dispatch }: Appoint
     try {
       const doctorId = state.doctor.id;
       const patientId = state.patient.id;
-
-      const [hours, minutes] = state.slot.hour.split(":").map((x) => Number(x));
-      const startTime = set(new Date(state.slot.date), {
-        hours,
-        minutes,
-        seconds: 0,
-        milliseconds: 0,
-      });
-
+      const startTime = joinDateTime(state.slot.date, state.slot.hour);
       const duration = state.slot.duration;
 
-      const result = await createAppointment(
+      const createAppointmentResult = await createAppointment(
         objectToFormData({ doctorId, patientId, startTime, duration }),
       );
-      console.log("🚀 ~ result:", result);
 
-      if (!result.ok) {
-        const errorMsg = errorMsgs[result.error.code];
-        setMessage(errorMsg || "Unknown error.");
+      if (!createAppointmentResult.ok) {
+        setMessage(displayError(createAppointmentResult));
         return;
       }
+
+      // === TODO===
     } catch (error) {
       console.log(error);
     }
   }
 
   if (doctors === "error") {
+    // === TODO===
     return;
   }
 
@@ -148,7 +137,7 @@ export default function AppointmentCreator({ doctors, state, dispatch }: Appoint
           onBookClick={onBookClick}
           onBackClick={onBackClick}
         />
-        <PatientForm mode="create" form={form} onPatientSaved={onPatientCreated} />
+        <PatientForm mode="create" form={form} onPatientSaved={onPatientSaved} />
       </div>
     );
   }
