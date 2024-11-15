@@ -1,3 +1,5 @@
 import { PatientModel } from "@/server/domain/models/patientModel";
 
-export type PatientData = Omit<PatientModel, "id">;
+export type PatientData = Omit<PatientModel, "id" | "identificationId"> & {
+  identification: File;
+};

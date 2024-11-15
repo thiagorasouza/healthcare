@@ -3,13 +3,17 @@ import { ActionController } from "@/server/shared/protocols/actionController";
 import { UseCase } from "@/server/shared/protocols/useCase";
 import { ValidatorInterface } from "@/server/shared/protocols/validator";
 
-export class GenericActionController<T, K extends UseCase> implements ActionController {
+export class GenericActionController<RequestType, UseCaseType extends UseCase>
+  implements ActionController
+{
   constructor(
-    private readonly useCase: K,
-    private readonly validator: ValidatorInterface<T>,
+    private readonly useCase: UseCaseType,
+    private readonly validator: ValidatorInterface<RequestType>,
   ) {}
 
-  async handle(formData: FormData): Promise<ValidationFailure | ReturnType<K["execute"]>> {
+  async handle(
+    formData: FormData,
+  ): Promise<ValidationFailure | ReturnType<UseCaseType["execute"]>> {
     const rawData = Object.fromEntries(formData);
 
     const validationResult = this.validator.validate(rawData);
