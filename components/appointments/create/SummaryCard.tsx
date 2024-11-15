@@ -1,6 +1,5 @@
 import { DoctorCard } from "@/components/appointments/create/DoctorCard";
 import DrawerAnimation from "@/components/shared/DrawerAnimation";
-import { Button } from "@/components/ui/button";
 import { cn, colorize } from "@/lib/utils";
 import { idLabels } from "@/server/config/constants";
 import { DoctorModel } from "@/server/domain/models/doctorModel";
@@ -8,10 +7,9 @@ import { PatientModel } from "@/server/domain/models/patientModel";
 import { displayDate } from "@/server/shared/helpers/date";
 import { format } from "date-fns";
 
-import { ArrowLeft, ArrowRight, CalendarDays, Clock, Cross, User } from "lucide-react";
+import { ArrowRight, CalendarDays, Clock, Cross, User } from "lucide-react";
 
 interface SummaryCardProps {
-  title?: string;
   doctor: DoctorModel;
   slot: {
     date: string;
@@ -20,17 +18,9 @@ interface SummaryCardProps {
   };
   patient?: PatientModel;
   onBookClick: () => void;
-  onBackClick: (from: "patient_creation" | "summary") => void;
 }
 
-export default function SummaryCard({
-  title = "Summary",
-  doctor,
-  slot,
-  patient,
-  onBookClick,
-  onBackClick,
-}: SummaryCardProps) {
+export default function SummaryCard({ doctor, slot, patient, onBookClick }: SummaryCardProps) {
   const dateBgColor = colorize(1);
   const hourBgColor = colorize(2);
 
@@ -38,16 +28,6 @@ export default function SummaryCard({
 
   return (
     <div>
-      <div className="mb-4 flex items-center gap-2">
-        <Button
-          variant="ghost"
-          className="aspect-square rounded-full p-2"
-          onClick={() => onBackClick(patient ? "summary" : "patient_creation")}
-        >
-          <ArrowLeft className="h-5 w-5" />
-        </Button>
-        <h1 className="text-2xl font-bold">{title}</h1>
-      </div>
       <div className="flex gap-6">
         <div className="flex flex-col gap-4">
           <h2 className="text-xl font-medium text-gray">Appointment</h2>
@@ -70,7 +50,6 @@ export default function SummaryCard({
               <p className="text-base font-medium">{slot.hour}</p>
             </div>
           </div>
-          {/* <BackButton label="Change" /> */}
         </div>
         {patient && (
           <DrawerAnimation mode="horizontal" toggle={!!patient} className="flex-1">

@@ -21,6 +21,8 @@ import { PatientModel } from "@/server/domain/models/patientModel";
 import { ErrorDialog } from "@/components/shared/ErrorDialog";
 import { displayError } from "@/server/config/errors";
 import { joinDateTime } from "@/server/shared/helpers/date";
+import { Button } from "@/components/ui/button";
+import { ArrowLeft } from "lucide-react";
 
 interface AppointmentCreatorProps {
   doctors: DoctorModel[] | "error";
@@ -58,17 +60,19 @@ export default function AppointmentCreator({ doctors, state, dispatch }: Appoint
     dispatch({ type: "set_hour_duration", payload: { hour, duration } });
   }
 
-  function onBackClick(from: "patient_creation" | "summary") {
-    if (from === "patient_creation") {
-      dispatch({
-        type: "back_to_hour_selection",
-        payload: {
-          patientFormSave: form.getValues(),
-        },
-      });
-    }
-    if (from === "summary") {
-      dispatch({ type: "back_to_patient_creation" });
+  function onBackClick() {
+    switch (state.phase) {
+      case "patient_creation":
+        dispatch({
+          type: "back_to_hour_selection",
+          payload: {
+            patientFormSave: form.getValues(),
+          },
+        });
+        break;
+      case "summary":
+        dispatch({ type: "back_to_patient_creation" });
+        break;
     }
   }
 
@@ -130,13 +134,10 @@ export default function AppointmentCreator({ doctors, state, dispatch }: Appoint
   if (state.phase === "patient_creation") {
     return (
       <div className="flex gap-8">
-        <SummaryCard
-          title="Patient"
-          doctor={state.doctor}
-          slot={state.slot}
-          onBookClick={onBookClick}
-          onBackClick={onBackClick}
-        />
+        <div>
+          <Header title="Patient" onBackClick={onBackClick} />
+          <SummaryCard doctor={state.doctor} slot={state.slot} onBookClick={onBookClick} />
+        </div>
         <PatientForm mode="create" form={form} onPatientSaved={onPatientSaved} />
       </div>
     );
@@ -144,20 +145,38 @@ export default function AppointmentCreator({ doctors, state, dispatch }: Appoint
 
   if (state.phase === "summary") {
     return (
-      <>
-        {message && <ErrorDialog message={message} />}
-        <SummaryCard
-          doctor={state.doctor}
-          slot={state.slot}
-          patient={state.patient}
-          onBookClick={onBookClick}
-          onBackClick={onBackClick}
-        />
-      </>
+      <div className="flex gap-8">
+        <div>
+          <Header title="Summary" onBackClick={onBackClick} />
+          {message && <ErrorDialog message={message} />}
+          <SummaryCard
+            doctor={state.doctor}
+            slot={state.slot}
+            patient={state.patient}
+            onBookClick={onBookClick}
+          />
+        </div>
+      </div>
     );
   }
 
   if (state.phase === "confirmation") {
     return <div>Confirmation</div>;
   }
+}
+
+interface HeaderProps {
+  title: string;
+  onBackClick: () => void;
+}
+
+export function Header({ title, onBackClick }: HeaderProps) {
+  return (
+    <div className="mb-4 flex items-center gap-2">
+      <Button variant="ghost" className="aspect-square rounded-full p-2" onClick={onBackClick}>
+        <ArrowLeft className="h-5 w-5" />
+      </Button>
+      <h1 className="text-2xl font-bold">{title}</h1>
+    </div>
+  );
 }
