@@ -7,3 +7,5 @@ export function isAppwriteException(error: any): error is AppwriteException {
 }
 
 export type Appwritify<T> = Omit<T, "id"> & Models.Document;
+
+export type AppwritifyFile<T> = Omit<T, "id"> & Models.File;
