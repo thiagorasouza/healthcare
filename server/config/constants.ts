@@ -3,19 +3,23 @@ import { Weekday } from "@/server/domain/models/patternModel";
 
 export const genders: Gender[] = ["male", "female", "other"];
 export const weekdays: Weekday[] = ["sun", "mon", "tue", "wed", "thu", "fri", "sat"];
+
+// Id field related
 export const identificationTypes: IdentificationType[] = [
   "passport",
   "identityCard",
   "driversLicense",
   "other",
 ];
-
 export const idLabels = {
   identityCard: "Identity Card",
   driversLicense: "Driver's License",
   passport: "Passport",
   other: "Other",
 };
+export const allowedFileTypes = ["application/pdf"];
+export const allowedFileTypesTextual = ["PDF"];
+export const maxFileSize = 5 * 1024 * 1024; // 5 MB
 
 // Minimum appointment duration in minutes
 export const MIN_DURATION = 15;
