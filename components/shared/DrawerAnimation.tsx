@@ -3,7 +3,7 @@ import { AnimatePresence, motion } from "framer-motion";
 import React from "react";
 
 interface DrawerAnimationProps {
-  mode: "vertical" | "horizontal";
+  mode?: "vertical" | "horizontal";
   toggle: boolean;
   className?: string;
   children: React.ReactNode;

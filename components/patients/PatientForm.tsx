@@ -4,10 +4,9 @@ import TextField from "@/components/forms/TextField";
 import { Form } from "@/components/ui/form";
 import {
   allowedFileTypes,
+  IdentificationData,
   maxFileSize,
   PatientZodData,
-  PatientParsedData,
-  IdentificationData,
 } from "@/lib/schemas/patientsSchema";
 import { UseFormReturn } from "react-hook-form";
 import { RadioField } from "@/components/forms/RadioField";
@@ -25,13 +24,15 @@ import DateField from "@/components/forms/DateField";
 import { UpdatePatientResult } from "@/lib/actions/updatePatient";
 import { mockPatient } from "@/server/domain/mocks/patients.mock";
 import { TestingOption } from "@/components/shared/TestingOption";
+import { PatientData } from "@/server/domain/models/patientData";
+import { PatientModel } from "@/server/domain/models/patientModel";
 
 interface PatientFormProps {
-  form: UseFormReturn<PatientZodData>;
-  data?: PatientParsedData;
+  form: UseFormReturn<PatientData>;
+  data?: PatientModel;
   identification?: IdentificationData;
   action: (form: FormData) => Promise<CreatePatientResult | UpdatePatientResult>;
-  onSuccess: (data: PatientParsedData) => void;
+  onSuccess: (data: PatientModel) => void;
   submitLabel?: string;
 }
 
@@ -76,12 +77,13 @@ export default function PatientForm({
     setMessage("");
     try {
       const formData = objectToFormData(submittedData);
-      if (patientData?.$id && patientData?.authId) {
-        formData.append("patientId", patientData.$id);
+      if (patientData?.id && patientData?.authId) {
+        formData.append("patientId", patientData.id);
         formData.append("authId", patientData.authId);
       }
 
       const result = await action(formData);
+      console.log("🚀 ~ result:", result);
       if (result.success && result.data) {
         onSuccess(result.data);
         return;

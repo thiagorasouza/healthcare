@@ -1,5 +1,6 @@
-import { PatientParsedData, PatientZodData } from "@/lib/schemas/patientsSchema";
 import { DoctorModel } from "@/server/domain/models/doctorModel";
+import { PatientData } from "@/server/domain/models/patientData";
+import { PatientModel } from "@/server/domain/models/patientModel";
 import { SlotsModel } from "@/server/domain/models/slotsModel";
 
 export const initialState: State = {
@@ -11,48 +12,48 @@ export type State =
       phase: "doctor_selection";
       doctor?: DoctorModel;
       slots?: SlotsModel;
-      patientFormSave?: PatientZodData;
-      patient?: PatientParsedData;
+      patientFormSave?: PatientData;
+      patient?: PatientModel;
       slot?: { date?: string; hour?: string; duration?: number };
     }
   | {
       phase: "date_selection";
       doctor: DoctorModel;
       slots: SlotsModel;
-      patientFormSave?: PatientZodData;
-      patient?: PatientParsedData;
+      patientFormSave?: PatientData;
+      patient?: PatientModel;
       slot?: { date?: string; hour?: string; duration?: number };
     }
   | {
       phase: "hour_selection";
       doctor: DoctorModel;
       slots: SlotsModel;
-      patientFormSave?: PatientZodData;
-      patient?: PatientParsedData;
+      patientFormSave?: PatientData;
+      patient?: PatientModel;
       slot: { date: string; hour?: string; duration?: number };
     }
   | {
       phase: "patient_creation";
       doctor: DoctorModel;
       slots: SlotsModel;
-      patientFormSave?: PatientZodData;
-      patient?: PatientParsedData;
+      patientFormSave?: PatientData;
+      patient?: PatientModel;
       slot: { date: string; hour: string; duration: number };
     }
   | {
       phase: "summary";
       doctor: DoctorModel;
       slots: SlotsModel;
-      patientFormSave?: PatientZodData;
-      patient: PatientParsedData;
+      patientFormSave?: PatientData;
+      patient: PatientModel;
       slot: { date: string; hour: string; duration: number };
     }
   | {
       phase: "confirmation";
       doctor: DoctorModel;
       slots: SlotsModel;
-      patientFormSave?: PatientZodData;
-      patient: PatientParsedData;
+      patientFormSave?: PatientData;
+      patient: PatientModel;
       slot: { date: string; hour: string; duration: number };
     };
 
@@ -61,10 +62,10 @@ export type Action =
   | { type: "set_doctor"; payload: { doctor: DoctorModel; slots: SlotsModel } }
   | { type: "set_date"; payload: { date: string } }
   | { type: "set_hour_duration"; payload: { hour: string; duration: number } }
-  | { type: "back_to_hour_selection"; payload: { patientFormSave: PatientZodData } }
-  | { type: "set_patient_form_save"; payload: { patientFormSave: PatientZodData } }
+  | { type: "back_to_hour_selection"; payload: { patientFormSave: PatientData } }
+  | { type: "set_patient_form_save"; payload: { patientFormSave: PatientData } }
   | { type: "back_to_patient_creation" }
-  | { type: "show_summary"; payload: { patient: PatientParsedData } }
+  | { type: "show_summary"; payload: { patient: PatientModel } }
   | { type: "show_confirmation" };
 
 export function reducer(state: State, action: Action): State {

@@ -2,13 +2,12 @@
 
 import { DoctorSelector } from "@/components/appointments/create/DoctorSelector";
 import { DoctorModel } from "@/server/domain/models/doctorModel";
-import { Dispatch } from "react";
+import { Dispatch, useState } from "react";
 import { SlotSelector } from "@/components/appointments/create/SlotSelector";
 import { getSlots } from "@/server/actions/getSlots";
 import { objectToFormData } from "@/server/shared/helpers/utils";
 import { Action, State } from "@/components/appointments/AppointmentCreatorReducer";
 import {
-  PatientParsedData,
   patientsZodSchema,
   PatientZodData,
   patientZodDefaultValues,
@@ -20,6 +19,9 @@ import PatientForm from "@/components/patients/PatientForm";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { createPatient } from "@/lib/actions/createPatient";
+import { PatientModel } from "@/server/domain/models/patientModel";
+import { ErrorDialog } from "@/components/shared/ErrorDialog";
+import { errorMsgs } from "@/server/config/errors";
 
 interface AppointmentCreatorProps {
   doctors: DoctorModel[] | "error";
@@ -28,6 +30,8 @@ interface AppointmentCreatorProps {
 }
 
 export default function AppointmentCreator({ doctors, state, dispatch }: AppointmentCreatorProps) {
+  const [message, setMessage] = useState("");
+
   const form = useForm<PatientZodData>({
     resolver: zodResolver(patientsZodSchema),
     defaultValues: state.patientFormSave || patientZodDefaultValues,
@@ -72,16 +76,17 @@ export default function AppointmentCreator({ doctors, state, dispatch }: Appoint
     }
   }
 
-  function onPatientCreated(patient: PatientParsedData) {
+  function onPatientCreated(patient: PatientModel) {
     dispatch({ type: "show_summary", payload: { patient } });
   }
 
   async function onBookClick() {
     if (state.phase !== "summary") return;
 
+    setMessage("");
     try {
       const doctorId = state.doctor.id;
-      const patientId = state.patient.$id;
+      const patientId = state.patient.id;
 
       const [hours, minutes] = state.slot.hour.split(":").map((x) => Number(x));
       const startTime = set(new Date(state.slot.date), {
@@ -97,13 +102,15 @@ export default function AppointmentCreator({ doctors, state, dispatch }: Appoint
         objectToFormData({ doctorId, patientId, startTime, duration }),
       );
       console.log("🚀 ~ result:", result);
+
+      if (!result.ok) {
+        const errorMsg = errorMsgs[result.error.code];
+        setMessage(errorMsg || "Unknown error.");
+        return;
+      }
     } catch (error) {
       console.log(error);
     }
-  }
-
-  function onBooked(patientData: PatientParsedData) {
-    dispatch({ type: "show_summary", payload: { patient: patientData } });
   }
 
   if (doctors === "error") {
@@ -153,13 +160,16 @@ export default function AppointmentCreator({ doctors, state, dispatch }: Appoint
 
   if (state.phase === "summary") {
     return (
-      <SummaryCard
-        doctor={state.doctor}
-        slot={state.slot}
-        patient={state.patient}
-        onBookClick={onBookClick}
-        onBackClick={onBackClick}
-      />
+      <>
+        {message && <ErrorDialog message={message} />}
+        <SummaryCard
+          doctor={state.doctor}
+          slot={state.slot}
+          patient={state.patient}
+          onBookClick={onBookClick}
+          onBackClick={onBackClick}
+        />
+      </>
     );
   }
 
