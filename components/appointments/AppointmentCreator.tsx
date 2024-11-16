@@ -24,6 +24,7 @@ import { joinDateTime } from "@/server/shared/helpers/date";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft } from "lucide-react";
 import { scrollToTop } from "@/lib/utils";
+import { ConfirmationCard } from "@/components/appointments/create/ConfirmationCard";
 
 interface AppointmentCreatorProps {
   doctors: DoctorModel[] | "error";
@@ -63,6 +64,8 @@ export default function AppointmentCreator({ doctors, state, dispatch }: Appoint
   }
 
   function onBackClick() {
+    setMessage("");
+
     switch (state.phase) {
       case "patient_creation":
         dispatch({
@@ -101,7 +104,7 @@ export default function AppointmentCreator({ doctors, state, dispatch }: Appoint
         return;
       }
 
-      // === TODO===
+      dispatch({ type: "show_confirmation" });
     } catch (error) {
       console.log(error);
     }
@@ -163,7 +166,7 @@ export default function AppointmentCreator({ doctors, state, dispatch }: Appoint
   }
 
   if (state.phase === "confirmation") {
-    return <div>Confirmation</div>;
+    return <ConfirmationCard doctor={state.doctor} slot={state.slot} patient={state.patient} />;
   }
 }
 

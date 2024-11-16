@@ -29,14 +29,14 @@ export function DoctorCard({
   return (
     <div
       className={cn(
-        "relative h-[298px] pt-[28px]",
+        "relative h-[298px] w-full pt-[28px]",
         { "grayscale hover:grayscale-0": muted },
         className,
       )}
     >
       <div
         className={cn(
-          "relative h-[234px] w-[236px] rounded-[60px] transition",
+          "relative mx-auto h-[234px] w-[236px] rounded-[60px] transition",
           { "scale-105": active },
           { "cursor-pointer hover:scale-105": !fixed },
           bgColor,

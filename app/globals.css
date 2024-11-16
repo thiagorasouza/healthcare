@@ -86,4 +86,8 @@
       display: none; /* For Chrome, Safari, and Opera */
     }
   }
+
+  .flex-center {
+    @apply flex h-full w-full flex-col items-center justify-center;
+  }
 }
