@@ -1,4 +1,5 @@
 import { DoctorCard } from "@/components/appointments/create/DoctorCard";
+import SendEmailDialog from "@/components/appointments/create/SendEmailDialog";
 import { Button } from "@/components/ui/button";
 import { cn, colorize } from "@/lib/utils";
 import { idLabels } from "@/server/config/constants";
@@ -6,16 +7,7 @@ import { DoctorModel } from "@/server/domain/models/doctorModel";
 import { PatientModel } from "@/server/domain/models/patientModel";
 import { displayDate } from "@/server/shared/helpers/date";
 import { format } from "date-fns";
-import {
-  ArrowLeft,
-  ArrowLeftCircle,
-  CalendarDays,
-  CheckCircle,
-  Clock,
-  Cross,
-  House,
-  User,
-} from "lucide-react";
+import { CalendarDays, CheckCircle, Clock, Cross, House, Mail, User } from "lucide-react";
 import Link from "next/link";
 
 interface ConfirmationCardProps {
@@ -113,10 +105,14 @@ export function ConfirmationCard({ doctor, patient, slot }: ConfirmationCardProp
         </div>
       </section>
 
-      <div>
-        <Button variant="ghost" size="lg" asChild>
-          <Link href="/">Back to Home</Link>
+      <div className="flex gap-6">
+        <Button variant="outline" asChild>
+          <Link href="/">
+            <House />
+            Back to Home
+          </Link>
         </Button>
+        <SendEmailDialog />
       </div>
     </article>
   );
