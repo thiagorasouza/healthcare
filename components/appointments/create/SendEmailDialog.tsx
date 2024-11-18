@@ -14,12 +14,15 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-
 import { z } from "zod";
 import { Button } from "@/components/ui/button";
 import { Mail } from "lucide-react";
+import { sendConfirmation } from "@/server/actions/sendConfirmation";
+import { objectToFormData } from "@/server/shared/helpers/utils";
+import { useState } from "react";
+import { toast } from "sonner";
 
-const formSchema = z.object({
+const emailSchema = z.object({
   email: z
     .string()
     .email({ message: "Please type a valid email address." })
@@ -28,20 +31,48 @@ const formSchema = z.object({
     }),
 });
 
-export default function SendEmailDialog() {
-  const form = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
+type EmailData = z.infer<typeof emailSchema>;
+
+const errorMsg =
+  "The server was not able to send the confirmation to your email. Please try again later";
+
+export default function SendEmailDialog({ appointmentId }: { appointmentId: string }) {
+  const [open, setOpen] = useState(true);
+
+  const form = useForm<z.infer<typeof emailSchema>>({
+    resolver: zodResolver(emailSchema),
     defaultValues: {
       email: "",
     },
   });
 
-  function onSubmit(data: any) {
-    console.log("🚀 ~ data:", data);
+  async function onSubmit(data: EmailData) {
+    try {
+      const { email } = data;
+
+      const result = await sendConfirmation(
+        objectToFormData({
+          email,
+          appointmentId,
+        }),
+      );
+
+      if (!result.ok) {
+        toast(errorMsg);
+        return;
+      }
+
+      toast(`Email successfully sent to ${email}`);
+    } catch (error) {
+      console.log(error);
+      toast(errorMsg);
+    } finally {
+      setOpen(false);
+    }
   }
 
   return (
-    <Dialog>
+    <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
         <Button>
           <Mail />
@@ -53,6 +84,7 @@ export default function SendEmailDialog() {
           <DialogTitle>Send via email</DialogTitle>
           <DialogDescription>Send the appointment confirmation to your email</DialogDescription>
         </DialogHeader>
+
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="flex flex-col gap-4">
             <TextField

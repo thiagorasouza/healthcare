@@ -18,9 +18,10 @@ interface ConfirmationCardProps {
     duration: number;
   };
   patient: PatientModel;
+  appointmentId: string;
 }
 
-export function ConfirmationCard({ doctor, patient, slot }: ConfirmationCardProps) {
+export function ConfirmationCard({ doctor, patient, slot, appointmentId }: ConfirmationCardProps) {
   const dateBgColor = colorize(1);
   const hourBgColor = colorize(2);
 
@@ -112,7 +113,7 @@ export function ConfirmationCard({ doctor, patient, slot }: ConfirmationCardProp
             Back to Home
           </Link>
         </Button>
-        <SendEmailDialog />
+        <SendEmailDialog appointmentId={appointmentId} />
       </div>
     </article>
   );

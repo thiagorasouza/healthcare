@@ -1,9 +1,9 @@
 import { DURATION_UNIT, weekdays } from "@/server/config/constants";
 import { set, startOfDay } from "date-fns";
 
-export function getHoursStr(date: Date) {
+export function getHoursStr(date: Date | string) {
   // console.log("🚀 ~ date:", date);
-  return date.toLocaleTimeString("en-US", {
+  return (typeof date === "string" ? new Date(date) : date).toLocaleTimeString("en-US", {
     hour: "2-digit",
     minute: "2-digit",
     hour12: false,

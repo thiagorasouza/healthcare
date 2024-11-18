@@ -104,7 +104,10 @@ export default function AppointmentCreator({ doctors, state, dispatch }: Appoint
         return;
       }
 
-      dispatch({ type: "show_confirmation" });
+      dispatch({
+        type: "show_confirmation",
+        payload: { appointmentId: createAppointmentResult.value.id },
+      });
     } catch (error) {
       console.log(error);
     }
@@ -166,7 +169,14 @@ export default function AppointmentCreator({ doctors, state, dispatch }: Appoint
   }
 
   if (state.phase === "confirmation") {
-    return <ConfirmationCard doctor={state.doctor} slot={state.slot} patient={state.patient} />;
+    return (
+      <ConfirmationCard
+        doctor={state.doctor}
+        slot={state.slot}
+        patient={state.patient}
+        appointmentId={state.appointmentId}
+      />
+    );
   }
 }
 

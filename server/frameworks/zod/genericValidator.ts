@@ -3,10 +3,10 @@ import { ValidatorInterface } from "@/server/shared/protocols/validator";
 import { ValidationSuccess } from "@/server/shared/successes";
 import { SafeParseError, ZodSchema } from "zod";
 
-export class GenericValidator<T> implements ValidatorInterface<T> {
+export class GenericValidator<RequestType> implements ValidatorInterface<RequestType> {
   constructor(private readonly zodSchema: ZodSchema) {}
 
-  public validate(rawData: any): ValidationFailure | ValidationSuccess<T> {
+  public validate(rawData: any): ValidationFailure | ValidationSuccess<RequestType> {
     const validation = this.zodSchema.safeParse(rawData);
 
     if (!validation.success) {

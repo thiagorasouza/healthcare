@@ -55,6 +55,7 @@ export type State =
       patientFormSave?: PatientData;
       patient: PatientModel;
       slot: { date: string; hour: string; duration: number };
+      appointmentId: string;
     };
 
 export type Action =
@@ -66,7 +67,7 @@ export type Action =
   | { type: "set_patient_form_save"; payload: { patientFormSave: PatientData } }
   | { type: "back_to_patient_creation" }
   | { type: "show_summary"; payload: { patient: PatientModel } }
-  | { type: "show_confirmation" };
+  | { type: "show_confirmation"; payload: { appointmentId: string } };
 
 export function reducer(state: State, action: Action): State {
   switch (action.type) {
@@ -147,6 +148,7 @@ export function reducer(state: State, action: Action): State {
       return {
         ...state,
         phase: "confirmation",
+        appointmentId: action.payload.appointmentId,
       };
     }
     default:
