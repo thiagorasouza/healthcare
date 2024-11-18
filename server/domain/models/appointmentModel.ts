@@ -1,5 +1,5 @@
 export interface AppointmentModel {
-  id?: string;
+  id: string;
   doctorId: string;
   patientId: string;
   startTime: Date;

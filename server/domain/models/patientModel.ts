@@ -3,7 +3,7 @@ export type Gender = "male" | "female" | "other";
 export type IdentificationType = "passport" | "identityCard" | "driversLicense" | "other";
 
 export interface PatientModel {
-  id?: string;
+  id: string;
   name: string;
   email: string;
   phone: string;
