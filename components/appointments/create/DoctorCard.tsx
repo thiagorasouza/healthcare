@@ -10,7 +10,7 @@ interface DoctorCardProps {
   muted?: boolean;
   active?: boolean;
   fixed?: boolean;
-  className: string;
+  className?: string;
   onDoctorClick?: (doctor: DoctorModel) => unknown;
 }
 

@@ -81,7 +81,7 @@ export default function PatientForm({
 
       if (mode === "create") {
         const createPatientResult = await createPatient(formData);
-        console.log("🚀 ~ createPatientResult:", createPatientResult);
+        // console.log("🚀 ~ createPatientResult:", createPatientResult);
 
         if (!createPatientResult.ok) {
           setMessage(displayError(createPatientResult));

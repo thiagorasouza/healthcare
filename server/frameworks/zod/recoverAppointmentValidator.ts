@@ -3,7 +3,7 @@ import { RecoverAppointmentRequest } from "@/server/useCases/recoverAppointment/
 import { z } from "zod";
 
 export const recoverAppointmentSchema = z.object({
-  email: z.string(),
+  email: z.string().email(),
   birthdate: z.coerce.date(),
 });
 
