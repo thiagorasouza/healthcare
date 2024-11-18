@@ -37,7 +37,7 @@ const errorMsg =
   "The server was not able to send the confirmation to your email. Please try again later";
 
 export default function SendEmailDialog({ appointmentId }: { appointmentId: string }) {
-  const [open, setOpen] = useState(true);
+  const [open, setOpen] = useState(false);
 
   const form = useForm<z.infer<typeof emailSchema>>({
     resolver: zodResolver(emailSchema),
@@ -74,7 +74,7 @@ export default function SendEmailDialog({ appointmentId }: { appointmentId: stri
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button>
+        <Button className="bg-yellow">
           <Mail />
           Send via email
         </Button>

@@ -48,3 +48,15 @@ export function getWeekday(date: Date) {
 export function getDateStr(date: Date) {
   return startOfDay(date).toISOString();
 }
+
+export function toGCISoString(date: Date) {
+  const pad = (num: number) => String(num).padStart(2, "0"); // Pads single digits with a leading zero
+  const year = date.getUTCFullYear();
+  const month = pad(date.getUTCMonth() + 1); // Months are 0-indexed
+  const day = pad(date.getUTCDate());
+  const hours = pad(date.getUTCHours());
+  const minutes = pad(date.getUTCMinutes());
+  const seconds = pad(date.getUTCSeconds());
+
+  return `${year}${month}${day}T${hours}${minutes}${seconds}Z`;
+}
