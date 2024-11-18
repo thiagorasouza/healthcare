@@ -1,20 +1,9 @@
 "use server";
 
-import { AppointmentsRepository } from "@/server/frameworks/appwrite/appointmentsRepository";
-import { DoctorsRepository } from "@/server/frameworks/appwrite/doctorsRepository";
-import { PatientsRepository } from "@/server/frameworks/appwrite/patientsRepository";
-import { ListAppointmentsUseCase } from "@/server/useCases/listAppointments/listAppointmentsUseCase";
+import { listAppointmentsFactory } from "@/server/factories/listAppointments.factory";
 
 export const listAppointments = async () => {
-  const doctorsRepository = new DoctorsRepository();
-  const patientsRepository = new PatientsRepository();
-  const appointmentsRepository = new AppointmentsRepository();
-  const useCase = new ListAppointmentsUseCase(
-    appointmentsRepository,
-    doctorsRepository,
-    patientsRepository,
-  );
-
+  const useCase = listAppointmentsFactory();
   const result = await useCase.execute();
   const plainObject = Object.assign({}, result);
   return plainObject;
