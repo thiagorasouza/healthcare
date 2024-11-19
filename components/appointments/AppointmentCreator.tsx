@@ -158,7 +158,7 @@ export default function AppointmentCreator({ doctors, state, dispatch }: Appoint
 
   if (state.phase === "summary") {
     return (
-      <div className="md:py-3 md:pb-5 xl:py-4">
+      <div className="md:py-3 md:pb-5 xl:py-4 xl:pb-7">
         <Header title="Summary" onBackClick={onBackClick} />
         {message && <ErrorDialog message={message} />}
         <SummaryCard

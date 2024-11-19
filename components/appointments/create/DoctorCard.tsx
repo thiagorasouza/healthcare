@@ -29,7 +29,7 @@ export function DoctorCard({
   return (
     <div
       className={cn(
-        "relative h-[298px] w-full pt-[28px]",
+        "relative h-[298px] w-full py-[28px]",
         { "grayscale hover:grayscale-0": muted },
         className,
       )}

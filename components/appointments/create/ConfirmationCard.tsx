@@ -34,24 +34,24 @@ export function ConfirmationCard({ doctor, patient, slot, appointmentId }: Confi
   }
 
   return (
-    <article className="flex-center gap-14 pb-4 pt-10">
-      <header className="flex gap-4">
-        <CheckCircle className="h-7 w-7 text-green-400" />
+    <article className="lg:flex-center flex flex-col gap-6 py-8">
+      <header className="flex items-center justify-center gap-4 pl-1 pr-12 text-center">
+        <CheckCircle className="h-7 w-7 flex-shrink-0 text-green-400" />
         <h2 className="text-2xl font-semibold">Appointment booked successfully</h2>
       </header>
 
-      <section className="flex justify-center gap-8">
+      <section className="flex flex-col gap-6 lg:flex-row lg:justify-center">
         {/* Doctor image and name */}
         <DoctorCard colorIndex={3} doctor={doctor} fixed={true} className="flex-1" />
 
         {/* Vertical Ruler */}
-        <div className="inset-0 flex items-center self-stretch">
-          <span className="h-full border-l-2 border-dashed"></span>
+        <div className="inset-0 hidden items-center lg:flex">
+          <span className="h-[70%] border-l-2 border-dashed"></span>
         </div>
 
         {/* Date and hour */}
-        <div className="flex flex-1 flex-col justify-center gap-4 pt-4">
-          <div className="flex w-fit items-center gap-4 rounded-3xl p-5 pr-7 shadow">
+        <div className="flex flex-1 flex-col justify-center gap-4">
+          <div className="flex w-full items-center gap-4 rounded-3xl p-5 pr-7 shadow">
             <div className={cn(dateBgColor, "w-fit rounded-2xl p-4")}>
               <CalendarDays className="h-5 w-5" />
             </div>
@@ -60,7 +60,7 @@ export function ConfirmationCard({ doctor, patient, slot, appointmentId }: Confi
               <p className="text-base font-medium">{format(slot.date, "PPP")}</p>
             </div>
           </div>
-          <div className="flex w-fit items-center gap-4 rounded-3xl p-5 pr-7 shadow">
+          <div className="flex w-full items-center gap-4 rounded-3xl p-5 pr-7 shadow">
             <div className={cn(hourBgColor, "w-fit rounded-2xl p-4")}>
               <Clock className="h-5 w-5" />
             </div>
@@ -72,12 +72,12 @@ export function ConfirmationCard({ doctor, patient, slot, appointmentId }: Confi
         </div>
 
         {/* Vertical Ruler */}
-        <div className="inset-0 flex items-center self-stretch">
-          <span className="h-full border-l-2 border-dashed"></span>
+        <div className="inset-0 hidden items-center lg:flex">
+          <span className="h-[70%] border-l-2 border-dashed"></span>
         </div>
 
         {/* Patient info */}
-        <div className="flex flex-col justify-center gap-4">
+        <div className="flex flex-col justify-center gap-6">
           {/* Personal details */}
           <div className="flex flex-col gap-1 rounded-3xl px-6 py-5 pr-7 shadow">
             <p className="mb-1 flex items-center font-semibold">
@@ -112,7 +112,7 @@ export function ConfirmationCard({ doctor, patient, slot, appointmentId }: Confi
         </div>
       </section>
 
-      <div className="flex gap-6">
+      <div className="mt-4 flex flex-col gap-4 lg:flex-row">
         <Button variant="outline" asChild>
           <Link href="/">
             <House />
