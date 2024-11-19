@@ -9,6 +9,7 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
+import { cn } from "@/lib/utils";
 import { UseFormReturn } from "react-hook-form";
 
 interface CheckboxFieldProps {
@@ -16,16 +17,22 @@ interface CheckboxFieldProps {
   label: string;
   description?: string;
   form: UseFormReturn<any>;
+  className?: string;
 }
 
-export function CheckboxField({ name, label, description, form }: CheckboxFieldProps) {
+export function CheckboxField({ name, label, description, form, className }: CheckboxFieldProps) {
   return (
     <FormField
       control={form.control}
       name={name}
       render={({ field }) => (
         <FormItem>
-          <div className="flex flex-row items-start space-x-3 space-y-0 rounded-md border p-4">
+          <div
+            className={cn(
+              "flex flex-row items-start space-x-3 space-y-0 rounded-md border p-4",
+              className,
+            )}
+          >
             <FormControl>
               <Checkbox checked={field.value} onCheckedChange={field.onChange} />
             </FormControl>

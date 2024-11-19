@@ -48,7 +48,7 @@ export function BookingView({ doctors }: { doctors: DoctorModel[] | "error" }) {
 
   return (
     <div className="min-h-screen w-full md:bg-[#212121]">
-      <div className="mx-auto flex max-w-[1580px] justify-center gap-10 p-3">
+      <div className="mx-auto flex max-w-[1580px] flex-1 justify-center gap-10 p-3">
         <aside className="flex hidden flex-shrink-0 flex-col py-4 xl:block">
           <header className="mb-8 flex items-center gap-2 px-4">
             <Image
@@ -79,7 +79,7 @@ export function BookingView({ doctors }: { doctors: DoctorModel[] | "error" }) {
             </ul>
           </nav>
         </aside>
-        <main className="w-full rounded-3xl bg-white px-2 pb-8 pt-6 md:px-3 lg:px-6 xl:w-[80%]">
+        <main className="w-full rounded-3xl bg-white p-2 md:px-3 lg:px-6 xl:w-[80%]">
           {doctors === "error" ? (
             <ErrorScreen
               title="Server Error"

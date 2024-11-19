@@ -101,7 +101,7 @@ export default function PatientForm({
   }
 
   return (
-    <div className="p-6">
+    <div className="flex-grow p-2 xl:p-6">
       <Form {...form}>
         {message && <ErrorDialog message={message} />}
         <TestingOption
@@ -117,7 +117,7 @@ export default function PatientForm({
             placeholder="John Doe"
             description="Full name as in your identification document"
           />
-          <div className="flex gap-6">
+          <div className="flex flex-col gap-3 md:flex-row md:gap-6">
             <TextField
               form={form}
               name="email"
@@ -133,7 +133,7 @@ export default function PatientForm({
               description="Must include country code"
             />
           </div>
-          <div className="flex gap-6">
+          <div className="mb-1 flex flex-col gap-3 md:flex-row md:gap-6">
             <DateField
               name="birthdate"
               label="Birthdate"
@@ -156,7 +156,7 @@ export default function PatientForm({
             placeholder="90210 Hollywood Boulevard"
             description="Full address"
           />
-          <div className="flex gap-6">
+          <div className="flex flex-col gap-3 md:flex-row md:gap-6">
             <TextField
               name="insuranceProvider"
               label="Insurance Provider"
@@ -172,7 +172,7 @@ export default function PatientForm({
               description="Your insurance number, if any (optional)"
             />
           </div>
-          <div className="flex gap-6">
+          <div className="flex flex-col gap-3 md:flex-row md:gap-6">
             <SelectField
               name="identificationType"
               label="Identification Type"
@@ -197,6 +197,7 @@ export default function PatientForm({
             maxSize={maxFileSize}
             image={false}
             form={form}
+            className="my-2"
           />
           <CheckboxField
             name="usageConsent"
@@ -208,6 +209,7 @@ export default function PatientForm({
             name="privacyConsent"
             label="I have read and I accept the Terms & Conditions and the Privacy Policy"
             form={form}
+            className="mb-2"
           />
           <SubmitButton label="Save" form={form} />
         </form>
