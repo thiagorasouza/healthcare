@@ -2,7 +2,7 @@ import { CalendarLink } from "@/components/appointments/create/CalendarLink";
 import { DoctorCard } from "@/components/appointments/create/DoctorCard";
 import SendEmailDialog from "@/components/appointments/create/SendEmailDialog";
 import { Button } from "@/components/ui/button";
-import { cn, colorize } from "@/lib/utils";
+import { cn, colorize, generateRandomPassword } from "@/lib/utils";
 import { idLabels } from "@/server/config/constants";
 import { DoctorModel } from "@/server/domain/models/doctorModel";
 import { PatientModel } from "@/server/domain/models/patientModel";
@@ -27,7 +27,11 @@ export function ConfirmationCard({ doctor, patient, slot, appointmentId }: Confi
   const hourBgColor = colorize(2);
 
   const idTypeLabel = patient && idLabels[patient?.identificationType];
-  console.log("slot", slot);
+
+  function onShareClick() {
+    console.log("Sharing");
+    window.history.pushState(null, "", `/book/${generateRandomPassword(12)}`);
+  }
 
   return (
     <article className="flex-center gap-14 pb-4 pt-10">
@@ -122,6 +126,7 @@ export function ConfirmationCard({ doctor, patient, slot, appointmentId }: Confi
           startTime={joinDateTime(slot.date, slot.hour)}
           duration={slot.duration}
         />
+        <Button onClick={() => onShareClick()}>Generate random link</Button>
       </div>
     </article>
   );

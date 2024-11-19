@@ -25,7 +25,7 @@ export function DoctorsCarousel({
       <CarouselPrevious />
       <CarouselContent>
         {doctors.map((doctor, index) => (
-          <CarouselItem key={index} className="md:basis-1/2 lg:basis-1/3 xl:basis-1/4">
+          <CarouselItem key={index} className="md:basis-1/2 lg:basis-1/3 2xl:basis-1/4">
             <DoctorCard
               colorIndex={index}
               doctor={doctor}

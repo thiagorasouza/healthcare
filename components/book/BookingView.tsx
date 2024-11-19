@@ -47,10 +47,10 @@ export function BookingView({ doctors }: { doctors: DoctorModel[] | "error" }) {
   ];
 
   return (
-    <div className="min-h-screen w-full bg-[#212121]">
-      <div className="mx-auto flex max-w-[1580px] p-3">
-        <aside className="flex max-w-[240px] flex-1 flex-col py-4">
-          <header className="mb-8 ml-7 flex items-center gap-2">
+    <div className="min-h-screen w-full md:bg-[#212121]">
+      <div className="mx-auto flex max-w-[1580px] justify-center gap-10 p-3">
+        <aside className="flex hidden flex-shrink-0 flex-col py-4 xl:block">
+          <header className="mb-8 flex items-center gap-2 px-4">
             <Image
               src="/img/logo-dark.svg"
               alt="heartbeat logo"
@@ -61,7 +61,7 @@ export function BookingView({ doctors }: { doctors: DoctorModel[] | "error" }) {
             <h2 className="text-2xl font-medium text-white">Mednow</h2>
           </header>
           <nav>
-            <ul className="ml-6 flex flex-col gap-2 text-base font-semibold text-white">
+            <ul className="ml-4 flex flex-col gap-2 text-base font-semibold text-white">
               {menu.map((item, index) => (
                 <li
                   key={index}
@@ -79,7 +79,7 @@ export function BookingView({ doctors }: { doctors: DoctorModel[] | "error" }) {
             </ul>
           </nav>
         </aside>
-        <main className="w-full max-w-7xl rounded-3xl bg-white p-6 px-8 pb-8">
+        <main className="w-full rounded-3xl bg-white px-2 pb-8 pt-6 md:px-3 lg:px-6 xl:w-[80%]">
           {doctors === "error" ? (
             <ErrorScreen
               title="Server Error"

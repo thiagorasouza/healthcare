@@ -16,8 +16,8 @@ const OnboardingPage = () => {
             <Image
               src="/img/logo.png"
               alt="heartbeat logo"
-              width={52}
-              height={52}
+              width={42}
+              height={42}
               className="hidden md:block"
             />
             <h2 className="text-2xl font-bold">Mednow</h2>
@@ -30,7 +30,7 @@ const OnboardingPage = () => {
             </li>
             <li>
               <Link className="text-black" href="/book">
-                Book an Appointment
+                Book
               </Link>
             </li>
             <li>

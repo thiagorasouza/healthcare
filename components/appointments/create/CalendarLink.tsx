@@ -16,8 +16,6 @@ export function CalendarLink({
   startTime: startTime,
   duration,
 }: CalendarLinkProps) {
-  console.log("🚀 ~ startTime:", startTime);
-
   const event: EventDetails = {
     title: `Appointment with Dr. ${name} (${specialty})`,
     date: startTime,

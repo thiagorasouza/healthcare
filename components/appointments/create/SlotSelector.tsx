@@ -35,21 +35,21 @@ export function SlotSelector({ slots, doctor, slot, onDateClick, onHourClick }: 
   }
 
   return (
-    <DrawerAnimation toggle={!!doctor}>
-      <div className="flex gap-[72px] px-12">
-        <Column>
-          <Information bio={doctor.bio} />
-          <DatePicker
-            dates={dates}
-            date={slot?.date ? slot.date : undefined}
-            onDateClick={onDateClick}
-          />
-        </Column>
-        <Column>
-          {slot?.date && <HourPicker hours={hours} onHourClick={onHourClick} hour={slot.hour} />}
-        </Column>
-      </div>
-    </DrawerAnimation>
+    // <DrawerAnimation toggle={!!doctor}>
+    <div className="flex flex-col gap-9 px-2 lg:grid lg:grid-cols-2 lg:gap-12">
+      <Column className="col-span-1">
+        <Information bio={doctor.bio} />
+        <DatePicker
+          dates={dates}
+          date={slot?.date ? slot.date : undefined}
+          onDateClick={onDateClick}
+        />
+      </Column>
+      <Column className="col-span-1">
+        {slot?.date && <HourPicker hours={hours} onHourClick={onHourClick} hour={slot.hour} />}
+      </Column>
+    </div>
+    // </DrawerAnimation>
   );
 }
 
@@ -62,26 +62,28 @@ interface DatePickerProps {
 function DatePicker({ dates, date, onDateClick }: DatePickerProps) {
   return (
     <Section title="Pick a date">
-      {dates.length > 0 ? (
-        <ul className="flex gap-[18px]">
-          {dates.map((dateStr, index) => (
-            <li key={index}>
-              <DateCard
-                dateStr={dateStr}
-                highlight={!!date && dateStr === date}
-                onDateClick={onDateClick}
-              />
-            </li>
-          ))}
-        </ul>
-      ) : (
-        <>
-          <p className="flex items-center text-gray">
-            <CalendarX className="align mr-2 inline h-5 w-5 text-yellow" />{" "}
-            <span className="font-medium">No dates available for this doctor yet.</span>
-          </p>
-        </>
-      )}
+      <>
+        {dates.length > 0 ? (
+          <ul className="-ml-3 -mt-2 flex gap-2 overflow-x-auto px-3 py-2 md:gap-4">
+            {dates.map((dateStr, index) => (
+              <li key={index}>
+                <DateCard
+                  dateStr={dateStr}
+                  highlight={!!date && dateStr === date}
+                  onDateClick={onDateClick}
+                />
+              </li>
+            ))}
+          </ul>
+        ) : (
+          <>
+            <p className="flex items-center text-gray">
+              <CalendarX className="align mr-2 inline h-5 w-5 text-yellow" />{" "}
+              <span className="font-medium">No dates available for this doctor yet.</span>
+            </p>
+          </>
+        )}
+      </>
     </Section>
   );
 }
@@ -168,13 +170,21 @@ function Information({ bio }: { bio: string }) {
   );
 }
 
-function Column({ children }: { children: React.ReactNode }) {
-  return <div className="flex-1 space-y-8">{children}</div>;
+function Column({ children, className }: { children: React.ReactNod; className: string }) {
+  return <div className={cn("space-y-8", className)}>{children}</div>;
 }
 
-function Section({ title, children }: { title: string; children: React.ReactNode }) {
+function Section({
+  title,
+  children,
+  className,
+}: {
+  title: string;
+  children: React.ReactNode;
+  className?: string;
+}) {
   return (
-    <section>
+    <section className={className}>
       <h2 className="mb-8 text-lg font-semibold">{title}</h2>
       {children}
     </section>
