@@ -126,7 +126,6 @@ export function ConfirmationCard({ doctor, patient, slot, appointmentId }: Confi
           startTime={joinDateTime(slot.date, slot.hour)}
           duration={slot.duration}
         />
-        <Button onClick={() => onShareClick()}>Generate random link</Button>
       </div>
     </article>
   );
