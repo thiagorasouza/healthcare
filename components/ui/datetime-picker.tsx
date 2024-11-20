@@ -256,9 +256,9 @@ function Calendar({
       };
     }
     return genMonths(locale);
-  }, []);
+  }, [props.locale]);
 
-  const YEARS = React.useMemo(() => genYears(yearRange, type), []);
+  const YEARS = React.useMemo(() => genYears(yearRange, type), [type, yearRange]);
 
   return (
     <DayPicker

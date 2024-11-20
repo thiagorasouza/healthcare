@@ -1,6 +1,6 @@
+import { getAccount } from "@/lib/appwrite/webSessionClient";
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
-import { getAccount } from "@/lib/appwrite/nodeSessionClient";
 
 export async function middleware(request: NextRequest) {
   try {

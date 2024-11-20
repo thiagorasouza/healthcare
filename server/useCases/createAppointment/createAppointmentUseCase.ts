@@ -1,4 +1,5 @@
 import { Appointment } from "@/server/domain/appointment";
+import { AppointmentData } from "@/server/domain/models/appointmentData";
 import { AppointmentModel } from "@/server/domain/models/appointmentModel";
 import { Slots } from "@/server/domain/slots";
 import {
@@ -19,12 +20,7 @@ import {
 import { UseCase } from "@/server/shared/protocols/useCase";
 import { CreatedSuccess } from "@/server/shared/successes/createdSuccess";
 
-export interface CreateAppointmentRequest {
-  doctorId: string;
-  patientId: string;
-  startTime: Date;
-  duration: number;
-}
+export type CreateAppointmentRequest = AppointmentData;
 
 // algorithm
 // 1. validate appointment logic

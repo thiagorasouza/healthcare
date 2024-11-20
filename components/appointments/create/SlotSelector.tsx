@@ -170,7 +170,7 @@ function Information({ bio }: { bio: string }) {
   );
 }
 
-function Column({ children, className }: { children: React.ReactNod; className: string }) {
+function Column({ children, className }: { children: React.ReactNode; className: string }) {
   return <div className={cn("space-y-8", className)}>{children}</div>;
 }
 

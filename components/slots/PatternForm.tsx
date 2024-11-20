@@ -73,7 +73,7 @@ export default function PatternForm({
     if (endDate && isBefore(endDate, startDate)) {
       form.setValue("endDate", startDate);
     }
-  }, [startDate]);
+  }, [startDate, form, recurring]);
 
   async function onSubmit(data: any) {
     setMessage("");

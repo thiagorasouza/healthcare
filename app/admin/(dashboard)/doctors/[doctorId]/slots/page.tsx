@@ -4,7 +4,7 @@ import DoctorCard from "@/components/doctors/DoctorCard";
 import SlotsCard from "@/components/slots/SlotsCard";
 import { getDoctor } from "@/lib/actions/getDoctor";
 import { getPatterns } from "@/lib/actions/getPatterns";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { DoctorDataUpdate } from "@/lib/schemas/doctorsSchema";
 import { PatternDocumentListSchema, PatternDocumentSchema } from "@/lib/schemas/appwriteSchema";
 import PatternCard from "@/components/slots/PatternCard";
@@ -32,28 +32,34 @@ export default function SlotsPage({ params }: { params: { doctorId: string } }) 
 
   const { doctorId } = params;
 
+  const loadDoctors = useCallback(
+    async function () {
+      setDoctorLoading(true);
+      const doctorResult = await getDoctor(doctorId);
+      if (doctorResult.success && doctorResult.data) {
+        setDoctor(doctorResult.data);
+      }
+      setDoctorLoading(false);
+    },
+    [doctorId],
+  );
+
+  const loadSlots = useCallback(
+    async function () {
+      setSlotsLoading(true);
+      const slotsResult = await getPatterns(doctorId);
+      if (slotsResult.success && slotsResult.data) {
+        setSlots(slotsResult.data);
+      }
+      setSlotsLoading(false);
+    },
+    [doctorId],
+  );
+
   useEffect(() => {
     loadDoctors();
     loadSlots();
-  }, []);
-
-  async function loadDoctors() {
-    setDoctorLoading(true);
-    const doctorResult = await getDoctor(doctorId);
-    if (doctorResult.success && doctorResult.data) {
-      setDoctor(doctorResult.data);
-    }
-    setDoctorLoading(false);
-  }
-
-  async function loadSlots() {
-    setSlotsLoading(true);
-    const slotsResult = await getPatterns(doctorId);
-    if (slotsResult.success && slotsResult.data) {
-      setSlots(slotsResult.data);
-    }
-    setSlotsLoading(false);
-  }
+  }, [loadDoctors, loadSlots]);
 
   async function deleteSelectedPattern() {
     if (!selectedPattern) return;

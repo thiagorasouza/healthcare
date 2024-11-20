@@ -6,7 +6,7 @@ import React from "react";
 interface DefaultCardProps {
   title: string;
   description: string;
-  children: React.ReactNode;
+  children?: React.ReactNode;
   className?: string;
   onCloseClick?: () => void;
 }

@@ -31,7 +31,7 @@ const FileField = ({
       // console.log("🚀 ~ acceptedFiles:", acceptedFiles);
       form.setValue(name, acceptedFiles[0], { shouldValidate: true });
     },
-    [form],
+    [form, name],
   );
 
   const { getRootProps, getInputProps, isDragActive, acceptedFiles } = useDropzone({

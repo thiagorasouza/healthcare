@@ -1,14 +1,15 @@
 import { MIN_ADVANCE, MIN_DURATION } from "@/server/config/constants";
-import { AppointmentModel } from "@/server/domain/models/appointmentModel";
+import { AppointmentData } from "@/server/domain/models/appointmentData";
+
 import { AppointmentTooShortFailure } from "@/server/shared/failures/appointmentTooShortFailure";
 import { AppointmentTooSoonFailure } from "@/server/shared/failures/appointmentTooSoonFailure";
 import { AppointmentLogicSuccess } from "@/server/shared/successes";
 import { addMinutes, isSameDay } from "date-fns";
 
 export class Appointment {
-  private data: AppointmentModel;
+  private data: AppointmentData;
 
-  public constructor(data: AppointmentModel) {
+  public constructor(data: AppointmentData) {
     this.data = data;
   }
 
@@ -32,7 +33,7 @@ export class Appointment {
     return new AppointmentLogicSuccess(this);
   }
 
-  public isConflicting(newAppointment: AppointmentModel) {
+  public isConflicting(newAppointment: AppointmentData) {
     const { startTime, duration } = this.data;
     const newStartTime = newAppointment.startTime;
 
