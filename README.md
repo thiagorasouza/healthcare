@@ -42,4 +42,4 @@ A medical appointments scheduler featuring **file upload**, **mail service**, be
 
 Mednow is under development by :rocket: Thiago Souza (@thiagorasouza)
 
-The app design was by inspired by this Dribbble collection :link: [Healthcare Thiago Souza's Collection](https://www.behance.net/gallery/127836193/Surveio-Mobile-App-Design)
+The app design was by inspired by this Dribbble collection :link: [Healthcare Thiago Souza's Collection](https://dribbble.com/thiagorasouza/collections/7159575-Healthcare)
