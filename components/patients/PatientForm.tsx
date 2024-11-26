@@ -22,6 +22,7 @@ import { mockSizeZeroPDF } from "@/server/domain/mocks/file.mock";
 import { createPatient } from "@/server/actions/createPatient";
 import { ErrorDialog } from "@/components/shared/ErrorDialog";
 import { allowedFileTypes, maxFileSize } from "@/server/config/constants";
+import { LoadingSpinner } from "@/components/ui/loading-spinner";
 
 export interface CreatePatientProps {
   mode: "create";
@@ -44,6 +45,7 @@ export default function PatientForm({
   onPatientSaved,
 }: CreatePatientProps | UpdatePatientProps) {
   const [message, setMessage] = useState("");
+  const [loading, setLoading] = useState(false);
 
   // Creates a mock PDF from patient.identificationId when editting a patient
   useEffect(() => {
@@ -75,8 +77,9 @@ export default function PatientForm({
   }
 
   async function onSubmit(data: PatientData) {
-    setMessage("");
     try {
+      setMessage("");
+      setLoading(true);
       const formData = objectToFormData(data);
 
       if (mode === "create") {
@@ -96,12 +99,21 @@ export default function PatientForm({
       console.log(error);
       setMessage(displayError());
     } finally {
+      setLoading(false);
       window.scrollTo({ top: 0, behavior: "smooth" });
     }
   }
 
   return (
-    <div className="flex-grow p-2 xl:p-6">
+    <div className="relative flex-grow p-2 xl:p-6">
+      {loading && (
+        <div className="absolute inset-0 flex items-center justify-center rounded-xl bg-black bg-opacity-25">
+          <div className="flex items-center gap-2 rounded-xl bg-background px-6 py-4">
+            <LoadingSpinner />
+            <p>Saving...</p>
+          </div>
+        </div>
+      )}
       <Form {...form}>
         {message && <ErrorDialog message={message} />}
         <TestingOption
