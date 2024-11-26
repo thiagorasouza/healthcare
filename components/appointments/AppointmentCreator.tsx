@@ -25,6 +25,7 @@ import { Button } from "@/components/ui/button";
 import { ArrowLeft } from "lucide-react";
 import { cn, scrollToTop } from "@/lib/utils";
 import { ConfirmationCard } from "@/components/appointments/create/ConfirmationCard";
+import { LoadingSpinner } from "@/components/ui/loading-spinner";
 
 interface AppointmentCreatorProps {
   doctors: DoctorModel[] | "error";
@@ -34,6 +35,7 @@ interface AppointmentCreatorProps {
 
 export default function AppointmentCreator({ doctors, state, dispatch }: AppointmentCreatorProps) {
   const [message, setMessage] = useState("");
+  const [loading, setLoading] = useState(false);
 
   const form = useForm<PatientZodData>({
     resolver: zodResolver(patientsZodSchema),
@@ -46,11 +48,18 @@ export default function AppointmentCreator({ doctors, state, dispatch }: Appoint
       return;
     }
 
-    const slotsResult = await getSlots(
-      objectToFormData({ doctorId: doctor.id, startDate: new Date() }),
-    );
-    if (slotsResult.ok) {
-      dispatch({ type: "set_doctor", payload: { doctor, slots: slotsResult.value } });
+    try {
+      setLoading(true);
+      const slotsResult = await getSlots(
+        objectToFormData({ doctorId: doctor.id, startDate: new Date() }),
+      );
+
+      if (slotsResult.ok) {
+        dispatch({ type: "set_doctor", payload: { doctor, slots: slotsResult.value } });
+      }
+    } catch (error) {
+    } finally {
+      setLoading(false);
     }
   }
 
@@ -88,6 +97,7 @@ export default function AppointmentCreator({ doctors, state, dispatch }: Appoint
   async function onBookClick() {
     if (state.phase !== "summary") return;
 
+    setLoading(true);
     setMessage("");
     try {
       const doctorId = state.doctor.id;
@@ -110,6 +120,8 @@ export default function AppointmentCreator({ doctors, state, dispatch }: Appoint
       });
     } catch (error) {
       console.log(error);
+    } finally {
+      setLoading(false);
     }
   }
 
@@ -126,14 +138,22 @@ export default function AppointmentCreator({ doctors, state, dispatch }: Appoint
     return (
       <div className="flex flex-col gap-10 pb-8 pt-10">
         <DoctorSelector doctors={doctors} doctor={state.doctor} onDoctorClick={onDoctorClick} />
-        {state.doctor && state.slots && (
-          <SlotSelector
-            doctor={state.doctor}
-            slots={state.slots}
-            slot={state.slot}
-            onDateClick={onDateClick}
-            onHourClick={onHourClick}
-          />
+        {loading ? (
+          <div className="flex justify-center py-32">
+            <LoadingSpinner />
+          </div>
+        ) : (
+          // <div className="flex justify-center">Loading...</div>
+          state.doctor &&
+          state.slots && (
+            <SlotSelector
+              doctor={state.doctor}
+              slots={state.slots}
+              slot={state.slot}
+              onDateClick={onDateClick}
+              onHourClick={onHourClick}
+            />
+          )
         )}
       </div>
     );
