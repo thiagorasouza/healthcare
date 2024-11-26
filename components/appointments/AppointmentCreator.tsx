@@ -26,6 +26,7 @@ import { ArrowLeft } from "lucide-react";
 import { cn, scrollToTop } from "@/lib/utils";
 import { ConfirmationCard } from "@/components/appointments/create/ConfirmationCard";
 import { LoadingSpinner } from "@/components/ui/loading-spinner";
+import { SavingOverlay } from "@/components/shared/SavingOverlay";
 
 interface AppointmentCreatorProps {
   doctors: DoctorModel[] | "error";
@@ -179,6 +180,7 @@ export default function AppointmentCreator({ doctors, state, dispatch }: Appoint
   if (state.phase === "summary") {
     return (
       <div className="md:py-3 md:pb-5 xl:py-4 xl:pb-7">
+        {loading && <SavingOverlay />}
         <Header title="Summary" onBackClick={onBackClick} />
         {message && <ErrorDialog message={message} />}
         <SummaryCard

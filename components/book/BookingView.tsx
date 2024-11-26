@@ -79,7 +79,7 @@ export function BookingView({ doctors }: { doctors: DoctorModel[] | "error" }) {
             </ul>
           </nav>
         </aside>
-        <main className="w-full rounded-3xl bg-white p-2 md:px-3 lg:px-6 xl:w-[80%]">
+        <main className="relative w-full rounded-3xl bg-white p-2 md:px-3 lg:px-6 xl:w-[80%]">
           {doctors === "error" ? (
             <ErrorScreen
               title="Server Error"

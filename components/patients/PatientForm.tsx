@@ -23,6 +23,7 @@ import { createPatient } from "@/server/actions/createPatient";
 import { ErrorDialog } from "@/components/shared/ErrorDialog";
 import { allowedFileTypes, maxFileSize } from "@/server/config/constants";
 import { LoadingSpinner } from "@/components/ui/loading-spinner";
+import { SavingOverlay } from "@/components/shared/SavingOverlay";
 
 export interface CreatePatientProps {
   mode: "create";
@@ -106,14 +107,7 @@ export default function PatientForm({
 
   return (
     <div className="relative flex-grow p-2 xl:p-6">
-      {loading && (
-        <div className="absolute inset-0 flex items-center justify-center rounded-xl bg-black bg-opacity-25">
-          <div className="flex items-center gap-2 rounded-xl bg-background px-6 py-4">
-            <LoadingSpinner />
-            <p>Saving...</p>
-          </div>
-        </div>
-      )}
+      {loading && <SavingOverlay />}
       <Form {...form}>
         {message && <ErrorDialog message={message} />}
         <TestingOption
