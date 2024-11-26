@@ -10,8 +10,8 @@ import { CalendarDays, CircleUserRound, Clock, Hourglass } from "lucide-react";
 export function AppointmentView({ appointment: ap }: { appointment: AppointmentHydrated }) {
   return (
     <DefaultCard
-      title="Appointment Booked"
-      description="Your appointment was booked successfully"
+      title="Appointment Information"
+      description="The details of your upcoming appointment"
       className="col-span-4 self-start"
     >
       <div className="mb-8 flex items-center gap-3">
@@ -52,11 +52,6 @@ export function AppointmentView({ appointment: ap }: { appointment: AppointmentH
           {ap.duration} minutes
         </p>
       </div>
-      {/* <Button asChild>
-          <Link href="/admin/appointments" className="flex items-center">
-            <ArrowUpRight className="h-4 w-4" /> View All Appointments
-          </Link>
-        </Button> */}
     </DefaultCard>
   );
 }
