@@ -1,5 +1,7 @@
 "use server";
 
+import { MobileMenu } from "@/components/landing/MobileMenu";
+import { landingNavbarLinks } from "@/lib/constants";
 import { Calendar, CalendarDays } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
@@ -9,9 +11,9 @@ const OnboardingPage = () => {
     <div className="flex min-h-screen w-full justify-center">
       <div className="relative flex w-full max-w-[1440px] flex-col px-8 py-4 text-black md:px-16 md:py-8">
         <nav className="mb-8 flex items-center justify-between">
-          <button className="md:hidden">
-            <Image src="/img/menu.svg" width={36} height={36} alt="menu icon" />
-          </button>
+          {/* Hamburger mobile menu */}
+          <MobileMenu />
+
           <header className="flex items-center gap-3">
             <Image
               src="/img/logo.png"
@@ -22,22 +24,14 @@ const OnboardingPage = () => {
             />
             <h2 className="text-2xl font-bold">Mednow</h2>
           </header>
-          <ul className="hidden font-medium md:flex md:gap-8">
-            <li>
-              <Link className="text-black" href="/">
-                Home
-              </Link>
-            </li>
-            <li>
-              <Link className="text-black" href="/book">
-                Book
-              </Link>
-            </li>
-            <li>
-              <Link className="text-black" href="/admin">
-                Dashboard
-              </Link>
-            </li>
+          <ul className="hidden font-medium text-black md:flex md:gap-8">
+            {landingNavbarLinks.map((link, index) => (
+              <li key={index}>
+                <Link className="text-black" href={link.href}>
+                  {link.label}
+                </Link>
+              </li>
+            ))}
           </ul>
           <button className="flex h-[52px] items-center gap-[9px] rounded-full bg-white p-[5px] focus:outline-none">
             <div className="flex h-[42px] w-[42px] items-center justify-center rounded-full bg-yellow">
