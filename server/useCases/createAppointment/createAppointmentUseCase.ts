@@ -7,7 +7,7 @@ import {
   PatientsRepositoryInterface,
   PatternsRepositoryInterface,
   AppointmentsRepositoryInterface,
-} from "@/server/adapters";
+} from "@/server/repositories";
 import {
   AppointmentTooShortFailure,
   AppointmentTooSoonFailure,
