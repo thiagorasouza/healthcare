@@ -6,7 +6,6 @@ import { useRouter } from "next/navigation";
 import { useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { LoginData, loginSchema } from "@/lib/schemas/loginSchema";
 import FormMessage from "@/components/forms/FormMessage";
 import TextField from "@/components/forms/TextField";
 import PasswordField from "@/components/forms/PasswordField";
@@ -15,6 +14,10 @@ import TestLoginAsTestUser from "@/components/testing/TestLoginAsAdmin";
 import { login } from "@/server/actions/login";
 import { objectToFormData } from "@/lib/utils";
 import { displayError } from "@/server/config/errors";
+import { loginSchema } from "@/server/adapters/zod/loginValidator";
+import { z } from "zod";
+
+type LoginData = z.infer<typeof loginSchema>;
 
 export default function LoginForm() {
   const router = useRouter();
