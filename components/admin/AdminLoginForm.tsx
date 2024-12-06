@@ -16,7 +16,7 @@ import TestLoginAsAdmin from "@/components/testing/TestLoginAsAdmin";
 
 export default function AdminLoginForm() {
   const router = useRouter();
-  const [message, setMessage] = useState("The admin dashboard is disabled in this demo.");
+  const [message, setMessage] = useState("");
   const formRef = useRef<HTMLFormElement>(null);
 
   const form = useForm<LoginData>({
@@ -28,7 +28,6 @@ export default function AdminLoginForm() {
   });
 
   async function onSubmit(loginData: LoginData) {
-    return;
     setMessage("");
     try {
       const result = await loginAdmin(loginData);
@@ -40,7 +39,7 @@ export default function AdminLoginForm() {
 
       setMessage(result.message);
     } catch (error) {
-      console.log("🚀 ~ error:", error);
+      console.log(error);
       setMessage(unexpectedError().message);
     }
   }
@@ -55,7 +54,7 @@ export default function AdminLoginForm() {
           <SubmitButton form={form} label="Submit" />
         </form>
       </Form>
-      {/* <TestLoginAsAdmin form={form} formRef={formRef} /> */}
+      <TestLoginAsAdmin form={form} formRef={formRef} />
     </>
   );
 }

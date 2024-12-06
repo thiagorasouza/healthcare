@@ -14,8 +14,10 @@ import { LoginData, loginSchema } from "@/lib/schemas/loginSchema";
 export async function loginAdmin(loginData: LoginData) {
   try {
     const validData = loginSchema.parse(loginData);
+    console.log("🚀 ~ validData:", validData);
 
     const session = await account.createEmailPasswordSession(validData.email, validData.password);
+    console.log("🚀 ~ session:", session);
 
     cookies().set("session", session.secret, {
       httpOnly: true,
@@ -27,7 +29,7 @@ export async function loginAdmin(loginData: LoginData) {
 
     return success();
   } catch (error) {
-    console.log(error);
+    // console.log(error);
     if (isAppwriteException(error)) {
       if (error.type === "user_invalid_credentials") {
         return invalidCredentialsError();

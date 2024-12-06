@@ -28,7 +28,7 @@ const TestLoginAsAdmin = ({
         </div>
       </div>
       <Button type="button" className="w-full" variant="outline" onClick={testLoginAsAdmin}>
-        <FlaskConicalIcon className="mr-2 h-4 w-4" /> Login as Admin
+        <FlaskConicalIcon className="mr-2 h-4 w-4" /> Login as a Testing User
       </Button>
     </div>
   );
