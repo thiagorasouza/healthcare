@@ -7,7 +7,7 @@ import {
   PatientsRepositoryInterface,
   PatternsRepositoryInterface,
   AppointmentsRepositoryInterface,
-} from "@/server/repositories";
+} from "@/server/adapters";
 import {
   AppointmentTooShortFailure,
   AppointmentTooSoonFailure,
@@ -16,9 +16,9 @@ import {
   PatientNotFoundFailure,
   PatientUnavailableFailure,
   ServerFailure,
-} from "@/server/shared/failures";
-import { UseCase } from "@/server/shared/protocols/useCase";
-import { CreatedSuccess } from "@/server/shared/successes/createdSuccess";
+} from "@/server/useCases/shared/failures";
+import { UseCase } from "@/server/useCases/shared/core/useCase";
+import { CreatedSuccess } from "@/server/useCases/shared/successes/createdSuccess";
 
 export type CreateAppointmentRequest = AppointmentData;
 

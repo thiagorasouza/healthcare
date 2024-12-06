@@ -1,14 +1,13 @@
-import { Success } from "@/server/core/success";
+import { Success } from "@/server/useCases/shared/core/success";
 import { AppointmentHydrated } from "@/server/domain/models/appointmentHydrated";
 import {
   AppointmentsRepositoryInterface,
   DoctorsRepositoryInterface,
   PatientsRepositoryInterface,
+  EmailsRepositoryInterface,
 } from "@/server/repositories";
-import { EmailsRepositoryInterface } from "@/server/repositories/emailsRepository";
-import { ServerFailure } from "@/server/shared/failures";
-import { UseCase } from "@/server/shared/protocols/useCase";
-import { ListAppointmentsUseCase } from "@/server/useCases/listAppointments/listAppointmentsUseCase";
+import { ServerFailure } from "@/server/useCases/shared/failures";
+import { UseCase } from "@/server/useCases/shared/core/useCase";
 import { makeConfirmationEmail } from "@/server/useCases/sendConfirmation/makeConfirmationEmail";
 import { format } from "date-fns";
 

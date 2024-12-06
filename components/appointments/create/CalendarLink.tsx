@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/button";
-import { createCalendarLink, EventDetails } from "@/server/shared/helpers/utils";
+import { createCalendarLink, EventDetails } from "@/server/useCases/shared/helpers/utils";
 import { CalendarDays, CalendarPlus } from "lucide-react";
 import Link from "next/link";
 

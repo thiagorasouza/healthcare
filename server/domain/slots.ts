@@ -1,7 +1,7 @@
 import { weekdays } from "@/server/config/constants";
 import { PatternModel, Weekday } from "@/server/domain/models/patternModel";
 import { SlotsModel } from "@/server/domain/models/slotsModel";
-import { getDateStr, getHoursStr, getWeekday } from "@/server/shared/helpers/date";
+import { getDateStr, getHoursStr, getWeekday } from "@/server/useCases/shared/helpers/date";
 import { addDays, addMinutes, getDay, isAfter, isBefore, isSameDay } from "date-fns";
 
 interface Options {

@@ -1,8 +1,8 @@
 "use server";
 
-import { PatientsRepository } from "@/server/frameworks/appwrite/patientsRepository";
-import { StorageRepository } from "@/server/frameworks/appwrite/storageRepository";
-import { patientValidator } from "@/server/frameworks/zod/patientValidator";
+import { PatientsRepository } from "@/server/adapters/appwrite/patientsRepository";
+import { StorageRepository } from "@/server/adapters/appwrite/storageRepository";
+import { patientValidator } from "@/server/adapters/zod/patientValidator";
 import { CreatePatientController } from "@/server/useCases/createPatient/createPatientController";
 import { CreatePatientUseCase } from "@/server/useCases/createPatient/createPatientUseCase";
 

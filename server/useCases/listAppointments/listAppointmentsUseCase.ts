@@ -1,10 +1,10 @@
-import { Success } from "@/server/core/success";
+import { Success } from "@/server/useCases/shared/core/success";
 import { AppointmentHydrated } from "@/server/domain/models/appointmentHydrated";
-import { AppointmentsRepository } from "@/server/frameworks/appwrite/appointmentsRepository";
-import { DoctorsRepository } from "@/server/frameworks/appwrite/doctorsRepository";
-import { PatientsRepository } from "@/server/frameworks/appwrite/patientsRepository";
-import { ServerFailure } from "@/server/shared/failures";
-import { UseCase } from "@/server/shared/protocols/useCase";
+import { AppointmentsRepository } from "@/server/adapters/appwrite/appointmentsRepository";
+import { DoctorsRepository } from "@/server/adapters/appwrite/doctorsRepository";
+import { PatientsRepository } from "@/server/adapters/appwrite/patientsRepository";
+import { ServerFailure } from "@/server/useCases/shared/failures";
+import { UseCase } from "@/server/useCases/shared/core/useCase";
 
 export class ListAppointmentsUseCase implements UseCase {
   public constructor(

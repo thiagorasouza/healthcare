@@ -5,7 +5,7 @@ import { DoctorModel } from "@/server/domain/models/doctorModel";
 import { Dispatch, useState } from "react";
 import { SlotSelector } from "@/components/appointments/create/SlotSelector";
 import { getSlots } from "@/server/actions/getSlots";
-import { objectToFormData } from "@/server/shared/helpers/utils";
+import { objectToFormData } from "@/server/useCases/shared/helpers/utils";
 import { Action, State } from "@/components/appointments/AppointmentCreatorReducer";
 import {
   patientsZodSchema,
@@ -20,7 +20,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { PatientModel } from "@/server/domain/models/patientModel";
 import { ErrorDialog } from "@/components/shared/ErrorDialog";
 import { displayError } from "@/server/config/errors";
-import { joinDateTime } from "@/server/shared/helpers/date";
+import { joinDateTime } from "@/server/useCases/shared/helpers/date";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft } from "lucide-react";
 import { cn, scrollToTop } from "@/lib/utils";

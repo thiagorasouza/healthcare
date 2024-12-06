@@ -6,7 +6,7 @@ import { cn, colorize, generateRandomPassword } from "@/lib/utils";
 import { idLabels } from "@/server/config/constants";
 import { DoctorModel } from "@/server/domain/models/doctorModel";
 import { PatientModel } from "@/server/domain/models/patientModel";
-import { displayDate, joinDateTime } from "@/server/shared/helpers/date";
+import { displayDate, joinDateTime } from "@/server/useCases/shared/helpers/date";
 import { format } from "date-fns";
 import { CalendarDays, CheckCircle, Clock, Cross, House, Mail, User } from "lucide-react";
 import Link from "next/link";

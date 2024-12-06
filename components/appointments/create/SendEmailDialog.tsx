@@ -18,7 +18,7 @@ import { z } from "zod";
 import { Button } from "@/components/ui/button";
 import { Mail } from "lucide-react";
 import { sendConfirmation } from "@/server/actions/sendConfirmation";
-import { objectToFormData } from "@/server/shared/helpers/utils";
+import { objectToFormData } from "@/server/useCases/shared/helpers/utils";
 import { useState } from "react";
 import { toast } from "sonner";
 

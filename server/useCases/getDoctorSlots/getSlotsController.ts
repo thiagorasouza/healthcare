@@ -1,4 +1,4 @@
 import { GetSlotsRequest, GetSlotsUseCase } from "@/server/useCases/getDoctorSlots/getSlotsUseCase";
-import { GenericActionController } from "@/server/useCases/shared/GenericActionController";
+import { GenericController } from "@/server/useCases/shared/generics/GenericController";
 
-export class GetSlotsController extends GenericActionController<GetSlotsRequest, GetSlotsUseCase> {}
+export class GetSlotsController extends GenericController<GetSlotsRequest, GetSlotsUseCase> {}

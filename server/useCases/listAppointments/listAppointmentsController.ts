@@ -1,7 +1,4 @@
 import { ListAppointmentsUseCase } from "@/server/useCases/listAppointments/listAppointmentsUseCase";
-import { GenericActionController } from "@/server/useCases/shared/GenericActionController";
+import { GenericController } from "@/server/useCases/shared/generics/GenericController";
 
-export class ListAppointmentsController extends GenericActionController<
-  void,
-  ListAppointmentsUseCase
-> {}
+export class ListAppointmentsController extends GenericController<void, ListAppointmentsUseCase> {}

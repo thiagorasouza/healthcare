@@ -1,5 +1,5 @@
 import { getSlots } from "@/server/actions/getSlots";
-import { objectToFormData } from "@/server/shared/helpers/utils";
+import { objectToFormData } from "@/server/useCases/shared/helpers/utils";
 import { describe, expect, it } from "@jest/globals";
 
 const mockRequest = () => {

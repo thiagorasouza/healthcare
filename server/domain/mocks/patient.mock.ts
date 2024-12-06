@@ -1,7 +1,7 @@
 import { genders, identificationTypes } from "@/server/config/constants";
 import { PatientData } from "@/server/domain/models/patientData";
 import { Gender, IdentificationType, PatientModel } from "@/server/domain/models/patientModel";
-import { ServerFailure } from "@/server/shared/failures";
+import { ServerFailure } from "@/server/useCases/shared/failures";
 import { faker } from "@faker-js/faker";
 import { set } from "date-fns";
 

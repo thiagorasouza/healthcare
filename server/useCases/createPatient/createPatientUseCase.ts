@@ -1,10 +1,9 @@
-import { Success } from "@/server/core/success";
+import { Success } from "@/server/useCases/shared/core/success";
 import { PatientData } from "@/server/domain/models/patientData";
 import { PatientModel } from "@/server/domain/models/patientModel";
-import { PatientsRepositoryInterface } from "@/server/repositories";
-import { ServerFailure } from "@/server/shared/failures";
-import { UseCase } from "@/server/shared/protocols/useCase";
-import { StorageRepositoryInterface } from "@/server/repositories/storageRepository";
+import { ServerFailure } from "@/server/useCases/shared/failures";
+import { UseCase } from "@/server/useCases/shared/core/useCase";
+import { PatientsRepositoryInterface, StorageRepositoryInterface } from "@/server/repositories";
 
 // algorithm
 // 1. validate patient data - done in the controller

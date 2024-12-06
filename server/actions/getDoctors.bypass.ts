@@ -1,4 +1,4 @@
-import { DoctorsRepository } from "@/server/frameworks/appwrite/doctorsRepository";
+import { DoctorsRepository } from "@/server/adapters/appwrite/doctorsRepository";
 
 export const getDoctors = async () => {
   const repository = new DoctorsRepository();

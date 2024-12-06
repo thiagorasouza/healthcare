@@ -1,6 +1,6 @@
 "use server";
 
-import { AppointmentsRepository } from "@/server/frameworks/appwrite/appointmentsRepository";
+import { AppointmentsRepository } from "@/server/adapters/appwrite/appointmentsRepository";
 
 export const countAppointments = async () => {
   const repository = new AppointmentsRepository();

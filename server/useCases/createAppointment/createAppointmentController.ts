@@ -1,8 +1,8 @@
 import { AppointmentModel } from "@/server/domain/models/appointmentModel";
 import { CreateAppointmentUseCase } from "@/server/useCases/createAppointment/createAppointmentUseCase";
-import { GenericActionController } from "@/server/useCases/shared/GenericActionController";
+import { GenericController } from "@/server/useCases/shared/generics/GenericController";
 
-export class CreateAppointmentController extends GenericActionController<
+export class CreateAppointmentController extends GenericController<
   AppointmentModel,
   CreateAppointmentUseCase
 > {}

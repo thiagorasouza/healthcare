@@ -1,12 +1,12 @@
-import { Success } from "@/server/core/success";
+import { Success } from "@/server/useCases/shared/core/success";
 import { AppointmentHydrated } from "@/server/domain/models/appointmentHydrated";
 import {
   AppointmentsRepositoryInterface,
   DoctorsRepositoryInterface,
   PatientsRepositoryInterface,
 } from "@/server/repositories";
-import { NotFoundFailure, ServerFailure } from "@/server/shared/failures";
-import { UseCase } from "@/server/shared/protocols/useCase";
+import { NotFoundFailure, ServerFailure } from "@/server/useCases/shared/failures";
+import { UseCase } from "@/server/useCases/shared/core/useCase";
 import { isSameDay } from "date-fns";
 
 // algorithm

@@ -2,9 +2,9 @@ import {
   RecoverAppointmentRequest,
   RecoverAppointmentUseCase,
 } from "@/server/useCases/recoverAppointment/recoverAppointmentUseCase";
-import { GenericActionController } from "@/server/useCases/shared/GenericActionController";
+import { GenericController } from "@/server/useCases/shared/generics/GenericController";
 
-export class RecoverAppointmentController extends GenericActionController<
+export class RecoverAppointmentController extends GenericController<
   RecoverAppointmentRequest,
   RecoverAppointmentUseCase
 > {}

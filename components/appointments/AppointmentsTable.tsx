@@ -16,7 +16,7 @@ import Link from "next/link";
 import { AppointmentHydrated } from "@/server/domain/models/appointmentHydrated";
 import { ReactNode } from "react";
 import ErrorCard from "@/components/shared/ErrorCard";
-import { displayDate, displayDuration, displayTime } from "@/server/shared/helpers/date";
+import { displayDate, displayDuration, displayTime } from "@/server/useCases/shared/helpers/date";
 import { deleteAppointment } from "@/server/actions/deleteAppointment.bypass";
 import { objectToFormData } from "@/lib/utils";
 import { toast } from "sonner";

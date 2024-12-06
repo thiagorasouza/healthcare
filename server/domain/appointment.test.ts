@@ -2,9 +2,9 @@ import { MIN_ADVANCE, MIN_DURATION } from "@/server/config/constants";
 import { Appointment } from "@/server/domain/appointment";
 import { mockAppointment } from "@/server/domain/mocks/appointment.mock";
 import { AppointmentModel } from "@/server/domain/models/appointmentModel";
-import { AppointmentTooShortFailure } from "@/server/shared/failures/appointmentTooShortFailure";
-import { AppointmentTooSoonFailure } from "@/server/shared/failures/appointmentTooSoonFailure";
-import { AppointmentLogicSuccess } from "@/server/shared/successes";
+import { AppointmentTooShortFailure } from "@/server/useCases/shared/failures/appointmentTooShortFailure";
+import { AppointmentTooSoonFailure } from "@/server/useCases/shared/failures/appointmentTooSoonFailure";
+import { AppointmentLogicSuccess } from "@/server/useCases/shared/successes";
 import { expect } from "@jest/globals";
 import { addMinutes, set } from "date-fns";
 

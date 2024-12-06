@@ -1,4 +1,4 @@
-import { Success } from "@/server/core/success";
+import { Success } from "@/server/useCases/shared/core/success";
 import { SlotsModel } from "@/server/domain/models/slotsModel";
 import { Slots } from "@/server/domain/slots";
 import {
@@ -6,8 +6,8 @@ import {
   DoctorsRepositoryInterface,
   PatternsRepositoryInterface,
 } from "@/server/repositories";
-import { ServerFailure } from "@/server/shared/failures";
-import { UseCase } from "@/server/shared/protocols/useCase";
+import { ServerFailure } from "@/server/useCases/shared/failures";
+import { UseCase } from "@/server/useCases/shared/core/useCase";
 import { addMonths } from "date-fns";
 
 // algorithm

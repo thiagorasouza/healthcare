@@ -1,10 +1,10 @@
 "use server";
 
-import { AppointmentsRepository } from "@/server/frameworks/appwrite/appointmentsRepository";
-import { DoctorsRepository } from "@/server/frameworks/appwrite/doctorsRepository";
-import { PatientsRepository } from "@/server/frameworks/appwrite/patientsRepository";
-import { PatternsRepository } from "@/server/frameworks/appwrite/patternsRepository";
-import { appointmentValidator } from "@/server/frameworks/zod/appointmentValidator";
+import { AppointmentsRepository } from "@/server/adapters/appwrite/appointmentsRepository";
+import { DoctorsRepository } from "@/server/adapters/appwrite/doctorsRepository";
+import { PatientsRepository } from "@/server/adapters/appwrite/patientsRepository";
+import { PatternsRepository } from "@/server/adapters/appwrite/patternsRepository";
+import { appointmentValidator } from "@/server/adapters/zod/appointmentValidator";
 import { CreateAppointmentController } from "@/server/useCases/createAppointment/createAppointmentController";
 import { CreateAppointmentUseCase } from "@/server/useCases/createAppointment/createAppointmentUseCase";
 

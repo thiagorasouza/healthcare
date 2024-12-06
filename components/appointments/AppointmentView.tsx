@@ -3,7 +3,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { getImageLink } from "@/lib/actions/getImageLink";
 import { getInitials } from "@/lib/utils";
 import { AppointmentHydrated } from "@/server/domain/models/appointmentHydrated";
-import { getHoursStr } from "@/server/shared/helpers/date";
+import { getHoursStr } from "@/server/useCases/shared/helpers/date";
 import { format } from "date-fns";
 import { CalendarDays, CircleUserRound, Clock, Hourglass } from "lucide-react";
 

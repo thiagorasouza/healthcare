@@ -1,10 +1,10 @@
 "use server";
 
-import { AppointmentsRepository } from "@/server/frameworks/appwrite/appointmentsRepository";
-import { DoctorsRepository } from "@/server/frameworks/appwrite/doctorsRepository";
-import { PatientsRepository } from "@/server/frameworks/appwrite/patientsRepository";
-import { EmailsRepository } from "@/server/frameworks/resend/emailsRepository";
-import { sendConfirmationValidator } from "@/server/frameworks/zod/sendConfirmationValidator";
+import { AppointmentsRepository } from "@/server/adapters/appwrite/appointmentsRepository";
+import { DoctorsRepository } from "@/server/adapters/appwrite/doctorsRepository";
+import { PatientsRepository } from "@/server/adapters/appwrite/patientsRepository";
+import { EmailsRepository } from "@/server/adapters/resend/emailsRepository";
+import { sendConfirmationValidator } from "@/server/adapters/zod/sendConfirmationValidator";
 import { SendConfirmationController } from "@/server/useCases/sendConfirmation/sendConfirmationController";
 import { SendConfirmationUseCase } from "@/server/useCases/sendConfirmation/sendConfirmationUseCase";
 

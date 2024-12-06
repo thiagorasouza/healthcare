@@ -16,6 +16,7 @@ const day3Weekday = weekdays[day3().getDay()];
 const DURATION = 30;
 
 export const mockSingleDate = (day: Date, startHour = 10, endHour = 11) => ({
+  id: "any_id",
   startDate: day,
   endDate: day,
   startTime: new Date(new Date(day).setHours(startHour, 0, 0, 0)),
@@ -32,6 +33,7 @@ export const mockRecurringPattern = (start: Date, end: Date, startTime = 8, endT
   const dayAfterStartWeekday = weekdays[(startDay + 1) % 6];
 
   return {
+    id: "any_id",
     startDate: start,
     endDate: end,
     startTime: new Date(new Date(start).setHours(startTime, 0, 0, 0)),

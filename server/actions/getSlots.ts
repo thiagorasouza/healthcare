@@ -1,9 +1,9 @@
 "use server";
 
-import { AppointmentsRepository } from "@/server/frameworks/appwrite/appointmentsRepository";
-import { DoctorsRepository } from "@/server/frameworks/appwrite/doctorsRepository";
-import { PatternsRepository } from "@/server/frameworks/appwrite/patternsRepository";
-import { getSlotsValidator } from "@/server/frameworks/zod/getSlotsValidator";
+import { AppointmentsRepository } from "@/server/adapters/appwrite/appointmentsRepository";
+import { DoctorsRepository } from "@/server/adapters/appwrite/doctorsRepository";
+import { PatternsRepository } from "@/server/adapters/appwrite/patternsRepository";
+import { getSlotsValidator } from "@/server/adapters/zod/getSlotsValidator";
 import { GetSlotsController } from "@/server/useCases/getDoctorSlots/getSlotsController";
 import { GetSlotsUseCase } from "@/server/useCases/getDoctorSlots/getSlotsUseCase";
 

@@ -1,5 +1,5 @@
 import { ADVANCE_UNIT, DURATION_UNIT, MIN_ADVANCE, MIN_DURATION } from "@/server/config/constants";
-import { Failure } from "@/server/core/failure";
+import { Failure } from "@/server/useCases/shared/core/failure";
 import {
   AppointmentTooShortFailure,
   AppointmentTooSoonFailure,
@@ -8,7 +8,7 @@ import {
   PatientNotFoundFailure,
   PatientUnavailableFailure,
   ServerFailure,
-} from "@/server/shared/failures";
+} from "@/server/useCases/shared/failures";
 
 export const errorMsgs = {
   [AppointmentTooSoonFailure.name]: `Appointment too soon. Please schedule your appointment at least ${MIN_ADVANCE} ${ADVANCE_UNIT} in advance.`,

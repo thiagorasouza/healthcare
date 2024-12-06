@@ -2,9 +2,9 @@ import {
   SendConfirmationRequest,
   SendConfirmationUseCase,
 } from "@/server/useCases/sendConfirmation/sendConfirmationUseCase";
-import { GenericActionController } from "@/server/useCases/shared/GenericActionController";
+import { GenericController } from "@/server/useCases/shared/generics/GenericController";
 
-export class SendConfirmationController extends GenericActionController<
+export class SendConfirmationController extends GenericController<
   SendConfirmationRequest,
   SendConfirmationUseCase
 > {}

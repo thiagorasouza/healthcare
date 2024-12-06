@@ -1,6 +1,6 @@
 "use server";
 
-import { PatientsRepository } from "@/server/frameworks/appwrite/patientsRepository";
+import { PatientsRepository } from "@/server/adapters/appwrite/patientsRepository";
 
 export const countPatients = async () => {
   const repository = new PatientsRepository();

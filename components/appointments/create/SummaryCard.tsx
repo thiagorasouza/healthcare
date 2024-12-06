@@ -6,7 +6,7 @@ import { cn, colorize } from "@/lib/utils";
 import { idLabels } from "@/server/config/constants";
 import { DoctorModel } from "@/server/domain/models/doctorModel";
 import { PatientModel } from "@/server/domain/models/patientModel";
-import { displayDate } from "@/server/shared/helpers/date";
+import { displayDate } from "@/server/useCases/shared/helpers/date";
 import { format } from "date-fns";
 
 import { ArrowRight, CalendarDays, Clock, Cross, User } from "lucide-react";

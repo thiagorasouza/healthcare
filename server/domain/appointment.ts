@@ -1,9 +1,9 @@
 import { MIN_ADVANCE, MIN_DURATION } from "@/server/config/constants";
 import { AppointmentData } from "@/server/domain/models/appointmentData";
 
-import { AppointmentTooShortFailure } from "@/server/shared/failures/appointmentTooShortFailure";
-import { AppointmentTooSoonFailure } from "@/server/shared/failures/appointmentTooSoonFailure";
-import { AppointmentLogicSuccess } from "@/server/shared/successes";
+import { AppointmentTooShortFailure } from "@/server/useCases/shared/failures/appointmentTooShortFailure";
+import { AppointmentTooSoonFailure } from "@/server/useCases/shared/failures/appointmentTooSoonFailure";
+import { AppointmentLogicSuccess } from "@/server/useCases/shared/successes";
 import { addMinutes, isSameDay } from "date-fns";
 
 export class Appointment {

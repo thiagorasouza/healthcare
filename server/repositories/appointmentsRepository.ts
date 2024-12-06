@@ -1,10 +1,9 @@
-import { Success } from "@/server/core/success";
-import { AppointmentData } from "@/server/domain/models/appointmentData";
+import { Success } from "@/server/useCases/shared/core/success";
 import { AppointmentModel } from "@/server/domain/models/appointmentModel";
+import { NotFoundFailure } from "@/server/useCases/shared/failures/notFoundFailure";
+import { ServerFailure } from "@/server/useCases/shared/failures/serverFailure";
+import { FoundSuccess } from "@/server/useCases/shared/successes/foundSuccess";
 import { RepositoryInterface } from "@/server/repositories/repository";
-import { NotFoundFailure } from "@/server/shared/failures/notFoundFailure";
-import { ServerFailure } from "@/server/shared/failures/serverFailure";
-import { FoundSuccess } from "@/server/shared/successes/foundSuccess";
 
 type Model = AppointmentModel;
 

@@ -1,6 +1,6 @@
 "use server";
 
-import { StorageRepository } from "@/server/frameworks/appwrite/storageRepository";
+import { StorageRepository } from "@/server/adapters/appwrite/storageRepository";
 
 export const getFile = async (formData: FormData) => {
   const repository = new StorageRepository();

@@ -1,5 +1,5 @@
 import { AppointmentHydrated } from "@/server/domain/models/appointmentHydrated";
-import { getHoursStr } from "@/server/shared/helpers/date";
+import { getHoursStr } from "@/server/useCases/shared/helpers/date";
 import { format } from "date-fns";
 
 export const makeConfirmationEmail = (ap: AppointmentHydrated) => {
