@@ -28,10 +28,10 @@ export function ConfirmationCard({ doctor, patient, slot, appointmentId }: Confi
 
   const idTypeLabel = patient && idLabels[patient?.identificationType];
 
-  function onShareClick() {
-    console.log("Sharing");
-    window.history.pushState(null, "", `/book/${generateRandomPassword(12)}`);
-  }
+  // function onShareClick() {
+  //   console.log("Sharing");
+  //   window.history.pushState(null, "", `/book/${generateRandomPassword(12)}`);
+  // }
 
   return (
     <article className="lg:flex-center flex flex-col gap-6 py-8">

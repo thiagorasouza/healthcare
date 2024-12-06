@@ -38,7 +38,7 @@ const OnboardingPage = () => {
               <CalendarDays className="h-4 w-4 text-white" />
             </div>
             <span className="mr-[27px] hidden font-semibold text-yellow md:block">
-              <Link href="/appointment">Appointment Details</Link>
+              <Link href="/appointments/recover">Appointment Details</Link>
             </span>
           </button>
         </nav>
@@ -51,7 +51,7 @@ const OnboardingPage = () => {
             Online consultations with certified medical
             <br /> professionals
           </p>
-          <Link href="/book" className="mx-auto mt-10 md:m-0">
+          <Link href="/appointments/create" className="mx-auto mt-10 md:m-0">
             <button className="flex h-[60px] items-center gap-[9px] rounded-full bg-darker-purple p-[5px] focus:outline-none">
               <div className="flex h-[50px] w-[50px] items-center justify-center rounded-full bg-white">
                 <Image

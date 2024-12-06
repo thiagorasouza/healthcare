@@ -7,7 +7,7 @@ export const landingNavbarLinks = [
   },
   {
     label: "Book",
-    href: "/book",
+    href: "/appointments/create",
   },
   {
     label: "Dashboard",
