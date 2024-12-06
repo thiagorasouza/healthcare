@@ -5,6 +5,7 @@ import {
   AppointmentTooSoonFailure,
   DoctorNotFoundFailure,
   DoctorUnavailableFailure,
+  InvalidCredentialsFailure,
   PatientNotFoundFailure,
   PatientUnavailableFailure,
   ServerFailure,
@@ -21,6 +22,7 @@ export const errorMsgs = {
     "This patient has appointment that conflict with the appointment you are trying to schedule. Please review your submission.",
   [ServerFailure.name]:
     "Our servers failed while trying to complete your request. Please try again once more. If this error keeps popping up, please try again later.",
+  [InvalidCredentialsFailure.name]: "Invalid email or password.",
 };
 
 export const displayError = <T>(failure?: Failure<T>): string => {

@@ -14,7 +14,7 @@ import TextareaField from "@/components/forms/TextareaField";
 import SubmitButton from "@/components/forms/SubmitButton";
 
 import { currentPictureName } from "@/lib/constants";
-import AlertMessage from "@/components/forms/AlertMessage";
+import FormMessage from "@/components/forms/FormMessage";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import TestDoctorFillWithRandomData from "@/components/testing/TestDoctorFillWithRandomData";
 import { env } from "@/lib/env";
@@ -88,7 +88,7 @@ export default function DoctorsForm({ title, description, doctorData, action }: 
       </CardHeader>
       <CardContent>
         <Form {...form}>
-          <AlertMessage message={message} />
+          <FormMessage message={message} />
           <form
             onSubmit={form.handleSubmit(onSubmit, () => console.log(form.formState.errors))}
             className="flex flex-col gap-3 md:gap-6"

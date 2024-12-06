@@ -1,7 +1,7 @@
 "use client";
 
 import { AppointmentView } from "@/components/appointments/AppointmentView";
-import AlertMessage from "@/components/forms/AlertMessage";
+import FormMessage from "@/components/forms/FormMessage";
 import DateField from "@/components/forms/DateField";
 import SubmitButton from "@/components/forms/SubmitButton";
 import TextField from "@/components/forms/TextField";
@@ -49,7 +49,7 @@ export default function RecoverPage() {
         title="Recover Appointment Details"
         description="Type your email and birth date to view your appointment details"
       >
-        {message && <AlertMessage message={message} />}
+        {message && <FormMessage message={message} />}
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit, () => console.log(form.formState.errors))}>
             <div className="mb-6 flex gap-6">

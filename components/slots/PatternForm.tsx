@@ -11,7 +11,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { Form } from "@/components/ui/form";
-import AlertMessage from "@/components/forms/AlertMessage";
+import FormMessage from "@/components/forms/FormMessage";
 import SubmitButton from "@/components/forms/SubmitButton";
 import { objectToFormData, setDateWithOriginalTime } from "@/lib/utils";
 import { endOfDay, isBefore } from "date-fns";
@@ -114,7 +114,7 @@ export default function PatternForm({
 
   return (
     <Form {...form}>
-      <AlertMessage message={message} />
+      <FormMessage message={message} />
       <form
         onSubmit={form.handleSubmit(onSubmit, onError)}
         className="flex flex-col gap-3 md:gap-6"

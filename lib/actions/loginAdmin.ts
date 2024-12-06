@@ -29,7 +29,6 @@ export async function loginAdmin(loginData: LoginData) {
 
     return success();
   } catch (error) {
-    // console.log(error);
     if (isAppwriteException(error)) {
       if (error.type === "user_invalid_credentials") {
         return invalidCredentialsError();

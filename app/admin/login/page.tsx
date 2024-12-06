@@ -2,7 +2,7 @@ import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { HomeIcon } from "@radix-ui/react-icons";
-import AdminLoginForm from "@/components/admin/AdminLoginForm";
+import LoginForm from "@/components/login/LoginForm";
 
 export default function LoginPage() {
   return (
@@ -18,7 +18,7 @@ export default function LoginPage() {
             <h1 className="text-3xl font-bold">Login</h1>
             <p className="text-muted-foreground">to the admin dashboard</p>
           </div>
-          <AdminLoginForm />
+          <LoginForm />
         </section>
       </div>
       <aside className="relative hidden min-h-screen flex-1 bg-zinc-900 lg:block">

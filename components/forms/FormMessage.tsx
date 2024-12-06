@@ -3,7 +3,7 @@ import { cn } from "@/lib/utils";
 import { ExclamationTriangleIcon } from "@radix-ui/react-icons";
 import React from "react";
 
-const AlertMessage = ({ message }: { message: string }) => {
+const FormMessage = ({ message }: { message: string }) => {
   return (
     <Alert
       variant="destructive"
@@ -17,4 +17,4 @@ const AlertMessage = ({ message }: { message: string }) => {
   );
 };
 
-export default AlertMessage;
+export default FormMessage;

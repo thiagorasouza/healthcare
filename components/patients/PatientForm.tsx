@@ -22,7 +22,6 @@ import { mockSizeZeroPDF } from "@/server/domain/mocks/file.mock";
 import { createPatient } from "@/server/actions/createPatient";
 import { ErrorDialog } from "@/components/shared/ErrorDialog";
 import { allowedFileTypes, maxFileSize } from "@/server/config/constants";
-import { LoadingSpinner } from "@/components/ui/loading-spinner";
 import { SavingOverlay } from "@/components/shared/SavingOverlay";
 
 export interface CreatePatientProps {

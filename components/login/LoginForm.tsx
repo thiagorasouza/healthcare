@@ -7,14 +7,16 @@ import { useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { LoginData, loginSchema } from "@/lib/schemas/loginSchema";
-import { loginAdmin } from "@/lib/actions/loginAdmin";
-import AlertMessage from "@/components/forms/AlertMessage";
+import FormMessage from "@/components/forms/FormMessage";
 import TextField from "@/components/forms/TextField";
 import PasswordField from "@/components/forms/PasswordField";
 import SubmitButton from "@/components/forms/SubmitButton";
-import TestLoginAsAdmin from "@/components/testing/TestLoginAsAdmin";
+import TestLoginAsTestUser from "@/components/testing/TestLoginAsAdmin";
+import { login } from "@/server/actions/login";
+import { objectToFormData } from "@/lib/utils";
+import { displayError } from "@/server/config/errors";
 
-export default function AdminLoginForm() {
+export default function LoginForm() {
   const router = useRouter();
   const [message, setMessage] = useState("");
   const formRef = useRef<HTMLFormElement>(null);
@@ -27,17 +29,19 @@ export default function AdminLoginForm() {
     },
   });
 
-  async function onSubmit(loginData: LoginData) {
+  async function onSubmit(data: LoginData) {
     setMessage("");
     try {
-      const result = await loginAdmin(loginData);
+      const result = await login(objectToFormData(data));
       console.log("🚀 ~ result:", result);
-      if (result.success) {
+      if (result.ok) {
         router.push("/admin");
         return;
       }
 
-      setMessage(result.message);
+      const error = displayError(result);
+      console.log("🚀 ~ error:", error);
+      setMessage(error);
     } catch (error) {
       console.log(error);
       setMessage(unexpectedError().message);
@@ -47,14 +51,14 @@ export default function AdminLoginForm() {
   return (
     <>
       <Form {...form}>
-        <AlertMessage message={message} />
+        <FormMessage message={message} />
         <form onSubmit={form.handleSubmit(onSubmit)} className="flex flex-col gap-3" ref={formRef}>
           <TextField form={form} name="email" label="Email" placeholder="name@example.com" />
           <PasswordField form={form} name="password" label="Password" />
           <SubmitButton form={form} label="Submit" />
         </form>
       </Form>
-      <TestLoginAsAdmin form={form} formRef={formRef} />
+      <TestLoginAsTestUser form={form} formRef={formRef} />
     </>
   );
 }
