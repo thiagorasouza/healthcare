@@ -43,7 +43,7 @@ export default function AppointmentsTable({ appointments }: AppointmentTableProp
       toast(`Appointment ${id} deleted successfully.`);
       router.push(pathname);
     } catch (error) {
-      console.log("🚀 ~ error:", error);
+      console.log(error);
       toast("Unexpected error while deleting appointment");
     }
   }

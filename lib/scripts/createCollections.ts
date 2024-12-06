@@ -21,7 +21,7 @@ async function createDoctorCollection() {
 
     console.log("Doctors collection created");
   } catch (error) {
-    console.log("🚀 ~ error:", error);
+    console.log(error);
   }
 }
 
@@ -50,7 +50,7 @@ async function createPatientCollection() {
 
     console.log("Patients collection created");
   } catch (error) {
-    console.log("🚀 ~ error:", error);
+    console.log(error);
   }
 }
 
@@ -72,7 +72,7 @@ async function createPatternsCollection() {
 
     console.log("Patterns collection created");
   } catch (error) {
-    console.log("🚀 ~ error:", error);
+    console.log(error);
   }
 }
 
@@ -90,7 +90,7 @@ async function createAppointmentsCollection() {
 
     console.log("Appointments collection created");
   } catch (error) {
-    console.log("🚀 ~ error:", error);
+    console.log(error);
   }
 }
 

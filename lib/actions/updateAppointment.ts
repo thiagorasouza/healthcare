@@ -53,12 +53,12 @@ export async function updateAppointment(formData: FormData): Promise<UpdateAppoi
       { doctorId, patientId, patternId, startTime: startTimeISOString },
     )) as AppointmentStoredData;
 
-    console.log("🚀 ~ rawData:", rawData);
-    console.log("🚀 ~ pattern:", pattern);
-    console.log("🚀 ~ possibleSlots:", possibleSlots);
-    console.log("🚀 ~ starTimeISOString:", startTimeDate.toISOString());
-    console.log("🚀 ~ conflictingAppointments:", conflictingAppointments);
-    console.log("🚀 ~ appointmentCreated:", appointmentUpdated);
+    // console.log("🚀 ~ rawData:", rawData);
+    // console.log("🚀 ~ pattern:", pattern);
+    // console.log("🚀 ~ possibleSlots:", possibleSlots);
+    // console.log("🚀 ~ starTimeISOString:", startTimeDate.toISOString());
+    // console.log("🚀 ~ conflictingAppointments:", conflictingAppointments);
+    // console.log("🚀 ~ appointmentCreated:", appointmentUpdated);
 
     return success(parseAppointmentData(appointmentUpdated));
   } catch (error) {

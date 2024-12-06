@@ -121,7 +121,7 @@ export function reducer(state: State, action: Action): State {
       if (state.phase !== "patient_creation") {
         throw new Error("Invalid applcation flow.");
       }
-      console.log("set_patient_form_save");
+
       return { ...state };
     case "back_to_patient_creation":
       if (state.phase !== "summary") {

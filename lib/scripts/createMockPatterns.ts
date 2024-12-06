@@ -26,7 +26,7 @@ async function createMockPatterns() {
   formData.append("doctorId", doctor.$id);
   const result = await createPattern(formData);
 
-  console.log("🚀 ~ result:", result);
+  // console.log("🚀 ~ result:", result);
 }
 
 createMockPatterns();

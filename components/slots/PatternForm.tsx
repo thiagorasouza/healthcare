@@ -100,8 +100,8 @@ export default function PatternForm({
 
   function onError() {
     // console.error("onError");
-    console.log("❌ errors", { ...form.formState.errors });
-    console.log("✏️ values", form.getValues());
+    // console.log("❌ errors", { ...form.formState.errors });
+    // console.log("✏️ values", form.getValues());
   }
 
   function onStartDate(date?: Date) {

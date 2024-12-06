@@ -40,7 +40,7 @@ export default function DashboardView({
     load();
   }, []);
 
-  console.log("🚀 ~ appointments:", appointments);
+  // console.log("🚀 ~ appointments:", appointments);
 
   return (
     <div className="space-y-4 md:space-y-8">

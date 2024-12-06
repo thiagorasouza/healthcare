@@ -86,7 +86,7 @@ export class RecoverAppointmentUseCase implements UseCase {
         duration: ap.duration,
       };
     });
-    console.log("🚀 ~ hydratedAppointments:", hydratedAppointments);
+    // console.log("🚀 ~ hydratedAppointments:", hydratedAppointments);
 
     return new Success(hydratedAppointments);
   }

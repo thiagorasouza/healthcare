@@ -11,7 +11,7 @@ async function deleteAllUsers() {
 
     console.log("All users except admin deleted");
   } catch (error) {
-    console.log("🚀 ~ error:", error);
+    console.log(error);
   }
   // await users.delete
 }

@@ -18,7 +18,7 @@ export type UpdatePatientResult = Success<PatientParsedData> | Error<string[] | 
 export async function updatePatient(formData: FormData): Promise<UpdatePatientResult> {
   try {
     const rawData = Object.fromEntries(formData);
-    console.log("🚀 ~ rawData:", rawData);
+    // console.log("🚀 ~ rawData:", rawData);
 
     const patientId = rawData.patientId;
     const authId = rawData.authId;

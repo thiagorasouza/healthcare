@@ -18,7 +18,7 @@ export async function createDoctor(formData: FormData) {
     }
 
     const validData = validation.data;
-    console.log("🚀 ~ validData:", validData);
+    // console.log("🚀 ~ validData:", validData);
     const randomPassword = generateRandomPassword(16);
 
     const userCreated = await users.create(

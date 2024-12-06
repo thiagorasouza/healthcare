@@ -13,7 +13,7 @@ interface PatientUpdateCardProps {
 
 export default function PatientUpdateCard({ data, identification }: PatientUpdateCardProps) {
   function onSuccess(data: PatientParsedData) {
-    console.log("🚀 ~ result:", data);
+    // console.log("🚀 ~ result:", data);
     toast(`Patient ${data.name} updated successfully.`);
   }
 

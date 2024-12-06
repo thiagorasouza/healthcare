@@ -53,7 +53,7 @@ export type Doctor = {
 
     console.log("Doctors collection created");
   } catch (error) {
-    console.log("🚀 ~ error:", error);
+    console.log(error);
   }
 }
  */

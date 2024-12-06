@@ -27,7 +27,7 @@ export async function updatePattern(formData: FormData): Promise<UpdatePatternRe
     }
 
     const userPattern = validation.data;
-    console.log("🚀 ~ hasSlots(userPattern):", hasSlots(userPattern));
+    // console.log("🚀 ~ hasSlots(userPattern):", hasSlots(userPattern));
 
     if (userPattern.recurring && !hasSlots(userPattern)) {
       return noPossibleSlotsError();

@@ -29,7 +29,7 @@ export default function RecoverPage() {
     setMessage("");
     try {
       const result = await recoverAppointment(objectToFormData(data));
-      console.log("🚀 ~ result:", result);
+      // console.log("🚀 ~ result:", result);
       if (!result.ok) {
         setMessage(
           result.error.code === "NotFoundFailure" ? "Appointment not found." : "Unexpected error.",

@@ -7,7 +7,7 @@ import { AppointmentParsedData } from "@/lib/schemas/appointmentsSchema";
 
 export default function AppointmentUpdateCard({ data }: { data: AppointmentParsedData }) {
   function onSuccess(data: AppointmentParsedData) {
-    console.log("🚀 ~ data:", data);
+    // console.log("🚀 ~ data:", data);
   }
 
   return (
