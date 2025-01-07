@@ -61,7 +61,7 @@ export default function LoginForm() {
           <SubmitButton form={form} label="Submit" />
         </form>
       </Form>
-      <TestLoginAsTestUser form={form} formRef={formRef} />
+      {/* <TestLoginAsTestUser form={form} formRef={formRef} /> */}
     </>
   );
 }
