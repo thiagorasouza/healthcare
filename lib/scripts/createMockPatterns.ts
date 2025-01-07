@@ -1,32 +1,49 @@
 import { createPattern } from "@/lib/actions/createPattern";
-import { databases, Query } from "@/lib/appwrite/adminClient";
-import { env } from "@/lib/env";
-import { objectToFormData } from "@/lib/utils";
-import { addMonths, setHours } from "date-fns";
+import { createMockDoctors, mockDoctors } from "@/lib/scripts/createMockDoctors";
+import { databases, ID, Query } from "@/server/adapters/appwrite/nodeClient";
+import { weekdays } from "@/server/config/constants";
+import { env } from "@/server/config/env";
+import { objectToFormData } from "@/server/useCases/shared/helpers/utils";
+import { faker } from "@faker-js/faker";
+import { addMonths } from "date-fns";
 
-const mockPattern = {
+const mockPattern = () => ({
   startDate: new Date(),
-  endDate: addMonths(new Date(), 3),
+  endDate: addMonths(new Date(), 6),
   startTime: new Date(new Date().setHours(8, 0, 0, 0)),
   endTime: new Date(new Date().setHours(16, 0, 0, 0)),
   duration: 30,
   recurring: true,
-  weekdays: ["tue", "wed", "thu"],
-};
-// console.log("🚀 ~ mockPattern:", mockPattern);
+  weekdays: faker.helpers.arrayElements(weekdays, { min: 2, max: 3 }),
+});
 
-async function createMockPatterns() {
-  const query = await databases.listDocuments(env.databaseId, env.doctorsCollectionId, [
-    Query.equal("name", "Claire Dunlap"),
+async function createMockPatterns(doctorName: string) {
+  const doctorResult = await databases.listDocuments(env.databaseId, env.doctorsCollectionId, [
+    Query.equal("name", doctorName),
   ]);
-  // console.log("🚀 ~ query:", query);
 
-  const doctor = query.documents[0];
-  const formData = objectToFormData(mockPattern);
-  formData.append("doctorId", doctor.$id);
-  const result = await createPattern(formData);
+  const doctor = doctorResult.documents[0];
 
-  // console.log("🚀 ~ result:", result);
+  const patternResult = await databases.createDocument(
+    env.databaseId,
+    env.patternsCollectionId,
+    ID.unique(),
+    {
+      ...mockPattern(),
+      doctorId: doctor.$id,
+    },
+  );
+
+  console.log("🚀 ~ result:", patternResult);
 }
 
-createMockPatterns();
+async function main() {
+  // await createMockDoctors();
+
+  for (const doctor of mockDoctors) {
+    await createMockPatterns(doctor.name);
+  }
+  createMockPatterns("Claire Dunlap");
+}
+
+main();
