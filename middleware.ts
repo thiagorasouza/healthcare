@@ -4,8 +4,9 @@ import type { NextRequest } from "next/server";
 
 export async function middleware(request: NextRequest) {
   try {
-    const account = getAccount();
+    const account = await getAccount();
     const user = await account.get();
+
     if (!user.labels.includes("admin")) throw new Error("User is not admin");
   } catch (error) {
     console.log(error);

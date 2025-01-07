@@ -37,14 +37,13 @@ export default function LoginForm() {
     try {
       const result = await login(objectToFormData(data));
       console.log("🚀 ~ result:", result);
-      if (result.ok) {
-        router.push("/admin");
+
+      if (!result.ok) {
+        setMessage(displayError(result));
         return;
       }
 
-      const error = displayError(result);
-      console.log("🚀 ~ error:", error);
-      setMessage(error);
+      router.push("/admin");
     } catch (error) {
       console.log(error);
       setMessage(unexpectedError().message);
