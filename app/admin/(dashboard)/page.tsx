@@ -6,7 +6,6 @@ import DashboardStatsCard from "@/components/dashboard/DashboardStatsCard";
 import { countAppointments } from "@/server/actions/countAppointments.bypass";
 import { countDoctors } from "@/server/actions/countDoctors.bypass";
 import { countPatients } from "@/server/actions/countPatients.bypass";
-import DeleteDialog from "@/components/shared/DeleteDialog";
 
 export default async function DashboardPage() {
   const doctorsCountResult = await countDoctors();
@@ -27,21 +26,18 @@ export default async function DashboardPage() {
           <DashboardStatsCard
             title="Doctor"
             stats={doctorsCount}
-            // growth="+2 since last month"
             Icon={<Activity />}
             href="/admin/doctors"
           />
           <DashboardStatsCard
             title="Patients"
             stats={patientsCount}
-            // growth="+5.1% from last month"
             Icon={<Users />}
             href="/admin/patients"
           />
           <DashboardStatsCard
             title="Appointments"
             stats={appointmentsCount}
-            // growth="+18.1% from last month"
             Icon={<CalendarCheck />}
             href="/admin/appointments"
           />

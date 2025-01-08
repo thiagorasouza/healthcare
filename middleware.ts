@@ -1,4 +1,4 @@
-import { getAccount } from "@/lib/appwrite/webSessionClient";
+import { getAccount } from "@/server/adapters/appwrite/webClient";
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 

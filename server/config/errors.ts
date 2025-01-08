@@ -10,6 +10,7 @@ import {
   PatientUnavailableFailure,
   ServerFailure,
 } from "@/server/useCases/shared/failures";
+import { ForbiddenInTestingFailure } from "@/server/useCases/shared/failures/forbiddenInTestingFailure";
 
 export const errorMsgs = {
   [AppointmentTooSoonFailure.name]: `Appointment too soon. Please schedule your appointment at least ${MIN_ADVANCE} ${ADVANCE_UNIT} in advance.`,
@@ -21,8 +22,10 @@ export const errorMsgs = {
   [PatientUnavailableFailure.name]:
     "This patient has appointment that conflict with the appointment you are trying to schedule. Please review your submission.",
   [ServerFailure.name]:
-    "Our servers failed while trying to complete your request. Please try again once more. If this error keeps popping up, please try again later.",
+    "Our servers failed while trying to complete your request. If this error keeps popping up, please try again later.",
   [InvalidCredentialsFailure.name]: "Invalid email or password.",
+  [ForbiddenInTestingFailure.name]:
+    "For safety reasons, testing users cannot delete data. Try editing instead.",
 };
 
 export const displayError = <T>(failure?: Failure<T>): string => {

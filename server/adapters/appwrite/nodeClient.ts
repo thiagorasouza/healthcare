@@ -12,4 +12,4 @@ const databases = new Databases(client);
 const storage = new Storage(client);
 
 export { client, users, account, databases, storage };
-export { AppwriteException, ID, Permission, Role, Query, Databases } from "node-appwrite";
+export { AppwriteException, ID, Permission, Role, Query, Databases, Account } from "node-appwrite";

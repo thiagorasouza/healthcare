@@ -14,7 +14,9 @@ import {
 import { useDeleteDialog } from "@/lib/hooks/useDeleteDialog";
 import { deleteAppointment } from "@/server/actions/deleteAppointment.bypass";
 import { listAppointments } from "@/server/actions/listAppointments";
+import { displayError } from "@/server/config/errors";
 import { AppointmentHydrated } from "@/server/domain/models/appointmentHydrated";
+import { ForbiddenInTestingFailure } from "@/server/useCases/shared/failures/forbiddenInTestingFailure";
 import { displayDate, displayDuration, displayTime } from "@/server/useCases/shared/helpers/date";
 import { objectToFormData } from "@/server/useCases/shared/helpers/utils";
 import { PlusCircle, SquarePen, Trash2 } from "lucide-react";
@@ -52,7 +54,7 @@ export default function AppointmentsTable() {
     try {
       const deleteResult = await deleteAppointment(objectToFormData({ id }));
       if (!deleteResult.ok) {
-        toast(`Unable to delete appointment ${id}.`);
+        toast(displayError(deleteResult));
         return;
       }
 
@@ -60,7 +62,6 @@ export default function AppointmentsTable() {
       loadAppointments();
     } catch (error) {
       console.log(error);
-      toast("Unexpected error while deleting appointment");
     }
   }
 
