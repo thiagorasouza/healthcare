@@ -132,13 +132,13 @@ export default function SlotsPage({ params }: { params: { doctorId: string } }) 
           onSaveClick={createPattern}
           onSuccess={onSuccess}
         />
-        <DeleteDialog
-          type="pattern"
-          item={selectedPattern?.$id}
+        {/* <DeleteDialog
+          itemType="pattern"
+          itemName={selectedPattern?.$id}
           open={deleteDialogOpen}
           onCloseClick={() => setDeleteDialogOpen(false)}
-          onContinue={deleteSelectedPattern}
-        />
+          onConfirmationClick={deleteSelectedPattern}
+        /> */}
       </div>
     </div>
   );

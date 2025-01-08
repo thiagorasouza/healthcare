@@ -1,8 +1,8 @@
 "use client";
 
-import { Badge } from "@/components/ui/badge";
+import ErrorCard from "@/components/shared/ErrorCard";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { LoadingSpinner } from "@/components/ui/loading-spinner";
 import {
   Table,
   TableBody,
@@ -11,28 +11,44 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { PlusCircle, Trash2 } from "lucide-react";
-import Link from "next/link";
-import { AppointmentHydrated } from "@/server/domain/models/appointmentHydrated";
-import { ReactNode } from "react";
-import ErrorCard from "@/components/shared/ErrorCard";
-import { displayDate, displayDuration, displayTime } from "@/server/useCases/shared/helpers/date";
+import { useDeleteDialog } from "@/lib/hooks/useDeleteDialog";
 import { deleteAppointment } from "@/server/actions/deleteAppointment.bypass";
-import { objectToFormData } from "@/lib/utils";
+import { listAppointments } from "@/server/actions/listAppointments";
+import { AppointmentHydrated } from "@/server/domain/models/appointmentHydrated";
+import { displayDate, displayDuration, displayTime } from "@/server/useCases/shared/helpers/date";
+import { objectToFormData } from "@/server/useCases/shared/helpers/utils";
+import { PlusCircle, SquarePen, Trash2 } from "lucide-react";
+import Link from "next/link";
+import { useEffect, useState } from "react";
 import { toast } from "sonner";
-import { usePathname, useRouter } from "next/navigation";
 
-interface AppointmentTableProps {
-  appointments: AppointmentHydrated[] | "error";
-}
+export default function AppointmentsTable() {
+  const { openDeleteDialog, deleteDialog } = useDeleteDialog(handleDelete);
+  const [appointments, setAppointments] = useState<AppointmentHydrated[] | "error">();
 
-export default function AppointmentsTable({ appointments }: AppointmentTableProps) {
-  // console.log("🚀 ~ appointments:", appointments);
-  const router = useRouter();
-  const pathname = usePathname();
-  const hasError = appointments === "error";
+  const loading = appointments === undefined;
+  const error = appointments === "error";
+  const empty = appointments?.length === 0;
 
-  async function onDeleteClick(id: string) {
+  async function loadAppointments() {
+    try {
+      const result = await listAppointments();
+      if (!result.ok) {
+        setAppointments("error");
+      } else {
+        setAppointments(result.value);
+      }
+    } catch (error) {
+      console.log(error);
+      setAppointments("error");
+    }
+  }
+
+  useEffect(() => {
+    loadAppointments();
+  }, []);
+
+  async function handleDelete(id: string) {
     try {
       const deleteResult = await deleteAppointment(objectToFormData({ id }));
       if (!deleteResult.ok) {
@@ -40,28 +56,23 @@ export default function AppointmentsTable({ appointments }: AppointmentTableProp
         return;
       }
 
-      toast(`Appointment ${id} deleted successfully.`);
-      router.push(pathname);
+      toast(`Appointment deleted successfully.`);
+      loadAppointments();
     } catch (error) {
       console.log(error);
       toast("Unexpected error while deleting appointment");
     }
   }
 
-  function onEditClick(id: string) {
-    router.push(`/admin/appointments/${id}`);
-  }
-
-  if (hasError) {
+  if (loading) {
     return (
-      <ErrorCard text="Unable to query for appointments at this time. Please try again later." />
+      <div className="flex items-center justify-center py-4">
+        <LoadingSpinner />
+      </div>
     );
-  }
-
-  const noAppointments = appointments.length === 0;
-  if (noAppointments) {
+  } else if (empty) {
     return (
-      <Structure>
+      <>
         <p>No appointments yet.</p>
         <Button asChild className="mt-6">
           <Link href="/admin/appointments/create">
@@ -69,12 +80,17 @@ export default function AppointmentsTable({ appointments }: AppointmentTableProp
             Create
           </Link>
         </Button>
-      </Structure>
+      </>
+    );
+  } else if (error) {
+    return (
+      <ErrorCard text="Unable to query for appointments at this time. Please try again later." />
     );
   }
 
   return (
-    <Structure>
+    <>
+      {deleteDialog}
       <Table>
         <TableHeader>
           <TableRow>
@@ -100,32 +116,30 @@ export default function AppointmentsTable({ appointments }: AppointmentTableProp
               <TableCell>{displayTime(ap.startTime)}</TableCell>
               <TableCell>{displayDuration(ap.duration)}</TableCell>
               <TableCell className="space-x-2">
-                <Button size="sm" variant="destructive" onClick={() => onDeleteClick(ap.id)}>
+                <Button
+                  size="sm"
+                  variant="destructive"
+                  onClick={() =>
+                    openDeleteDialog({
+                      id: ap.id,
+                      description: `${ap.patient.name}'s appointment`,
+                    })
+                  }
+                >
                   <Trash2 className="h-4 w-4" />
                   Delete
                 </Button>
-                {/* <Button size="sm" onClick={() => onEditClick(ap.id)}>
-                  <SquarePen className="h-4 w-4" />
-                  Edit
-                </Button> */}
+                <Button size="sm" asChild>
+                  <Link href={`/admin/appointments/${ap.id}/edit`}>
+                    <SquarePen className="h-4 w-4" />
+                    Edit
+                  </Link>
+                </Button>
               </TableCell>
             </TableRow>
           ))}
         </TableBody>
       </Table>
-    </Structure>
-  );
-}
-
-function Structure({ children }: { children: ReactNode }) {
-  return (
-    <Card>
-      <CardHeader>
-        <CardTitle>Appointments</CardTitle>
-        <CardDescription>Recently scheduled appointments</CardDescription>
-      </CardHeader>
-
-      <CardContent>{children}</CardContent>
-    </Card>
+    </>
   );
 }

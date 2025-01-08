@@ -36,7 +36,6 @@ export default function LoginForm() {
     setMessage("");
     try {
       const result = await login(objectToFormData(data));
-      console.log("🚀 ~ result:", result);
 
       if (!result.ok) {
         setMessage(displayError(result));

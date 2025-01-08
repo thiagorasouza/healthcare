@@ -11,19 +11,21 @@ import {
 } from "@/components/ui/alert-dialog";
 
 interface DeleteDialogProps {
-  type: string;
-  item?: string;
+  itemType: string;
+  itemName?: string;
+  itemId: string;
   open: boolean;
   onCloseClick: () => void;
-  onContinue: () => void;
+  onConfirmationClick: (id: string) => unknown;
 }
 
 export default function DeleteDialog({
-  type,
-  item,
+  itemType,
+  itemName,
+  itemId,
   open,
   onCloseClick,
-  onContinue,
+  onConfirmationClick,
 }: DeleteDialogProps) {
   return (
     <AlertDialog open={open} onOpenChange={(open) => !open && onCloseClick()}>
@@ -31,19 +33,20 @@ export default function DeleteDialog({
         <AlertDialogHeader>
           <AlertDialogTitle>Are you sure?</AlertDialogTitle>
           <AlertDialogDescription>
-            {item ? (
+            {itemName ? (
               <p>
                 This will permanently delete{" "}
-                <strong>{item ? `${type} ${item}` : `this ${type}`}</strong> data from our servers.
+                <strong>{itemName ? `${itemType} ${itemName}` : `this ${itemType}`}</strong> data
+                from our servers.
               </p>
             ) : (
-              <p>This will permanently delete this {type} from our servers</p>
+              <p>This will permanently delete this {itemType} from our servers</p>
             )}
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
           <AlertDialogCancel>Cancel</AlertDialogCancel>
-          <AlertDialogAction onClick={onContinue}>Delete</AlertDialogAction>
+          <AlertDialogAction onClick={() => onConfirmationClick(itemId)}>Delete</AlertDialogAction>
         </AlertDialogFooter>
       </AlertDialogContent>
     </AlertDialog>

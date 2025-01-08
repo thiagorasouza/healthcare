@@ -1,9 +1,12 @@
 "use server";
 
-import DashboardView from "@/components/dashboard/DashboardView";
+import { Activity, CalendarCheck, Users } from "lucide-react";
+import { AppointmentsCard } from "@/components/appointments/AppointmentsCard";
+import DashboardStatsCard from "@/components/dashboard/DashboardStatsCard";
 import { countAppointments } from "@/server/actions/countAppointments.bypass";
 import { countDoctors } from "@/server/actions/countDoctors.bypass";
 import { countPatients } from "@/server/actions/countPatients.bypass";
+import DeleteDialog from "@/components/shared/DeleteDialog";
 
 export default async function DashboardPage() {
   const doctorsCountResult = await countDoctors();
@@ -18,10 +21,35 @@ export default async function DashboardPage() {
     : "error";
 
   return (
-    <DashboardView
-      doctorsCount={doctorsCount}
-      patientsCount={patientsCount}
-      appointmentsCount={appointmentsCount}
-    />
+    <>
+      <div className="space-y-4 md:space-y-8">
+        <div className="grid gap-4 md:grid-cols-2 md:gap-8 lg:grid-cols-3">
+          <DashboardStatsCard
+            title="Doctor"
+            stats={doctorsCount}
+            // growth="+2 since last month"
+            Icon={<Activity />}
+            href="/admin/doctors"
+          />
+          <DashboardStatsCard
+            title="Patients"
+            stats={patientsCount}
+            // growth="+5.1% from last month"
+            Icon={<Users />}
+            href="/admin/patients"
+          />
+          <DashboardStatsCard
+            title="Appointments"
+            stats={appointmentsCount}
+            // growth="+18.1% from last month"
+            Icon={<CalendarCheck />}
+            href="/admin/appointments"
+          />
+        </div>
+        <div>
+          <AppointmentsCard />
+        </div>
+      </div>
+    </>
   );
 }

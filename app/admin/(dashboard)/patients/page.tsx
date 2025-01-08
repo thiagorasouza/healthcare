@@ -89,13 +89,13 @@ export default function PatientsPage() {
           )}
         </CardContent>
       </Card>
-      <DeleteDialog
+      {/* <DeleteDialog
         open={deleteDialogOpen}
         onCloseClick={() => setDeleteDialogOpen(false)}
-        type="patient"
-        item={patientToDelete?.name}
-        onContinue={deleteSelectedPatient}
-      />
+        itemType="patient"
+        itemName={patientToDelete?.name}
+        onConfirmationClick={deleteSelectedPatient}
+      /> */}
     </div>
   );
 }
