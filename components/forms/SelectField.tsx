@@ -18,15 +18,17 @@ import {
 import { cn } from "@/lib/utils";
 import { UseFormReturn } from "react-hook-form";
 
+export interface SelectFieldOptions {
+  value: string;
+  label: string;
+}
+
 interface SelectFieldProps {
   name: string;
-  label: string;
-  placeholder: string;
+  label?: string;
+  placeholder?: string;
   description?: string;
-  options: {
-    value: string;
-    label: string;
-  }[];
+  options: SelectFieldOptions[];
   form: UseFormReturn<any>;
   className?: string;
 }
@@ -34,7 +36,7 @@ interface SelectFieldProps {
 export function SelectField({
   name,
   label,
-  placeholder,
+  placeholder = "",
   description,
   options,
   form,
@@ -46,7 +48,7 @@ export function SelectField({
       name={name}
       render={({ field }) => (
         <FormItem className={cn(className)}>
-          <FormLabel>{label}</FormLabel>
+          {label && <FormLabel>{label}</FormLabel>}
           <Select onValueChange={field.onChange} defaultValue={field.value} value={field.value}>
             <FormControl>
               <SelectTrigger>

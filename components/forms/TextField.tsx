@@ -8,12 +8,12 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
-import React, { ReactNode } from "react";
+import React, { ReactElement, ReactNode } from "react";
 import { UseFormReturn } from "react-hook-form";
 
 interface TextFieldProps {
   name: string;
-  icon?: ReactNode;
+  icon?: ReactElement;
   label?: string;
   placeholder?: string;
   description?: string;
@@ -40,7 +40,7 @@ const TextField = ({
           <FormControl>
             {icon ? (
               <div className="flex items-center rounded-md border border-input pl-3">
-                {icon}
+                {React.cloneElement(icon, { className: "h-4 w-4" })}
                 <Input
                   data-cy={name}
                   placeholder={placeholder}

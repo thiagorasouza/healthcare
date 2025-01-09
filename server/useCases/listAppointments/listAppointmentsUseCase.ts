@@ -1,16 +1,18 @@
 import { Success } from "@/server/useCases/shared/core/success";
 import { AppointmentHydrated } from "@/server/domain/models/appointmentHydrated";
-import { AppointmentsRepository } from "@/server/adapters/appwrite/appointmentsRepository";
-import { DoctorsRepository } from "@/server/adapters/appwrite/doctorsRepository";
-import { PatientsRepository } from "@/server/adapters/appwrite/patientsRepository";
 import { ServerFailure } from "@/server/useCases/shared/failures";
 import { UseCase } from "@/server/useCases/shared/core/useCase";
+import {
+  AppointmentsRepositoryInterface,
+  DoctorsRepositoryInterface,
+  PatientsRepositoryInterface,
+} from "@/server/repositories";
 
 export class ListAppointmentsUseCase implements UseCase {
   public constructor(
-    private readonly appointmentsRepository: AppointmentsRepository,
-    private readonly doctorsRepository: DoctorsRepository,
-    private readonly patientsRepository: PatientsRepository,
+    private readonly appointmentsRepository: AppointmentsRepositoryInterface,
+    private readonly doctorsRepository: DoctorsRepositoryInterface,
+    private readonly patientsRepository: PatientsRepositoryInterface,
   ) {}
 
   public async execute(): Promise<Success<AppointmentHydrated[]> | ServerFailure> {
@@ -50,11 +52,13 @@ export class ListAppointmentsUseCase implements UseCase {
         return {
           id: ap.id!,
           doctor: {
+            id: doctor.id,
             name: doctor.name,
             specialty: doctor.specialty,
             pictureId: doctor.pictureId,
           },
           patient: {
+            id: patient.id,
             name: patient.name,
             email: patient.email,
             phone: patient.phone,

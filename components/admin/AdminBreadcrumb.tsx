@@ -21,16 +21,24 @@ type BreadcrumbItemProps = {
 } & AdminBreadCrumbProps;
 
 // Necessary due to key={} errors when using empty JSX tag
-const BreadcrumbItemWithSeparator = ({ name, link, replace, replacement }: BreadcrumbItemProps) => (
-  <>
-    <BreadcrumbItem>
-      <BreadcrumbLink href={link} className="capitalize">
-        {name === "admin" ? "Dashboard" : name === replace ? replacement : name}
-      </BreadcrumbLink>
-    </BreadcrumbItem>
-    <BreadcrumbSeparator />
-  </>
-);
+const BreadcrumbItemWithSeparator = ({ name, link, replace, replacement }: BreadcrumbItemProps) => {
+  if (name === replace && !replacement) {
+    return null;
+  }
+
+  const description = name === "admin" ? "Dashboard" : name === replace ? replacement : name;
+
+  return (
+    <>
+      <BreadcrumbItem>
+        <BreadcrumbLink href={link} className="capitalize">
+          {description}
+        </BreadcrumbLink>
+      </BreadcrumbItem>
+      <BreadcrumbSeparator />
+    </>
+  );
+};
 
 export default function AdminBreadcrumb({ replace, replacement }: AdminBreadCrumbProps) {
   const pathname = usePathname();

@@ -1,11 +1,12 @@
 "use server";
 
 import { Activity, CalendarCheck, Users } from "lucide-react";
-import { AppointmentsCard } from "@/components/appointments/AppointmentsCard";
 import DashboardStatsCard from "@/components/dashboard/DashboardStatsCard";
 import { countAppointments } from "@/server/actions/countAppointments.bypass";
 import { countDoctors } from "@/server/actions/countDoctors.bypass";
 import { countPatients } from "@/server/actions/countPatients.bypass";
+import AppointmentsTable from "@/components/appointments/AppointmentsTable";
+import DefaultCard from "@/components/shared/DefaultCard";
 
 export default async function DashboardPage() {
   const doctorsCountResult = await countDoctors();
@@ -43,7 +44,9 @@ export default async function DashboardPage() {
           />
         </div>
         <div>
-          <AppointmentsCard />
+          <DefaultCard title="Appointments" description="Recently scheduled appointments">
+            <AppointmentsTable />
+          </DefaultCard>
         </div>
       </div>
     </>
