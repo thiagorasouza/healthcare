@@ -4,7 +4,6 @@ import SearchField, { SearchFieldOptions } from "@/components/forms/SearchField"
 import SubmitButton from "@/components/forms/SubmitButton";
 import ErrorCard from "@/components/shared/ErrorCard";
 import { Form } from "@/components/ui/form";
-import { LoadingSpinner } from "@/components/ui/loading-spinner";
 import { listPatientsForSearch } from "@/server/actions/listPatientsForSearch";
 import { appointmentsSchema } from "@/server/adapters/zod/appointmentValidator";
 import { AppointmentHydrated } from "@/server/domain/models/appointmentHydrated";
@@ -13,15 +12,16 @@ import {
   PatientsIndexedByName,
 } from "@/server/domain/models/patientIndexedByName";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { ArrowUpRight, UserIcon } from "lucide-react";
-import Link from "next/link";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { useDebouncedCallback } from "@/lib/hooks/useDebouncedCallback";
+import { SelectedField } from "@/components/forms/SelectedField";
 
 const appointmentFormSchema = z.object({
   patientSearch: z.string(),
+  patientId: z.string(),
+  doctorId: z.string(),
 });
 
 type AppointmentFormData = z.infer<typeof appointmentFormSchema>;
@@ -32,7 +32,7 @@ export function AppointmentForm({ appointment: ap }: { appointment: AppointmentH
   const [matchingPatients, setMatchingPatients] = useState<SearchFieldOptions[]>([]);
 
   const form = useForm<AppointmentFormData>({
-    resolver: zodResolver(appointmentsSchema),
+    resolver: zodResolver(appointmentFormSchema),
     defaultValues: {
       patientSearch: "",
     },
@@ -105,12 +105,18 @@ export function AppointmentForm({ appointment: ap }: { appointment: AppointmentH
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="flex flex-col gap-3 md:gap-6">
+      <form
+        onSubmit={form.handleSubmit(onSubmit, (errors) => console.log(errors))}
+        className="flex flex-col gap-3 md:gap-6"
+      >
         <div className="space-y-2">
-          <SelectedPatient
-            id={patient.id}
-            name={patient.name}
-            phone={patient.phone}
+          <SelectedField
+            form={form}
+            name="patientId"
+            value={patient.id}
+            label="Patient"
+            placeholder={`${patient.name} | ${patient.phone}`}
+            link={`/admin/patients/${patient.id}`}
             loading={patientsLoading}
           />
           <SearchField
@@ -124,6 +130,16 @@ export function AppointmentForm({ appointment: ap }: { appointment: AppointmentH
             options={matchingPatients}
             onSelect={onPatientSelect}
           />
+          <SelectedField
+            form={form}
+            name="doctorId"
+            value={ap.doctor.id}
+            label="Doctor"
+            description="To change the doctor, please delete this and create a new appointment"
+            placeholder={`${ap.doctor.name} | ${ap.doctor.specialty}`}
+            link={`/admin/doctors/${ap.doctor.id}`}
+            loading={false}
+          />
         </div>
 
         {/* <TextField form={form} label="DoctorId" name="doctorId" />
@@ -132,55 +148,5 @@ export function AppointmentForm({ appointment: ap }: { appointment: AppointmentH
         <SubmitButton form={form} label="Save" />
       </form>
     </Form>
-  );
-}
-
-export interface SelectedPatientLoadingProps {
-  loading: true;
-  id?: string;
-  name?: string;
-  phone?: string;
-}
-
-export interface SelectedPatientProps {
-  loading: false;
-  id: string;
-  name: string;
-  phone: string;
-}
-
-export function SelectedPatient({
-  id,
-  name,
-  phone,
-  loading,
-}: SelectedPatientLoadingProps | SelectedPatientProps) {
-  return (
-    <div>
-      <p className="mb-3 text-sm font-medium">Patient</p>
-      <Link
-        href={`/admin/patients/${id}`}
-        target="_blank"
-        className="border-1 group flex w-full cursor-pointer items-center gap-2 rounded-md border border-input bg-accent p-3 text-sm"
-      >
-        {loading ? (
-          <>
-            <LoadingSpinner className="h-4 w-4" />
-            <p>Loading...</p>
-          </>
-        ) : (
-          <>
-            <UserIcon className="h-4 w-4" />
-            <p>
-              {name} | {phone}
-            </p>
-            <div className="ml-auto flex items-center gap-2 pt-[2px]">
-              <p className="text-xs uppercase">EDIT DETAILS</p>
-              <ArrowUpRight className="h-4 w-4 transition-transform group-hover:-translate-y-1 group-hover:translate-x-1" />
-            </div>
-          </>
-        )}
-      </Link>
-    </div>
   );
 }
