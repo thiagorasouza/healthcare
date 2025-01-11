@@ -1,6 +1,6 @@
 import { UseFormReturn } from "react-hook-form";
 import { FormDescription, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
-import { DateTimePicker } from "@/components/ui/datetime-picker";
+import { DateTimePicker, RangeType, Side } from "@/components/ui/datetime-picker";
 import { cn } from "@/lib/utils";
 
 interface DateFieldProps {
@@ -14,6 +14,9 @@ interface DateFieldProps {
   onSelect?: (date: Date | undefined) => void;
   startMonth?: Date;
   endMonth?: Date;
+  side?: Side;
+  type?: RangeType;
+  yearRange?: number;
 }
 
 export default function DateField({
@@ -27,6 +30,9 @@ export default function DateField({
   onSelect,
   startMonth,
   endMonth,
+  side,
+  type,
+  yearRange,
 }: DateFieldProps) {
   return (
     <FormField
@@ -45,6 +51,9 @@ export default function DateField({
             disabledFn={disabledFn}
             startMonth={startMonth}
             endMonth={endMonth}
+            side={side}
+            type={type}
+            yearRange={yearRange}
           />
           {description && <FormDescription className="text-xs">{description}</FormDescription>}
           <FormMessage />

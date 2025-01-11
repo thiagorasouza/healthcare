@@ -1,16 +1,13 @@
 "use client";
 
-import AdminBreadcrumb from "@/components/admin/AdminBreadcrumb";
+import { AdminBreadcrumbWithBackLink } from "@/components/admin/AdminBreadcrumbWithBackLink";
 import { AppointmentForm } from "@/components/appointments/AppointmentForm";
 import DefaultCard from "@/components/shared/DefaultCard";
 import ErrorCard from "@/components/shared/ErrorCard";
-import { Button } from "@/components/ui/button";
 import { LoadingSpinner } from "@/components/ui/loading-spinner";
 import { getAppointment } from "@/server/actions/getAppointment";
 import { AppointmentHydrated } from "@/server/domain/models/appointmentHydrated";
 import { objectToFormData } from "@/server/useCases/shared/helpers/utils";
-import { ArrowLeft } from "lucide-react";
-import Link from "next/link";
 import { useEffect, useState } from "react";
 
 export default function EditAppointmentPage({ params }: { params: { appointmentId: string } }) {
@@ -44,15 +41,7 @@ export default function EditAppointmentPage({ params }: { params: { appointmentI
 
   return (
     <div className="mx-auto w-full max-w-[600px]">
-      <div className="mb-3 flex items-center justify-between">
-        <AdminBreadcrumb replace={appointmentId} />
-        <Button variant="outline">
-          <Link href="/admin" className="flex items-center">
-            <ArrowLeft className="mr-2 h-4 w-4" />
-            Back
-          </Link>
-        </Button>
-      </div>
+      <AdminBreadcrumbWithBackLink replace={appointmentId} backLink="/admin" />
       <DefaultCard
         title="Edit Appointment"
         description="Change appointment details, select another doctor or patient"

@@ -17,6 +17,8 @@ import { getHoursStr, joinDateTime } from "@/server/useCases/shared/helpers/date
 import HoursField from "@/components/forms/HoursField";
 import { updateAppointment } from "@/server/actions/updateAppointment";
 import { SelectPatientField } from "@/components/forms/SelectPatientField";
+import { ErrorDialog } from "@/components/shared/ErrorDialog";
+import { displayError } from "@/server/config/errors";
 
 const appointmentFormSchema = z.object({
   patientId: z.string(),
@@ -29,6 +31,7 @@ const appointmentFormSchema = z.object({
 type AppointmentFormData = z.infer<typeof appointmentFormSchema>;
 
 export function AppointmentForm({ appointment: ap }: { appointment: AppointmentHydrated }) {
+  const [message, setMessage] = useState("");
   const [slots, setSlots] = useState<SlotsModel | "error">();
 
   const form = useForm<AppointmentFormData>({
@@ -86,15 +89,11 @@ export function AppointmentForm({ appointment: ap }: { appointment: AppointmentH
     return hours;
   }, [selectedDate, slotsLoading, slotsError, slots]);
 
-  const selectedHour = form.watch("hour");
-
   useEffect(() => {
     loadSlots();
   }, []);
 
   async function onSubmit(data: AppointmentFormData) {
-    // console.log("🚀 ~ data:", data);
-    // return;
     const startTime = joinDateTime(data.date.toISOString(), data.hour);
 
     const formData = objectToFormData({
@@ -107,50 +106,60 @@ export function AppointmentForm({ appointment: ap }: { appointment: AppointmentH
     try {
       const updateResult = await updateAppointment(formData);
       console.log("🚀 ~ updateResult:", updateResult);
+      if (!updateResult.ok) {
+        setMessage(displayError(updateResult));
+        return;
+      }
     } catch (error) {
       console.log(error);
+      setMessage(displayError());
     }
   }
 
   return (
-    <Form {...form}>
-      <form
-        onSubmit={form.handleSubmit(onSubmit, (errors) => console.log(errors))}
-        className="flex flex-col gap-3 md:gap-6"
-      >
-        <SelectPatientField
-          form={form}
-          label="Patient"
-          defaultValue={ap.patient}
-          description="You can select another patient for this appointment"
-        />
-        <SelectedEntity
-          text={`${ap.doctor.name} | ${ap.doctor.specialty}`}
-          link={`/admin/doctors/${ap.doctor.id}`}
-        />
-        <DateField
-          form={form}
-          name="date"
-          label="Date"
-          placeholder="Pick a date"
-          {...(dates.length > 0
-            ? {
-                startMonth: new Date(dates[0]),
-                endMonth: new Date(dates[dates.length - 1]),
-                disabledFn: (date) => !dates.includes(date.toISOString()),
-              }
-            : { disabledFn: () => true })}
-        />
-        <HoursField
-          form={form}
-          name="hour"
-          label="Hours"
-          loading={slotsLoading}
-          hours={hours}
-          placeholder="Loading..."
-        />
-        <SubmitButton form={form} label="Save" />
-      </form>
-    </Form>
+    <>
+      <ErrorDialog message={message} setMessage={setMessage}></ErrorDialog>
+      <Form {...form}>
+        <form
+          onSubmit={form.handleSubmit(onSubmit, (errors) => console.log(errors))}
+          className="flex flex-col gap-3 md:gap-6"
+        >
+          <SelectPatientField
+            form={form}
+            label="Patient"
+            defaultValue={ap.patient}
+            description="You can select another patient for this appointment"
+          />
+          <SelectedEntity
+            text={`${ap.doctor.name} | ${ap.doctor.specialty}`}
+            link={`/admin/doctors/${ap.doctor.id}`}
+          />
+          <DateField
+            form={form}
+            name="date"
+            label="Date"
+            placeholder="Pick a date"
+            side="top"
+            type="future"
+            {...(dates.length > 0
+              ? {
+                  startMonth: new Date(dates[0]),
+                  endMonth: new Date(dates[dates.length - 1]),
+                  disabledFn: (date) => !dates.includes(date.toISOString()),
+                }
+              : { disabledFn: () => true })}
+          />
+          <HoursField
+            form={form}
+            name="hour"
+            label="Hours"
+            loading={slotsLoading}
+            hours={hours}
+            placeholder="Loading..."
+          />
+          <SubmitButton form={form} label="Save" />
+        </form>
+      </Form>
+    </>
   );
 }

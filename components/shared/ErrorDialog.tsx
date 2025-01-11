@@ -6,14 +6,25 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
 } from "@/components/ui/dialog";
 import { DialogClose } from "@radix-ui/react-dialog";
 import { OctagonX } from "lucide-react";
+import { useState } from "react";
 
-export function ErrorDialog({ message }: { message: string }) {
+export function ErrorDialog({
+  message,
+  setMessage,
+}: {
+  message: string;
+  setMessage: (msg: string) => void;
+}) {
   return (
-    <Dialog defaultOpen={true}>
+    <Dialog
+      open={!!message}
+      onOpenChange={(open) => {
+        if (!open) setMessage("");
+      }}
+    >
       <DialogContent className="max-w-xl">
         <DialogHeader>
           <DialogTitle className="mb-3 flex items-center text-lg">

@@ -47,7 +47,6 @@ const HoursField = ({
     if (loading || currentHour === "") return;
 
     const hasCurrentHour = hours.some(([hour]) => hour === currentHour);
-    // console.log("🚀 ~ hasCurrentHour:", hasCurrentHour);
     if (!hasCurrentHour) {
       form.setValue(name, "");
     }
@@ -62,7 +61,7 @@ const HoursField = ({
           {label && <FormLabel>{label}</FormLabel>}
           <FormControl>
             {!loading ? (
-              <ul className="grid grid-cols-7 gap-3 text-center text-sm">
+              <ul className="grid grid-cols-4 gap-3 text-center text-sm md:grid-cols-5 lg:grid-cols-7">
                 {hours.map((hour, index) => (
                   <li
                     key={index}

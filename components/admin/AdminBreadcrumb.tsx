@@ -8,7 +8,9 @@ import {
   BreadcrumbPage,
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
+import { cn } from "@/lib/utils";
 import { usePathname } from "next/navigation";
+import { memo } from "react";
 
 interface AdminBreadCrumbProps {
   replace?: string;
@@ -26,21 +28,21 @@ const BreadcrumbItemWithSeparator = ({ name, link, replace, replacement }: Bread
     return null;
   }
 
-  const description = name === "admin" ? "Dashboard" : name === replace ? replacement : name;
+  const description = name === replace ? replacement : name;
 
   return (
     <>
-      <BreadcrumbItem>
+      <BreadcrumbItem className="hidden md:block">
         <BreadcrumbLink href={link} className="capitalize">
           {description}
         </BreadcrumbLink>
       </BreadcrumbItem>
-      <BreadcrumbSeparator />
+      <BreadcrumbSeparator className="hidden md:block" />
     </>
   );
 };
 
-export default function AdminBreadcrumb({ replace, replacement }: AdminBreadCrumbProps) {
+export function AdminBreadcrumb({ replace, replacement }: AdminBreadCrumbProps) {
   const pathname = usePathname();
   const pathParts = pathname.split("/").filter(Boolean);
   const isLastPathAndId = !/^[a-zA-Z]+$/.test(pathParts[pathParts.length - 1]);
@@ -49,10 +51,18 @@ export default function AdminBreadcrumb({ replace, replacement }: AdminBreadCrum
   }
   const lastPath = pathParts.pop();
 
+  console.count("Admin breadcumb render count");
+
   return (
     <Breadcrumb>
       <BreadcrumbList>
-        {pathParts.map((path, index) => (
+        <BreadcrumbItem>
+          <BreadcrumbLink href="/admin" className="capitalize">
+            Dashboard
+          </BreadcrumbLink>
+        </BreadcrumbItem>
+        <BreadcrumbSeparator />
+        {pathParts.slice(1).map((path, index) => (
           <BreadcrumbItemWithSeparator
             name={path}
             link={"/" + pathParts.slice(0, index + 1).join("/")}
@@ -61,6 +71,10 @@ export default function AdminBreadcrumb({ replace, replacement }: AdminBreadCrum
             key={index}
           />
         ))}
+        {/* Show only on mobile */}
+        <BreadcrumbItem className="md:hidden">...</BreadcrumbItem>
+        <BreadcrumbSeparator className="md:hidden" />
+
         <BreadcrumbItem key="page">
           <BreadcrumbPage key="page" className="capitalize">
             {lastPath}

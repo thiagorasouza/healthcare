@@ -3,7 +3,7 @@ import type { CalendarProps } from "@/components/ui/calendar";
 import { Input } from "@/components/ui/input";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { cn } from "@/lib/utils";
-import { add, format } from "date-fns";
+import { add, differenceInYears, format, getMonth } from "date-fns";
 import { type Locale, enUS } from "date-fns/locale";
 import { Calendar as CalendarIcon, ChevronLeft, ChevronRight } from "lucide-react";
 import { Clock } from "lucide-react";
@@ -17,7 +17,12 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+
 import { DayPicker } from "react-day-picker";
+// import "react-day-picker/style.css";
+
+export type RangeType = "all" | "future" | "past";
+export type Side = "top" | "right" | "bottom" | "left";
 
 // ---------- utils start ----------
 /**
@@ -210,11 +215,22 @@ function display12HourValue(hours: number) {
   return `0${hours % 12}`;
 }
 
-function genMonths(locale: Pick<Locale, "options" | "localize" | "formatLong">) {
-  return Array.from({ length: 12 }, (_, i) => ({
-    value: i,
-    label: format(new Date(2021, i), "MMMM", { locale }),
-  }));
+function genMonths(
+  locale: Pick<Locale, "options" | "localize" | "formatLong">,
+  startMonth: number = 0,
+  endMonth: number = 11,
+) {
+  console.log("🚀 ~ startMonth:", startMonth);
+  console.log("🚀 ~ endMonth:", endMonth);
+  let months = [];
+  for (let i = startMonth; i <= endMonth; i++) {
+    months[i] = {
+      value: i,
+      label: format(new Date(2025, i), "MMMM", { locale }),
+    };
+  }
+  console.log("🚀 ~ months:", months);
+  return months;
 }
 
 function genYears(range = 50, type: "past" | "future" | "all") {
@@ -239,6 +255,8 @@ function Calendar({
   yearRange = 50,
   type,
   disabledFn,
+  startMonth,
+  endMonth,
   ...props
 }: CalendarProps & {
   yearRange?: number;
@@ -255,18 +273,31 @@ function Calendar({
         formatLong,
       };
     }
-    return genMonths(locale);
+    return genMonths(
+      locale,
+      startMonth ? getMonth(startMonth) : undefined,
+      endMonth ? getMonth(endMonth) : undefined,
+    );
   }, [props.locale]);
+
+  // const today = new Date();
+  // const yearStart = startMonth && differenceInYears(today, startMonth);
+  // console.log("🚀 ~ yearStart:", yearStart);
+  // const yearEnd = endMonth && differenceInYears(today, endMonth);
+  // console.log("🚀 ~ yearEnd:", yearEnd);
 
   const YEARS = React.useMemo(() => genYears(yearRange, type), [type, yearRange]);
 
   return (
     <DayPicker
+      fixedWeeks
+      startMonth={startMonth}
+      endMonth={endMonth}
       showOutsideDays={showOutsideDays}
       className={cn("p-3", className)}
       disabled={disabledFn}
       classNames={{
-        months: "flex flex-col sm:flex-row space-y-4  sm:space-y-0 justify-center",
+        months: "flex items-center justify-center",
         month: "flex flex-col items-center space-y-4",
         month_caption: "flex justify-center pt-1 relative items-center",
         caption_label: "text-sm font-medium",
@@ -657,6 +688,7 @@ type DateTimePickerProps = {
   onSelect?: (date: Date | undefined) => void;
   startMonth?: Date;
   endMonth?: Date;
+  side?: Side;
 } & Pick<CalendarProps, "locale" | "weekStartsOn" | "showWeekNumber" | "showOutsideDays">;
 
 type DateTimePickerRef = {
@@ -670,7 +702,7 @@ const DateTimePicker = React.forwardRef<DateTimePickerRef, DateTimePickerProps>(
       value,
       onChange,
       hourCycle = 24,
-      yearRange = 120,
+      yearRange,
       type = "past",
       disabled = false,
       displayFormat,
@@ -681,6 +713,7 @@ const DateTimePicker = React.forwardRef<DateTimePickerRef, DateTimePickerProps>(
       onSelect,
       startMonth,
       endMonth,
+      side,
       ...props
     },
     ref,
@@ -736,6 +769,9 @@ const DateTimePicker = React.forwardRef<DateTimePickerRef, DateTimePickerProps>(
       };
     }
 
+    const fixedRange =
+      !yearRange && endMonth && differenceInYears(new Date(), endMonth) === 0 ? 0 : 120;
+
     return (
       <Popover open={isOpen} onOpenChange={setIsOpen}>
         <PopoverTrigger asChild disabled={disabled}>
@@ -758,7 +794,7 @@ const DateTimePicker = React.forwardRef<DateTimePickerRef, DateTimePickerProps>(
             )}
           </Button>
         </PopoverTrigger>
-        <PopoverContent className="w-auto p-0">
+        <PopoverContent side={side} className="w-auto p-0">
           <Calendar
             mode="single"
             selected={value}
@@ -770,7 +806,7 @@ const DateTimePicker = React.forwardRef<DateTimePickerRef, DateTimePickerProps>(
             }}
             onMonthChange={handleSelect}
             type={type}
-            yearRange={yearRange}
+            yearRange={fixedRange}
             locale={locale}
             disabledFn={disabledFn}
             startMonth={startMonth}

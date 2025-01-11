@@ -153,7 +153,7 @@ export const SearchPatient = ({
           className="border-none focus-visible:outline-none focus-visible:ring-0 focus-visible:ring-offset-0"
         />
       </Anchor>
-      <PopoverContent className="w-[550px] p-0" onOpenAutoFocus={(e) => e.preventDefault()}>
+      <PopoverContent className="popover-content p-0" onOpenAutoFocus={(e) => e.preventDefault()}>
         <Command>
           <CommandList>
             <CommandEmpty className="pb-2 pt-4">No results found.</CommandEmpty>
