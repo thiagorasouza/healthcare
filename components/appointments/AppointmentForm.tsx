@@ -7,7 +7,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useEffect, useMemo, useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
-import { SelectedField } from "@/components/forms/SelectedField";
+import { SelectedEntity } from "@/components/forms/SelectedEntity";
 import { getSlots } from "@/server/actions/getSlots";
 import { objectToFormData } from "@/server/useCases/shared/helpers/utils";
 import { SlotsModel } from "@/server/domain/models/slotsModel";
@@ -124,15 +124,9 @@ export function AppointmentForm({ appointment: ap }: { appointment: AppointmentH
           defaultValue={ap.patient}
           description="You can select another patient for this appointment"
         />
-        <SelectedField
-          form={form}
-          name="doctorId"
-          value={ap.doctor.id}
-          label="Doctor"
-          description="To change the doctor, please delete this and create a new appointment"
-          placeholder={`${ap.doctor.name} | ${ap.doctor.specialty}`}
+        <SelectedEntity
+          text={`${ap.doctor.name} | ${ap.doctor.specialty}`}
           link={`/admin/doctors/${ap.doctor.id}`}
-          loading={false}
         />
         <DateField
           form={form}
@@ -155,7 +149,6 @@ export function AppointmentForm({ appointment: ap }: { appointment: AppointmentH
           hours={hours}
           placeholder="Loading..."
         />
-
         <SubmitButton form={form} label="Save" />
       </form>
     </Form>

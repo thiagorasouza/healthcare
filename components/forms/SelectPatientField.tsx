@@ -1,3 +1,4 @@
+import { SelectedEntity } from "@/components/forms/SelectedEntity";
 import ErrorCard from "@/components/shared/ErrorCard";
 import {
   Command,
@@ -46,9 +47,41 @@ export function SelectPatientField({
   defaultValue,
   className,
 }: SelectPatientFieldProps) {
+  const [patient, setPatient] = useState<PatientNamePhone>(defaultValue);
+
+  return (
+    <FormField
+      control={form.control}
+      name="patientId"
+      render={() => (
+        <FormItem className={cn("flex-1", className)}>
+          {label && <FormLabel>{label}</FormLabel>}
+          <FormControl>
+            <>
+              <SelectedEntity
+                text={`${patient.name} | ${patient.phone}`}
+                link={`/admin/patients/${patient.id}`}
+              />
+              <SearchPatient form={form} onPatientSelect={setPatient} />
+            </>
+          </FormControl>
+          {description && <FormDescription className="text-xs">{description}</FormDescription>}
+          <FormMessage data-cy={`${name}Error`} />
+        </FormItem>
+      )}
+    />
+  );
+}
+
+export const SearchPatient = ({
+  form,
+  onPatientSelect,
+}: {
+  form: UseFormReturn<any>;
+  onPatientSelect: (patient: PatientNamePhone) => void;
+}) => {
   const [patients, setPatients] = useState<PatientNamePhone[] | "error">();
   const [searchResults, setSearhResults] = useState<PatientNamePhone[]>([]);
-  const [patient, setPatient] = useState<PatientNamePhone>(defaultValue);
   const [searchValue, setSearchValue] = useState("");
   const [open, setOpen] = useState(false);
 
@@ -104,94 +137,44 @@ export function SelectPatientField({
   }
 
   return (
-    <FormField
-      control={form.control}
-      name="patientId"
-      render={() => (
-        <FormItem className={cn("flex-1", className)}>
-          {label && <FormLabel>{label}</FormLabel>}
-          <FormControl>
-            <>
-              <SelectedPatient patient={patient} />
-              <Popover open={open} onOpenChange={setOpen}>
-                <Anchor className="flex items-center rounded-md border border-input pl-3">
-                  <Search className="h-4 w-4" />
-                  <Input
-                    id="searchValue"
-                    name="searchValue"
-                    data-cy="searchValue"
-                    value={searchValue}
-                    onChange={(e) => setSearchValue(e.target.value)}
-                    placeholder={
-                      patientsLoading
-                        ? "Please wait for a few seconds..."
-                        : "Type the new patient's name"
-                    }
-                    disabled={patientsLoading || form.formState.isSubmitting}
-                    className="border-none focus-visible:outline-none focus-visible:ring-0 focus-visible:ring-offset-0"
-                  />
-                </Anchor>
-                <PopoverContent
-                  className="w-[550px] p-0"
-                  onOpenAutoFocus={(e) => e.preventDefault()}
+    <Popover open={open} onOpenChange={setOpen}>
+      <Anchor className="flex items-center rounded-md border border-input pl-3">
+        <Search className="h-4 w-4" />
+        <Input
+          id="searchValue"
+          name="searchValue"
+          data-cy="searchValue"
+          value={searchValue}
+          onChange={(e) => setSearchValue(e.target.value)}
+          placeholder={
+            patientsLoading ? "Please wait for a few seconds..." : "Type the new patient's name"
+          }
+          disabled={patientsLoading || form.formState.isSubmitting}
+          className="border-none focus-visible:outline-none focus-visible:ring-0 focus-visible:ring-offset-0"
+        />
+      </Anchor>
+      <PopoverContent className="w-[550px] p-0" onOpenAutoFocus={(e) => e.preventDefault()}>
+        <Command>
+          <CommandList>
+            <CommandEmpty className="pb-2 pt-4">No results found.</CommandEmpty>
+            <CommandGroup>
+              {searchResults.map((patient) => (
+                <CommandItem
+                  key={patient.id}
+                  className="cursor-pointer"
+                  onSelect={() => {
+                    setSearchValue("");
+                    form.setValue("patientId", patient.id);
+                    onPatientSelect(patient);
+                  }}
                 >
-                  <Command>
-                    <CommandList>
-                      <CommandEmpty className="pb-2 pt-4">No results found.</CommandEmpty>
-                      <CommandGroup>
-                        {searchResults.map((patient) => (
-                          <CommandItem
-                            key={patient.id}
-                            className="cursor-pointer"
-                            onSelect={() => {
-                              setPatient(patient);
-                              setSearchValue("");
-                              form.setValue("patientId", patient.id);
-                            }}
-                          >
-                            {patient.name} | {patient.phone}
-                          </CommandItem>
-                        ))}
-                      </CommandGroup>
-                    </CommandList>
-                  </Command>
-                </PopoverContent>
-              </Popover>
-            </>
-          </FormControl>
-          {description && <FormDescription className="text-xs">{description}</FormDescription>}
-          <FormMessage data-cy={`${name}Error`} />
-        </FormItem>
-      )}
-    />
+                  {patient.name} | {patient.phone}
+                </CommandItem>
+              ))}
+            </CommandGroup>
+          </CommandList>
+        </Command>
+      </PopoverContent>
+    </Popover>
   );
-}
-
-export const SelectedPatient = React.memo(function SelectedPatient({
-  patient,
-}: {
-  patient: PatientNamePhone;
-}) {
-  return (
-    <Link
-      href={`/admin/patients/${patient.id}`}
-      target="_blank"
-      className="border-1 group flex w-full cursor-pointer items-center gap-2 rounded-md border border-input bg-accent p-3 text-sm"
-    >
-      <UserIcon className="h-4 w-4" />
-      <p>
-        {patient.name} | {patient.phone}
-      </p>
-      <div className="ml-auto flex items-center gap-2 pt-[2px]">
-        <p className="text-xs uppercase">VIEW</p>
-        <ArrowUpRight className="h-4 w-4 transition-transform group-hover:-translate-y-1 group-hover:translate-x-1" />
-      </div>
-    </Link>
-  );
-});
-
-// export const SearchPatient = () => {
-//   return (
-
-//   )
-// }
+};
