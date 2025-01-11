@@ -1,20 +1,12 @@
 "use client";
 
-import SearchField, { SearchFieldOptions } from "@/components/forms/SearchField";
 import SubmitButton from "@/components/forms/SubmitButton";
-import ErrorCard from "@/components/shared/ErrorCard";
 import { Form } from "@/components/ui/form";
-import { listPatientsForSearch } from "@/server/actions/listPatientsForSearch";
 import { AppointmentHydrated } from "@/server/domain/models/appointmentHydrated";
-import {
-  PatientNamePhone,
-  PatientsIndexedByName,
-} from "@/server/domain/models/patientIndexedByName";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useEffect, useMemo, useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
-import { useDebouncedCallback } from "@/lib/hooks/useDebouncedCallback";
 import { SelectedField } from "@/components/forms/SelectedField";
 import { getSlots } from "@/server/actions/getSlots";
 import { objectToFormData } from "@/server/useCases/shared/helpers/utils";
@@ -23,11 +15,13 @@ import DateField from "@/components/forms/DateField";
 import { addMinutes, startOfDay } from "date-fns";
 import { getHoursStr, joinDateTime } from "@/server/useCases/shared/helpers/date";
 import HoursField from "@/components/forms/HoursField";
+import { updateAppointment } from "@/server/actions/updateAppointment";
+import { SelectPatientField } from "@/components/forms/SelectPatientField";
 
 const appointmentFormSchema = z.object({
-  patientSearch: z.string(),
   patientId: z.string(),
   doctorId: z.string(),
+  duration: z.number(),
   date: z.coerce.date(),
   hour: z.string().length(5, "Please select an hour"),
 });
@@ -35,37 +29,18 @@ const appointmentFormSchema = z.object({
 type AppointmentFormData = z.infer<typeof appointmentFormSchema>;
 
 export function AppointmentForm({ appointment: ap }: { appointment: AppointmentHydrated }) {
-  const [patient, setPatient] = useState<PatientNamePhone>(ap.patient);
   const [slots, setSlots] = useState<SlotsModel | "error">();
-  const [patients, setPatients] = useState<PatientsIndexedByName | "error">();
-  const [matchingPatients, setMatchingPatients] = useState<SearchFieldOptions[]>([]);
 
   const form = useForm<AppointmentFormData>({
     resolver: zodResolver(appointmentFormSchema),
     defaultValues: {
-      patientSearch: "",
-      patientId: "",
-      doctorId: "",
+      patientId: ap.patient.id,
+      doctorId: ap.doctor.id,
+      duration: Number(ap.duration),
       date: startOfDay(ap.startTime),
       hour: getHoursStr(ap.startTime),
     },
   });
-
-  async function loadPatients() {
-    try {
-      const patientsResult = await listPatientsForSearch();
-      if (!patientsResult.ok) throw patientsResult.error;
-
-      setPatients(patientsResult.value);
-    } catch (error) {
-      console.log(error);
-      setPatients("error");
-    }
-  }
-
-  const patientsLoading = !patients;
-  const patientsError = patients === "error";
-  const patientSearch = form.watch("patientSearch");
 
   async function loadSlots() {
     try {
@@ -100,8 +75,6 @@ export function AppointmentForm({ appointment: ap }: { appointment: AppointmentH
     return [...slots.keys()];
   }, [slots, slotsError, slotsLoading]);
 
-  // console.log("🚀 ~ startTime:", startTime);
-
   const selectedDate = form.watch("date");
 
   const hours = useMemo(() => {
@@ -114,66 +87,29 @@ export function AppointmentForm({ appointment: ap }: { appointment: AppointmentH
   }, [selectedDate, slotsLoading, slotsError, slots]);
 
   const selectedHour = form.watch("hour");
-  console.log("🚀 ~ selectedHour:", selectedHour);
-
-  // useEffect(() => {
-  //   const hasCurrentHour = !hours.some(([hour]) => hour[0] === selectedHour);
-  //   console.log("🚀 ~ hasCurrentHour:", hasCurrentHour);
-  //   if (!hasCurrentHour) {
-  //     form.setValue("hour", "");
-  //   }
-  // }, [selectedHour, hours, form]);
 
   useEffect(() => {
-    loadPatients();
     loadSlots();
   }, []);
 
-  const searchPatient = useDebouncedCallback(
-    (searchTerm: string) => {
-      if (patientsLoading || patientsError || searchTerm.length === 0) {
-        setMatchingPatients([]);
-        return;
-      }
+  async function onSubmit(data: AppointmentFormData) {
+    // console.log("🚀 ~ data:", data);
+    // return;
+    const startTime = joinDateTime(data.date.toISOString(), data.hour);
 
-      const result: SearchFieldOptions[] = [];
-
-      for (const patientName in patients) {
-        const patientExists = patientName.toLowerCase().includes(searchTerm.toLowerCase());
-        if (patientExists) {
-          const patient = patients[patientName];
-          result.push({
-            value: patient.name,
-            label: `${patient.name} | ${patient.phone}`,
-          });
-        }
-      }
-
-      // console.log("🚀 ~ result:", result);
-
-      setMatchingPatients(result);
-    },
-    [patients, patientsLoading, patientsError],
-  );
-
-  useEffect(() => {
-    searchPatient(patientSearch);
-  }, [patientSearch, searchPatient]);
-
-  function onPatientSelect(patientName: string) {
-    console.log("🚀 ~ patientName:", patientName);
-    if (patientsError || patientsLoading) return;
-    const newPatient = patients[patientName];
-    console.log("🚀 ~ newPatient:", newPatient);
-    setPatient(newPatient);
-  }
-
-  async function onSubmit(formData: AppointmentFormData) {
-    console.log("🚀 ~ formData:", formData);
-  }
-
-  if (patientsError) {
-    return <ErrorCard refresh={true} text="There was an error while trying to load patients" />;
+    const formData = objectToFormData({
+      id: ap.id,
+      patientId: data.patientId,
+      doctorId: data.doctorId,
+      startTime,
+      duration: data.duration,
+    });
+    try {
+      const updateResult = await updateAppointment(formData);
+      console.log("🚀 ~ updateResult:", updateResult);
+    } catch (error) {
+      console.log(error);
+    }
   }
 
   return (
@@ -182,28 +118,12 @@ export function AppointmentForm({ appointment: ap }: { appointment: AppointmentH
         onSubmit={form.handleSubmit(onSubmit, (errors) => console.log(errors))}
         className="flex flex-col gap-3 md:gap-6"
       >
-        <div className="space-y-2">
-          <SelectedField
-            form={form}
-            name="patientId"
-            value={patient.id}
-            label="Patient"
-            placeholder={`${patient.name} | ${patient.phone}`}
-            link={`/admin/patients/${patient.id}`}
-            loading={patientsLoading}
-          />
-          <SearchField
-            form={form}
-            name="patientSearch"
-            description="You can select another patient for this appointment"
-            disabled={patientsLoading}
-            placeholder={
-              patientsLoading ? "Please wait for a few seconds..." : "Type the new patient's name"
-            }
-            options={matchingPatients}
-            onSelect={onPatientSelect}
-          />
-        </div>
+        <SelectPatientField
+          form={form}
+          label="Patient"
+          defaultValue={ap.patient}
+          description="You can select another patient for this appointment"
+        />
         <SelectedField
           form={form}
           name="doctorId"
@@ -235,13 +155,7 @@ export function AppointmentForm({ appointment: ap }: { appointment: AppointmentH
           hours={hours}
           placeholder="Loading..."
         />
-        <div className="flex gap-3">
-          <p className="">Summary</p>
-        </div>
 
-        {/* <TextField form={form} label="DoctorId" name="doctorId" />
-        <DateField form={form} label="startTime" name="startTime" placeholder="Pick a date" /> */}
-        {/* <DurationField form={form} name="duration" label="Duration" /> */}
         <SubmitButton form={form} label="Save" />
       </form>
     </Form>

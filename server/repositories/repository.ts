@@ -3,6 +3,7 @@ import { NotFoundFailure, ServerFailure } from "@/server/useCases/shared/failure
 
 export interface RepositoryInterface<Model> {
   create(data: Omit<Model, "id">): Promise<Success<Model> | ServerFailure>;
+  update(id: string, data: Partial<Omit<Model, "id">>): Promise<Success<Model> | ServerFailure>;
   getById(id: string): Promise<Success<Model> | NotFoundFailure>;
   count(): Promise<Success<number> | ServerFailure>;
   list(queries?: string[]): Promise<Success<Model[]> | ServerFailure>;

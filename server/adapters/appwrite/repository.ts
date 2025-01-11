@@ -6,8 +6,9 @@ import { ServerFailure } from "@/server/useCases/shared/failures";
 import { NotFoundFailure } from "@/server/useCases/shared/failures/notFoundFailure";
 import { CreatedSuccess } from "@/server/useCases/shared/successes/createdSuccess";
 import { FoundSuccess } from "@/server/useCases/shared/successes/foundSuccess";
+import { RepositoryInterface } from "@/server/repositories";
 
-export abstract class Repository<Model> {
+export abstract class Repository<Model> implements RepositoryInterface<Model> {
   private readonly db: Databases;
   private readonly databaseId: string;
   private readonly collectionId: string;
@@ -31,6 +32,23 @@ export abstract class Repository<Model> {
       )) as Appwritify<Model>;
 
       return new CreatedSuccess<Model>(this.map(result));
+    } catch (error) {
+      console.log(error);
+      return new ServerFailure("Appwrite error");
+    }
+  }
+
+  public async update(id: string, data: Partial<Omit<Model, "id">>, permissions?: string[]) {
+    try {
+      const result = (await this.db.updateDocument(
+        this.databaseId,
+        this.collectionId,
+        id,
+        data,
+        permissions,
+      )) as Appwritify<Model>;
+
+      return new Success<Model>(this.map(result));
     } catch (error) {
       console.log(error);
       return new ServerFailure("Appwrite error");

@@ -47,7 +47,7 @@ const HoursField = ({
     if (loading || currentHour === "") return;
 
     const hasCurrentHour = hours.some(([hour]) => hour === currentHour);
-    console.log("🚀 ~ hasCurrentHour:", hasCurrentHour);
+    // console.log("🚀 ~ hasCurrentHour:", hasCurrentHour);
     if (!hasCurrentHour) {
       form.setValue(name, "");
     }
