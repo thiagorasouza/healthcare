@@ -12,6 +12,8 @@ interface DateFieldProps {
   className?: string;
   disabledFn?: (date: Date) => boolean;
   onSelect?: (date: Date | undefined) => void;
+  startMonth?: Date;
+  endMonth?: Date;
 }
 
 export default function DateField({
@@ -23,6 +25,8 @@ export default function DateField({
   className,
   disabledFn,
   onSelect,
+  startMonth,
+  endMonth,
 }: DateFieldProps) {
   return (
     <FormField
@@ -39,6 +43,8 @@ export default function DateField({
             className="w-full"
             onSelect={onSelect}
             disabledFn={disabledFn}
+            startMonth={startMonth}
+            endMonth={endMonth}
           />
           {description && <FormDescription className="text-xs">{description}</FormDescription>}
           <FormMessage />

@@ -655,6 +655,8 @@ type DateTimePickerProps = {
   className: string;
   disabledFn?: (date: Date) => boolean;
   onSelect?: (date: Date | undefined) => void;
+  startMonth?: Date;
+  endMonth?: Date;
 } & Pick<CalendarProps, "locale" | "weekStartsOn" | "showWeekNumber" | "showOutsideDays">;
 
 type DateTimePickerRef = {
@@ -677,6 +679,8 @@ const DateTimePicker = React.forwardRef<DateTimePickerRef, DateTimePickerProps>(
       className,
       disabledFn,
       onSelect,
+      startMonth,
+      endMonth,
       ...props
     },
     ref,
@@ -769,6 +773,8 @@ const DateTimePicker = React.forwardRef<DateTimePickerRef, DateTimePickerProps>(
             yearRange={yearRange}
             locale={locale}
             disabledFn={disabledFn}
+            startMonth={startMonth}
+            endMonth={endMonth}
             {...props}
           />
           {granularity !== "day" && (
