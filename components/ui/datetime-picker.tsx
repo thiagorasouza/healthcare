@@ -220,8 +220,6 @@ function genMonths(
   startMonth: number = 0,
   endMonth: number = 11,
 ) {
-  console.log("🚀 ~ startMonth:", startMonth);
-  console.log("🚀 ~ endMonth:", endMonth);
   let months = [];
   for (let i = startMonth; i <= endMonth; i++) {
     months[i] = {
@@ -229,7 +227,6 @@ function genMonths(
       label: format(new Date(2025, i), "MMMM", { locale }),
     };
   }
-  console.log("🚀 ~ months:", months);
   return months;
 }
 

@@ -51,8 +51,6 @@ export function AdminBreadcrumb({ replace, replacement }: AdminBreadCrumbProps) 
   }
   const lastPath = pathParts.pop();
 
-  console.count("Admin breadcumb render count");
-
   return (
     <Breadcrumb>
       <BreadcrumbList>

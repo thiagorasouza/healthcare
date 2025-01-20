@@ -51,19 +51,8 @@ export class ListAppointmentsUseCase implements UseCase {
         const patient = patients.find((patient) => patient.id === ap.patientId)!;
         return {
           id: ap.id!,
-          doctor: {
-            id: doctor.id,
-            name: doctor.name,
-            specialty: doctor.specialty,
-            pictureId: doctor.pictureId,
-          },
-          patient: {
-            id: patient.id,
-            name: patient.name,
-            email: patient.email,
-            phone: patient.phone,
-            insuranceProvider: patient.insuranceProvider,
-          },
+          doctor,
+          patient,
           startTime: ap.startTime,
           duration: ap.duration,
         };

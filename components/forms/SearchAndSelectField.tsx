@@ -19,53 +19,70 @@ import { Input } from "@/components/ui/input";
 import { Popover, PopoverContent } from "@/components/ui/popover";
 import { useDebouncedCallback } from "@/lib/hooks/useDebouncedCallback";
 import { cn } from "@/lib/utils";
-import { listPatientsForSearch } from "@/server/actions/listPatientsForSearch";
-import { PatientNamePhone } from "@/server/domain/models/patientNamePhone";
 import { Anchor } from "@radix-ui/react-popover";
-import { ArrowUpRight, Search, UserIcon } from "lucide-react";
-import Link from "next/link";
-import React, { useEffect, useState } from "react";
+import { Search } from "lucide-react";
+import { useEffect, useState } from "react";
 import { UseFormReturn } from "react-hook-form";
+
+type KeysWithStringValues<T> = {
+  [K in keyof T]: T[K] extends string ? K : never;
+}[keyof T];
+
+interface HasId {
+  id: string;
+}
 
 export interface SearchResult {
   value: string;
   label: string;
 }
 
-export interface SelectPatientFieldProps {
+export interface SearchAndSelectFieldProps<Entity extends HasId> {
   form: UseFormReturn<any>;
+  name: string;
   label: string;
-  defaultValue?: PatientNamePhone;
-  description?: string;
+  defaultValue?: Entity;
+  entities?: Entity[];
+  parameter: keyof Entity;
+  makeText: (entity: Entity) => string;
+  makeLink: (entity: Entity) => string;
   className?: string;
 }
 
-export function SelectPatientField({
+export function SearchAndSelectField<Entity extends HasId>({
   form,
+  name,
   label,
-  description,
   defaultValue,
+  entities,
+  parameter,
+  makeText,
+  makeLink,
   className,
-}: SelectPatientFieldProps) {
-  const [patient, setPatient] = useState<PatientNamePhone | undefined>(defaultValue);
+}: SearchAndSelectFieldProps<Entity>) {
+  const [entity, setEntity] = useState<Entity | undefined>(defaultValue);
 
   return (
     <FormField
       control={form.control}
-      name="patientId"
+      name={name}
       render={() => (
         <FormItem className={cn("flex-1", className)}>
           {label && <FormLabel>{label}</FormLabel>}
           <FormControl>
             <>
-              <SelectedEntity
-                text={patient ? `${patient.name} | ${patient.phone}` : "Select a patient"}
-                link={patient ? `/admin/patients/${patient.id}` : "#"}
+              <SelectedEntity text={entity && makeText(entity)} link={entity && makeLink(entity)} />
+              <SearchEntity
+                form={form}
+                name={name}
+                entities={entities}
+                parameter={parameter}
+                makeText={makeText}
+                onSelect={setEntity}
               />
-              <SearchPatient form={form} onPatientSelect={setPatient} />
             </>
           </FormControl>
-          {description && <FormDescription className="text-xs">{description}</FormDescription>}
+          {/* <FormDescription className="text-xs">Search and select another {type}</FormDescription> */}
           <FormMessage />
         </FormItem>
       )}
@@ -73,68 +90,55 @@ export function SelectPatientField({
   );
 }
 
-export const SearchPatient = ({
-  form,
-  onPatientSelect,
-}: {
+export interface SearchEntityProps<Entity extends HasId> {
   form: UseFormReturn<any>;
-  onPatientSelect: (patient: PatientNamePhone) => void;
-}) => {
-  const [patients, setPatients] = useState<PatientNamePhone[] | "error">();
-  const [searchResults, setSearhResults] = useState<PatientNamePhone[]>([]);
+  name: string;
+  parameter: keyof Entity;
+  onSelect: (entity: Entity) => void;
+  entities?: Entity[];
+  makeText: (entity: Entity) => string;
+}
+
+export function SearchEntity<Entity extends HasId>({
+  form,
+  name,
+  parameter,
+  onSelect,
+  entities,
+  makeText,
+}: SearchEntityProps<Entity>) {
+  const [searchResults, setSearhResults] = useState<Entity[]>([]);
   const [searchValue, setSearchValue] = useState("");
   const [open, setOpen] = useState(false);
 
-  // === LOADING PATIENTS ===
-  async function loadPatients() {
-    try {
-      const patientsResult = await listPatientsForSearch();
-      if (!patientsResult.ok) throw patientsResult.error;
-
-      setPatients(patientsResult.value);
-    } catch (error) {
-      console.log(error);
-      setPatients("error");
-    }
-  }
-
-  useEffect(() => {
-    loadPatients();
-  }, []);
-
-  const patientsLoading = !patients;
-  const patientsError = patients === "error";
+  const entitiesLoading = !entities;
 
   // === SEARCHING PATIENTS ==
-  const searchPatient = useDebouncedCallback(
+  const searchEntities = useDebouncedCallback(
     (searchValue: string) => {
-      if (patientsLoading || patientsError || searchValue.length === 0) {
+      if (!entities || searchValue.length === 0) {
         setSearhResults([]);
         return;
       }
 
-      const result = patients.filter((patient) =>
-        patient.name.toLowerCase().includes(searchValue.toLowerCase()),
+      const result = entities.filter((entity) =>
+        (entity[parameter] as string).toLowerCase().includes(searchValue.toLowerCase()),
       );
 
       setSearhResults(result);
     },
-    [patients, patientsLoading, patientsError],
+    [entities],
   );
 
   useEffect(() => {
     // Debounced
-    searchPatient(searchValue);
-  }, [searchValue, searchPatient]);
+    searchEntities(searchValue);
+  }, [searchValue, searchEntities]);
 
   // POPOVER OPENING LOGIC
   useEffect(() => {
     setOpen(searchValue.length > 0);
   }, [searchValue]);
-
-  if (patientsError) {
-    return <ErrorCard refresh={true} text="There was an error while trying to load patients" />;
-  }
 
   return (
     <Popover open={open} onOpenChange={setOpen}>
@@ -146,10 +150,8 @@ export const SearchPatient = ({
           data-cy="searchValue"
           value={searchValue}
           onChange={(e) => setSearchValue(e.target.value)}
-          placeholder={
-            patientsLoading ? "Please wait for a few seconds..." : "Type the new patient's name"
-          }
-          disabled={patientsLoading || form.formState.isSubmitting}
+          placeholder={entitiesLoading ? "Please wait..." : "Type to search"}
+          disabled={entitiesLoading || form.formState.isSubmitting}
           className="border-none focus-visible:outline-none focus-visible:ring-0 focus-visible:ring-offset-0"
         />
       </Anchor>
@@ -158,17 +160,17 @@ export const SearchPatient = ({
           <CommandList>
             <CommandEmpty className="pb-2 pt-4">No results found.</CommandEmpty>
             <CommandGroup>
-              {searchResults.map((patient) => (
+              {searchResults.map((entity) => (
                 <CommandItem
-                  key={patient.id}
+                  key={entity.id}
                   className="cursor-pointer"
                   onSelect={() => {
                     setSearchValue("");
-                    form.setValue("patientId", patient.id);
-                    onPatientSelect(patient);
+                    form.setValue(name, entity.id);
+                    onSelect(entity);
                   }}
                 >
-                  {patient.name} | {patient.phone}
+                  {makeText(entity)}
                 </CommandItem>
               ))}
             </CommandGroup>
@@ -177,4 +179,4 @@ export const SearchPatient = ({
       </PopoverContent>
     </Popover>
   );
-};
+}

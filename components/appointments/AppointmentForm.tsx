@@ -7,7 +7,6 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useEffect, useMemo, useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
-import { SelectedEntity } from "@/components/forms/SelectedEntity";
 import { getSlots } from "@/server/actions/getSlots";
 import { objectToFormData } from "@/server/useCases/shared/helpers/utils";
 import { SlotsModel } from "@/server/domain/models/slotsModel";
@@ -16,9 +15,16 @@ import { addMinutes, startOfDay } from "date-fns";
 import { getHoursStr, joinDateTime } from "@/server/useCases/shared/helpers/date";
 import HoursField from "@/components/forms/HoursField";
 import { updateAppointment } from "@/server/actions/updateAppointment";
-import { SelectPatientField } from "@/components/forms/SelectPatientField";
 import { ErrorDialog } from "@/components/shared/ErrorDialog";
 import { displayError } from "@/server/config/errors";
+import { toast } from "sonner";
+import { useRouter } from "next/navigation";
+import { SearchAndSelectField } from "@/components/forms/SearchAndSelectField";
+import { DoctorModel } from "@/server/domain/models/doctorModel";
+import { getDoctors } from "@/server/actions/getDoctors.bypass";
+import { PatientModel } from "@/server/domain/models/patientModel";
+import { listPatients } from "@/server/actions/listPatients.bypass";
+import { createAppointment } from "@/server/actions/createAppointment";
 
 const appointmentFormSchema = z.object({
   patientId: z.string(),
@@ -30,26 +36,45 @@ const appointmentFormSchema = z.object({
 
 type AppointmentFormData = z.infer<typeof appointmentFormSchema>;
 
-export function AppointmentForm({ appointment: ap }: { appointment: AppointmentHydrated }) {
+export interface CreateAppointmentFormProps {
+  mode: "create";
+  appointment?: undefined;
+}
+
+export interface UpdateAppointmentFormProps {
+  mode: "update";
+  appointment: AppointmentHydrated;
+}
+
+export function AppointmentForm({
+  mode,
+  appointment,
+}: CreateAppointmentFormProps | UpdateAppointmentFormProps) {
   const [message, setMessage] = useState("");
   const [slots, setSlots] = useState<SlotsModel | "error">();
+  const [doctors, setDoctors] = useState<DoctorModel[] | "error">();
+  const [patients, setPatients] = useState<PatientModel[] | "error">();
+  const router = useRouter();
 
   const form = useForm<AppointmentFormData>({
     resolver: zodResolver(appointmentFormSchema),
     defaultValues: {
-      patientId: ap.patient.id,
-      doctorId: ap.doctor.id,
-      duration: Number(ap.duration),
-      date: startOfDay(ap.startTime),
-      hour: getHoursStr(ap.startTime),
+      patientId: appointment?.patient.id || "",
+      doctorId: appointment?.doctor.id || "",
+      duration: appointment ? Number(appointment?.duration) : 0,
+      date: appointment ? startOfDay(appointment?.startTime) : startOfDay(new Date()),
+      hour: appointment ? getHoursStr(appointment?.startTime) : "00:00",
     },
   });
 
-  async function loadSlots() {
+  async function loadAvailableSlots(
+    doctorId: string,
+    appointment?: { startTime: Date; duration: number },
+  ) {
     try {
       const slotsResult = await getSlots(
         objectToFormData({
-          doctorId: ap.doctor.id,
+          doctorId,
           startDate: new Date(),
         }),
       );
@@ -58,20 +83,34 @@ export function AppointmentForm({ appointment: ap }: { appointment: AppointmentH
       const slots = slotsResult.value;
 
       // add current slot
-      const dateStr = form.getValues("date").toISOString();
-      const startHour = form.getValues("hour");
-      const endHour = getHoursStr(addMinutes(joinDateTime(dateStr, startHour), ap.duration));
-      const allSlots = slots.set(
-        dateStr,
-        (slots.get(dateStr) || []).concat([[startHour, endHour]]).sort(),
-      );
-
-      setSlots(allSlots);
-    } catch (error) {}
+      if (appointment) {
+        const dateStr = appointment.startTime.toISOString();
+        const startHour = getHoursStr(dateStr);
+        const endHour = getHoursStr(addMinutes(dateStr, appointment.duration));
+        const allSlots = slots.set(
+          dateStr,
+          (slots.get(dateStr) || []).concat([[startHour, endHour]]).sort(),
+        );
+        setSlots(allSlots);
+      } else {
+        setSlots(slots);
+      }
+    } catch (error) {
+      console.log(error);
+      setMessage("Unable to load doctor slots");
+    }
   }
 
   const slotsLoading = !slots;
   const slotsError = slots === "error";
+
+  const doctorId = form.watch("doctorId");
+
+  useEffect(() => {
+    if (doctorId) {
+      loadAvailableSlots(doctorId, appointment);
+    }
+  }, [doctorId, appointment]);
 
   const dates = useMemo(() => {
     if (slotsLoading || slotsError) return [];
@@ -89,27 +128,69 @@ export function AppointmentForm({ appointment: ap }: { appointment: AppointmentH
     return hours;
   }, [selectedDate, slotsLoading, slotsError, slots]);
 
+  async function loadDoctors() {
+    try {
+      const doctorsResult = await getDoctors();
+      if (!doctorsResult.ok) throw doctorsResult.error;
+
+      const doctors = doctorsResult.value;
+      setDoctors(doctors);
+    } catch (error) {
+      console.log(error);
+      setMessage("Unable to load doctors.");
+    }
+  }
+
+  async function loadPatients() {
+    try {
+      const patientsResult = await listPatients();
+      if (!patientsResult.ok) throw patientsResult.error;
+
+      const patients = patientsResult.value;
+      setPatients(patients);
+    } catch (error) {
+      console.log(error);
+      setMessage("Unable to load patients.");
+    }
+  }
+
   useEffect(() => {
-    loadSlots();
+    loadDoctors();
+    loadPatients();
   }, []);
 
   async function onSubmit(data: AppointmentFormData) {
-    const startTime = joinDateTime(data.date.toISOString(), data.hour);
+    console.log("🚀 ~ data:", data);
+    if (slotsLoading || slotsError) return;
 
+    const dateStr = data.date.toISOString();
     const formData = objectToFormData({
-      id: ap.id,
       patientId: data.patientId,
       doctorId: data.doctorId,
-      startTime,
+      startTime: joinDateTime(dateStr, data.hour),
       duration: data.duration,
     });
+
     try {
-      const updateResult = await updateAppointment(formData);
-      console.log("🚀 ~ updateResult:", updateResult);
-      if (!updateResult.ok) {
-        setMessage(displayError(updateResult));
-        return;
+      if (mode === "update") {
+        formData.append("id", appointment.id);
+        const updateResult = await updateAppointment(formData);
+        console.log("🚀 ~ updateResult:", updateResult);
+        if (!updateResult.ok) {
+          setMessage(displayError(updateResult));
+          return;
+        }
+        toast("Appointment saved.");
+      } else if (mode === "create") {
+        const createResult = await createAppointment(formData);
+        if (!createResult.ok) {
+          setMessage(displayError(createResult));
+          return;
+        }
+        toast("Appointment created.");
       }
+
+      router.push("/admin");
     } catch (error) {
       console.log(error);
       setMessage(displayError());
@@ -124,16 +205,35 @@ export function AppointmentForm({ appointment: ap }: { appointment: AppointmentH
           onSubmit={form.handleSubmit(onSubmit, (errors) => console.log(errors))}
           className="flex flex-col gap-3 md:gap-6"
         >
-          <SelectPatientField
+          <SearchAndSelectField
             form={form}
+            name="patientId"
             label="Patient"
-            defaultValue={ap.patient}
-            description="You can select another patient for this appointment"
+            defaultValue={appointment?.patient}
+            entities={patients !== "error" ? patients : undefined}
+            parameter="name"
+            makeText={(patient: PatientModel) => `${patient.name} | ${patient.phone}`}
+            makeLink={(patient: PatientModel) => `/admin/patients/${patient.id}`}
           />
-          <SelectedEntity
-            text={`${ap.doctor.name} | ${ap.doctor.specialty}`}
-            link={`/admin/doctors/${ap.doctor.id}`}
+          <SearchAndSelectField
+            form={form}
+            name="doctorId"
+            label="Doctor"
+            defaultValue={appointment?.doctor}
+            entities={doctors !== "error" ? doctors : undefined}
+            parameter="name"
+            makeText={(doctor: DoctorModel) => `${doctor.name} | ${doctor.specialty}`}
+            makeLink={(doctor: DoctorModel) => `/admin/doctors/${doctor.id}`}
+            // defaultValue={mockDoctor()}
           />
+          {/* <SelectedEntity
+            text={
+              appointment
+                ? `${appointment.doctor.name} | ${appointment.doctor.specialty}`
+                : "Select a doctor"
+            }
+            link={appointment ? `/admin/doctors/${appointment.doctor.id}` : "#"}
+          /> */}
           <DateField
             form={form}
             name="date"
@@ -155,7 +255,7 @@ export function AppointmentForm({ appointment: ap }: { appointment: AppointmentH
             label="Hours"
             loading={slotsLoading}
             hours={hours}
-            placeholder="Loading..."
+            placeholder="No slots available for this date"
           />
           <SubmitButton form={form} label="Save" />
         </form>

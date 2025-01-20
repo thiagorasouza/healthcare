@@ -1,3 +1,5 @@
+"use server";
+
 import { DoctorsRepository } from "@/server/adapters/appwrite/doctorsRepository";
 
 export const getDoctors = async () => {

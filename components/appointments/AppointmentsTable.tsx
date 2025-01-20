@@ -100,7 +100,7 @@ export default function AppointmentsTable() {
             <TableHead>Date</TableHead>
             <TableHead>Hours</TableHead>
             <TableHead>Duration</TableHead>
-            <TableHead>Actions</TableHead>
+            <TableHead className="text-right">Actions</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
@@ -116,7 +116,7 @@ export default function AppointmentsTable() {
               <TableCell>{displayDate(ap.startTime)}</TableCell>
               <TableCell>{displayTime(ap.startTime)}</TableCell>
               <TableCell>{displayDuration(ap.duration)}</TableCell>
-              <TableCell className="space-x-2">
+              <TableCell className="flex justify-end gap-2">
                 <Button
                   size="sm"
                   variant="destructive"

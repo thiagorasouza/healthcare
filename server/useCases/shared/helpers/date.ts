@@ -1,5 +1,5 @@
 import { DURATION_UNIT, weekdays } from "@/server/config/constants";
-import { set, startOfDay } from "date-fns";
+import { differenceInMinutes, parse, set, startOfDay } from "date-fns";
 
 export function getHoursStr(date: Date | string) {
   // console.log("🚀 ~ date:", date);
@@ -59,4 +59,18 @@ export function toGCISoString(date: Date) {
   const seconds = pad(date.getUTCSeconds());
 
   return `${year}${month}${day}T${hours}${minutes}${seconds}Z`;
+}
+
+export function subtractTimeStrings(startTime: string, endTime: string): number {
+  // Parse the time strings to Date objects (using a reference date, e.g., 1970-01-01)
+  const formatString = "HH:mm";
+  const referenceDate = "1970-01-01"; // a placeholder date for parsing time
+
+  const start = parse(startTime, formatString, new Date(referenceDate));
+  const end = parse(endTime, formatString, new Date(referenceDate));
+
+  // Calculate the difference in minutes
+  const difference = differenceInMinutes(end, start);
+
+  return difference;
 }

@@ -1,10 +1,19 @@
 "use server";
 
-import { getDoctors } from "@/server/actions/getDoctors.bypass";
+import { AdminBreadcrumbWithBackLink } from "@/components/admin/AdminBreadcrumbWithBackLink";
+import { AppointmentForm } from "@/components/appointments/AppointmentForm";
+import DefaultCard from "@/components/shared/DefaultCard";
 
 export default async function CreateAppointmentPage() {
-  const doctorsResult = await getDoctors();
-  const doctors = doctorsResult.ok ? doctorsResult.value : "error";
-
-  // return <AppointmentCreator doctors={doctors} />;
+  return (
+    <div className="mx-auto w-full max-w-[600px]">
+      <AdminBreadcrumbWithBackLink backLink="/appointments" />
+      <DefaultCard
+        title="Create Appointment"
+        description="Add a new appointment for an existing patient"
+      >
+        <AppointmentForm mode="create" />
+      </DefaultCard>
+    </div>
+  );
 }

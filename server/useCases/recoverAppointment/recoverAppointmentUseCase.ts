@@ -71,19 +71,8 @@ export class RecoverAppointmentUseCase implements UseCase {
       const doctor = doctors.find((doctor) => doctor.id === ap.doctorId)!;
       return {
         id: ap.id!,
-        doctor: {
-          id: doctor.id,
-          name: doctor.name,
-          specialty: doctor.specialty,
-          pictureId: doctor.pictureId,
-        },
-        patient: {
-          id: patient.id,
-          name: patient.name,
-          email: patient.email,
-          phone: patient.phone,
-          insuranceProvider: patient.insuranceProvider,
-        },
+        doctor,
+        patient,
         startTime: ap.startTime,
         duration: ap.duration,
       };

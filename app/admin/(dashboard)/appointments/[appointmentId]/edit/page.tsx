@@ -40,8 +40,8 @@ export default function EditAppointmentPage({ params }: { params: { appointmentI
   }
 
   return (
-    <div className="mx-auto w-full max-w-[600px]">
-      <AdminBreadcrumbWithBackLink replace={appointmentId} backLink="/admin" />
+    <div className="mx-auto w-full max-w-[600px] space-y-6">
+      <AdminBreadcrumbWithBackLink replace={appointmentId} backLink="/appointments" />
       <DefaultCard
         title="Edit Appointment"
         description="Change appointment details, select another doctor or patient"
@@ -49,7 +49,7 @@ export default function EditAppointmentPage({ params }: { params: { appointmentI
         {loading ? (
           <LoadingSpinner size={24} className="mx-auto" />
         ) : (
-          <AppointmentForm appointment={appointment} />
+          <AppointmentForm mode="update" appointment={appointment} />
         )}
       </DefaultCard>
     </div>

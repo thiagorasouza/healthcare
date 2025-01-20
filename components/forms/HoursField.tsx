@@ -6,7 +6,7 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import { cn } from "@/lib/utils";
+import { cn, subtractTimeStrings } from "@/lib/utils";
 import { useEffect } from "react";
 import { UseFormReturn } from "react-hook-form";
 
@@ -60,12 +60,15 @@ const HoursField = ({
         <FormItem className={cn("flex-1", className)}>
           {label && <FormLabel>{label}</FormLabel>}
           <FormControl>
-            {!loading ? (
+            {!loading && hours.length > 0 ? (
               <ul className="grid grid-cols-4 gap-3 text-center text-sm md:grid-cols-5 lg:grid-cols-7">
                 {hours.map((hour, index) => (
                   <li
                     key={index}
-                    onClick={() => form.setValue("hour", hour[0], { shouldValidate: true })}
+                    onClick={() => {
+                      form.setValue(name, hour[0], { shouldValidate: true });
+                      form.setValue("duration", subtractTimeStrings(hour[0], hour[1]));
+                    }}
                     className={cn(
                       "cursor-pointer rounded-md border border-input px-3 py-2 transition-transform hover:scale-105 hover:border-black hover:bg-light-yellow",
                       {

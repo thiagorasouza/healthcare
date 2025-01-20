@@ -6,7 +6,7 @@ import { memo } from "react";
 
 export function Component({ replace, backLink }: { replace?: string; backLink: string }) {
   return (
-    <div className="mb-3 flex items-center justify-between">
+    <div className="flex items-center justify-between">
       <AdminBreadcrumb replace={replace} />
       <Button size="sm" variant="outline">
         <Link href={backLink} className="flex items-center">

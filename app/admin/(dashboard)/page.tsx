@@ -5,8 +5,7 @@ import DashboardStatsCard from "@/components/dashboard/DashboardStatsCard";
 import { countAppointments } from "@/server/actions/countAppointments.bypass";
 import { countDoctors } from "@/server/actions/countDoctors.bypass";
 import { countPatients } from "@/server/actions/countPatients.bypass";
-import AppointmentsTable from "@/components/appointments/AppointmentsTable";
-import DefaultCard from "@/components/shared/DefaultCard";
+import { AppointmentsCard } from "@/components/appointments/AppointmentsCard";
 
 export default async function DashboardPage() {
   const doctorsCountResult = await countDoctors();
@@ -44,9 +43,7 @@ export default async function DashboardPage() {
           />
         </div>
         <div>
-          <DefaultCard title="Appointments" description="Recently scheduled appointments">
-            <AppointmentsTable />
-          </DefaultCard>
+          <AppointmentsCard />
         </div>
       </div>
     </>
