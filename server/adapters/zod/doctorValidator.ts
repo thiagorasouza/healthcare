@@ -1,5 +1,6 @@
 import { GenericValidator } from "@/server/adapters/zod/genericValidator";
 import { allowedImageTypes, maxImageSize } from "@/server/config/constants";
+import { UpdateDoctorRequest } from "@/server/useCases/updateDoctor/updateDoctorUseCase";
 import { z } from "zod";
 
 export const doctorsFormSchema = z.object({
@@ -18,3 +19,11 @@ export const doctorsFormSchema = z.object({
 export type DoctorFormData = z.infer<typeof doctorsFormSchema>;
 
 export const doctorValidator = new GenericValidator<DoctorFormData>(doctorsFormSchema);
+
+export const updateDoctorSchema = doctorsFormSchema.extend({
+  id: z.string(),
+});
+
+export type UpdateDoctorData = z.infer<typeof updateDoctorSchema>;
+
+export const updateDoctorValidator = new GenericValidator<UpdateDoctorRequest>(updateDoctorSchema);

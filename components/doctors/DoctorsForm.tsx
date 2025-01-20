@@ -1,6 +1,5 @@
 "use client";
 
-import FormMessage from "@/components/forms/FormMessage";
 import PictureField from "@/components/forms/PictureField";
 import SubmitButton from "@/components/forms/SubmitButton";
 import TextareaField from "@/components/forms/TextareaField";
@@ -10,6 +9,7 @@ import TestDoctorFillWithRandomData from "@/components/testing/TestDoctorFillWit
 import { Form } from "@/components/ui/form";
 import { getImageLink } from "@/lib/actions/getImageLink";
 import { createDoctor } from "@/server/actions/createDoctor";
+import { updateDoctor } from "@/server/actions/updateDoctor";
 import { DoctorFormData, doctorsFormSchema } from "@/server/adapters/zod/doctorValidator";
 import { currentPictureName } from "@/server/config/constants";
 import { displayError } from "@/server/config/errors";
@@ -67,7 +67,6 @@ export default function DoctorsForm({
   }, [doctor, form]);
 
   async function onSubmit(data: DoctorFormData) {
-    console.log("🚀 ~ data:", data);
     setMessage("");
     const formData = objectToFormData(data);
     try {
@@ -78,10 +77,16 @@ export default function DoctorsForm({
           return;
         }
         toast("Doctor created.");
-        router.push("/admin/doctors");
       } else if (mode === "update") {
-        // todo
+        formData.append("id", doctor.id);
+        const updateResult = await updateDoctor(formData);
+        if (!updateResult.ok) {
+          setMessage(displayError(updateResult));
+          return;
+        }
+        toast("Doctor updated.");
       }
+      router.push("/admin/doctors");
     } catch (error) {
       console.log(error);
       setMessage(displayError());

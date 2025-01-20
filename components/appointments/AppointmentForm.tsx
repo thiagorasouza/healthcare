@@ -21,7 +21,7 @@ import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 import { SearchAndSelectField } from "@/components/forms/SearchAndSelectField";
 import { DoctorModel } from "@/server/domain/models/doctorModel";
-import { getDoctors } from "@/server/actions/getDoctors.bypass";
+import { listDoctors } from "@/server/actions/listDoctors.bypass";
 import { PatientModel } from "@/server/domain/models/patientModel";
 import { listPatients } from "@/server/actions/listPatients.bypass";
 import { createAppointment } from "@/server/actions/createAppointment";
@@ -130,7 +130,7 @@ export function AppointmentForm({
 
   async function loadDoctors() {
     try {
-      const doctorsResult = await getDoctors();
+      const doctorsResult = await listDoctors();
       if (!doctorsResult.ok) throw doctorsResult.error;
 
       const doctors = doctorsResult.value;
