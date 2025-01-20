@@ -21,6 +21,10 @@ export const allowedFileTypes = ["application/pdf"];
 export const allowedFileTypesTextual = ["PDF"];
 export const maxFileSize = 5 * 1024 * 1024; // 5 MB
 
+export const allowedImageTypes = ["image/png", "image/jpeg", "image/gif"];
+export const maxImageSize = 5 * 1024 * 1024; // 5 MB
+export const currentPictureName = "___current___.jpg";
+
 // Minimum appointment duration in minutes
 export const MIN_DURATION = 15;
 export const DURATION_UNIT = "minutes";

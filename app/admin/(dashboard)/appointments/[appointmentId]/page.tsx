@@ -41,7 +41,7 @@ export default function EditAppointmentPage({ params }: { params: { appointmentI
 
   return (
     <div className="mx-auto w-full max-w-[600px] space-y-6">
-      <AdminBreadcrumbWithBackLink replace={appointmentId} backLink="/appointments" />
+      <AdminBreadcrumbWithBackLink replace={appointmentId} backLink="/admin/appointments" />
       <DefaultCard
         title="Edit Appointment"
         description="Change appointment details, select another doctor or patient"

@@ -1,6 +1,6 @@
 "use client";
 
-import AdminBreadcrumb from "@/components/admin/AdminBreadcrumb";
+import { AdminBreadcrumb } from "@/components/admin/AdminBreadcrumb";
 import { DoctorsColumns } from "@/components/doctors/DoctorsColumns";
 import { DataTable } from "@/components/shared/DataTable";
 import DeleteDialog from "@/components/shared/DeleteDialog";

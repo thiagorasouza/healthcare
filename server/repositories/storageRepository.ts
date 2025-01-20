@@ -3,6 +3,8 @@ import { FileModel } from "@/server/domain/models/fileModel";
 import { NotFoundFailure, ServerFailure } from "@/server/useCases/shared/failures";
 
 export interface StorageRepositoryInterface {
-  create: (file: File) => Promise<Success<FileModel> | ServerFailure>;
-  get: (id: string) => Promise<Success<FileModel> | NotFoundFailure>;
+  createDocument: (file: File) => Promise<Success<FileModel> | ServerFailure>;
+  getDocument: (id: string) => Promise<Success<FileModel> | NotFoundFailure>;
+  createImage: (file: File) => Promise<Success<FileModel> | ServerFailure>;
+  getImage: (id: string) => Promise<Success<FileModel> | NotFoundFailure>;
 }

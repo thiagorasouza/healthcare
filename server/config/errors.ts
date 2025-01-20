@@ -25,7 +25,7 @@ export const errorMsgs = {
     "Our servers failed while trying to complete your request. If this error keeps popping up, please try again later.",
   [InvalidCredentialsFailure.name]: "Invalid email or password.",
   [ForbiddenInTestingFailure.name]:
-    "For safety reasons, testing users cannot delete data. Try editing instead.",
+    "To keep the demo usable, testing users cannot create doctors or delete data.",
 };
 
 export const displayError = <T>(failure?: Failure<T>): string => {

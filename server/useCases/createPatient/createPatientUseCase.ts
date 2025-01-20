@@ -17,7 +17,7 @@ export class CreatePatientUseCase implements UseCase {
   ) {}
 
   async execute(request: PatientData): Promise<Success<PatientModel> | ServerFailure> {
-    const fileUploadResult = await this.storageRepository.create(request.identification);
+    const fileUploadResult = await this.storageRepository.createDocument(request.identification);
     if (!fileUploadResult.ok) {
       return fileUploadResult;
     }

@@ -16,7 +16,6 @@ import { deleteAppointment } from "@/server/actions/deleteAppointment.bypass";
 import { listAppointments } from "@/server/actions/listAppointments";
 import { displayError } from "@/server/config/errors";
 import { AppointmentHydrated } from "@/server/domain/models/appointmentHydrated";
-import { ForbiddenInTestingFailure } from "@/server/useCases/shared/failures/forbiddenInTestingFailure";
 import { displayDate, displayDuration, displayTime } from "@/server/useCases/shared/helpers/date";
 import { objectToFormData } from "@/server/useCases/shared/helpers/utils";
 import { PlusCircle, SquarePen, Trash2 } from "lucide-react";
@@ -131,7 +130,7 @@ export default function AppointmentsTable() {
                   Delete
                 </Button>
                 <Button size="sm" asChild>
-                  <Link href={`/admin/appointments/${ap.id}/edit`}>
+                  <Link href={`/admin/appointments/${ap.id}`}>
                     <SquarePen className="h-4 w-4" />
                     Edit
                   </Link>

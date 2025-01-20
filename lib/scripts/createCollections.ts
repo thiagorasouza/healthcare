@@ -17,7 +17,6 @@ async function createDoctorCollection() {
     await databases.createStringAttribute(dbId, colId, "specialty", 100, true);
     await databases.createStringAttribute(dbId, colId, "bio", 500, true);
     await databases.createStringAttribute(dbId, colId, "pictureId", 100, true);
-    await databases.createStringAttribute(dbId, colId, "authId", 100, true);
 
     console.log("Doctors collection created");
   } catch (error) {

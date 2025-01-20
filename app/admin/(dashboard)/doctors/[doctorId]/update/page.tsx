@@ -30,7 +30,7 @@ export default async function DoctorsUpdatePage({ params }: { params: { doctorId
         <DoctorsForm
           title="Update Doctor"
           description="Update this doctor and the user account associated with it"
-          doctorData={doctor}
+          doctor={doctor}
           action={updateDoctor}
         />
       ) : (

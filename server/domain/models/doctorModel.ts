@@ -6,5 +6,4 @@ export interface DoctorModel {
   specialty: string;
   bio: string;
   pictureId: string;
-  authId: string;
 }

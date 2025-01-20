@@ -8,17 +8,35 @@ import { StorageRepositoryInterface } from "@/server/repositories";
 
 export class StorageRepository implements StorageRepositoryInterface {
   storage: Storage;
-  bucketId: string;
+  docsBucketId: string;
+  imagesBucketId: string;
 
   public constructor() {
     this.storage = storage;
-    this.bucketId = env.docsBucketId;
+    this.docsBucketId = env.docsBucketId;
+    this.imagesBucketId = env.imagesBucketId;
   }
 
-  public async create(file: File) {
+  public async createDocument(file: File) {
+    return await this.create(this.docsBucketId, file);
+  }
+
+  public async getDocument(id: string) {
+    return await this.get(this.docsBucketId, id);
+  }
+
+  public async createImage(file: File) {
+    return await this.create(this.imagesBucketId, file);
+  }
+
+  public async getImage(id: string) {
+    return await this.get(this.imagesBucketId, id);
+  }
+
+  protected async create(bucket: string, file: File) {
     try {
       const result = (await this.storage.createFile(
-        this.bucketId,
+        bucket,
         ID.unique(),
         file,
       )) as AppwritifyFile<FileModel>;
@@ -30,9 +48,9 @@ export class StorageRepository implements StorageRepositoryInterface {
     }
   }
 
-  public async get(id: string) {
+  protected async get(bucket: string, id: string) {
     try {
-      const result = (await this.storage.getFile(this.bucketId, id)) as AppwritifyFile<FileModel>;
+      const result = (await this.storage.getFile(bucket, id)) as AppwritifyFile<FileModel>;
       return new Success(this.map(result));
     } catch (error) {
       console.log(error);
