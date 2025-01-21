@@ -6,11 +6,11 @@ import DefaultCard from "@/components/shared/DefaultCard";
 import ErrorCard from "@/components/shared/ErrorCard";
 import { LoadingSpinner } from "@/components/ui/loading-spinner";
 import { objectToFormData } from "@/lib/utils";
-import { getDoctor } from "@/server/actions/getDoctor";
+import { getDoctor } from "@/server/actions/getDoctor.bypass";
 import { DoctorModel } from "@/server/domain/models/doctorModel";
 import { useEffect, useState } from "react";
 
-export default function DoctorsUpdatePage({ params }: { params: { doctorId: string } }) {
+export default function PatientEditPage({ params }: { params: { doctorId: string } }) {
   const { doctorId } = params;
   const [doctor, setDoctor] = useState<DoctorModel | "error">();
 
@@ -42,10 +42,7 @@ export default function DoctorsUpdatePage({ params }: { params: { doctorId: stri
   return (
     <div className="mx-auto w-full max-w-[600px] space-y-6">
       <AdminBreadcrumbWithBackLink backLink="/admin/doctors" />
-      <DefaultCard
-        title="Edit Doctor"
-        description="Create a new doctor and a user account associated with it"
-      >
+      <DefaultCard title="Edit Doctor" description="Modify this doctor's details">
         {loading ? (
           <LoadingSpinner size={24} className="mx-auto" />
         ) : (
@@ -54,28 +51,4 @@ export default function DoctorsUpdatePage({ params }: { params: { doctorId: stri
       </DefaultCard>
     </div>
   );
-
-  // return (
-  //   <div className="mx-auto w-full max-w-[600px]">
-  //     <div className="mb-3 flex items-center">
-  //       {doctor && <AdminBreadcrumb replace={doctorId} replacement={doctor.name} />}
-  //       <Button variant="outline" className="ml-auto">
-  //         <Link href="/admin/doctors" className="flex items-center">
-  //           <ArrowLeft className="mr-2 h-4 w-4" />
-  //           Back
-  //         </Link>
-  //       </Button>
-  //     </div>
-  //     {result.success && doctor ? (
-  //       <DoctorsForm
-  //         title="Update Doctor"
-  //         description="Update this doctor and the user account associated with it"
-  //         doctor={doctor}
-  //         action={updateDoctor}
-  //       />
-  //     ) : (
-  //       <ErrorCard text="Doctor not found" />
-  //     )}
-  //   </div>
-  // );
 }

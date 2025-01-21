@@ -20,6 +20,7 @@ export const idLabels = {
 export const allowedFileTypes = ["application/pdf"];
 export const allowedFileTypesTextual = ["PDF"];
 export const maxFileSize = 5 * 1024 * 1024; // 5 MB
+export const currentDocumentName = "___current___.pdf";
 
 export const allowedImageTypes = ["image/png", "image/jpeg", "image/gif"];
 export const maxImageSize = 5 * 1024 * 1024; // 5 MB

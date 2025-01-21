@@ -4,7 +4,7 @@ import { PatientData } from "@/server/domain/models/patientData";
 import { GenericValidator } from "@/server/adapters/zod/genericValidator";
 import { z } from "zod";
 
-export const patientsZodSchema = z.object({
+export const patientFormSchema = z.object({
   name: z.string().min(2).max(50),
   email: z.string().email(),
   phone: z.string().refine((val) => /^\+[0-9]{5,15}$/.test(val)),
@@ -28,4 +28,27 @@ export const patientsZodSchema = z.object({
     .refine((val) => val === true, { message: "You must agree to continue" }),
 });
 
-export const patientValidator = new GenericValidator<PatientData>(patientsZodSchema);
+export const patientDefaultValues = {
+  name: "",
+  email: "",
+  phone: "",
+  birthdate: undefined,
+  gender: undefined,
+  address: "",
+  insuranceProvider: "",
+  insuranceNumber: "",
+  identificationType: undefined,
+  identificationNumber: "",
+  identification: undefined,
+  usageConsent: undefined,
+  privacyConsent: undefined,
+};
+
+export const updatePatientSchema = patientFormSchema.extend({
+  id: z.string(),
+});
+
+export type UpdatePatientData = z.infer<typeof updatePatientSchema>;
+
+export const patientValidator = new GenericValidator<PatientData>(patientFormSchema);
+export const updatePatientValidator = new GenericValidator<UpdatePatientData>(updatePatientSchema);

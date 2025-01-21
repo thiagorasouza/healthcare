@@ -1,20 +1,33 @@
 "use client";
 
-import PatientsForm from "@/components/patients/PatientForm";
+import { AdminBreadcrumbWithBackLink } from "@/components/admin/AdminBreadcrumbWithBackLink";
 import DefaultCard from "@/components/shared/DefaultCard";
-import { PatientParsedData } from "@/lib/schemas/patientsSchema";
+import PatientForm from "@/components/patients/PatientForm";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { patientDefaultValues, patientFormSchema } from "@/server/adapters/zod/patientValidator";
+import { useRouter } from "next/navigation";
 import { toast } from "sonner";
+import { PatientData } from "@/server/domain/models/patientData";
 
-export default function CreatePatientsPage() {
-  function onSuccess(data: PatientParsedData) {
-    const name = data.name;
-    toast(`Patient ${name} successfully created.`);
+export default function PatientCreatePage() {
+  const router = useRouter();
+
+  const form = useForm<PatientData>({
+    resolver: zodResolver(patientFormSchema),
+    defaultValues: patientDefaultValues,
+  });
+
+  function onPatientSaved() {
+    toast("Patient saved successfully.");
+    router.push("/admin/patients");
   }
 
   return (
-    <div className="mx-auto max-w-3xl">
-      <DefaultCard title="New Patient" description="Create a new patient">
-        {/* <PatientsForm action={createPatient} onPatientSaved={onSuccess} /> */}
+    <div className="mx-auto w-full max-w-[600px] space-y-6">
+      <AdminBreadcrumbWithBackLink backLink="/admin/patients" />
+      <DefaultCard title="Create Patient" description="Fill the form to create a new patient">
+        <PatientForm form={form} mode="create" onPatientSaved={onPatientSaved} />
       </DefaultCard>
     </div>
   );

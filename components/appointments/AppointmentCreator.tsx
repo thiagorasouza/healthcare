@@ -171,7 +171,9 @@ export default function AppointmentCreator({ doctors, state, dispatch }: Appoint
             onBookClick={onBookClick}
             className="hidden px-1 md:px-3 xl:block"
           />
-          <PatientForm mode="create" form={form} onPatientSaved={onPatientSaved} />
+          <div className="relative flex-grow p-2 xl:p-6">
+            <PatientForm mode="create" form={form} onPatientSaved={onPatientSaved} />
+          </div>
         </div>
       </div>
     );
@@ -182,7 +184,7 @@ export default function AppointmentCreator({ doctors, state, dispatch }: Appoint
       <div className="md:py-3 md:pb-5 xl:py-4 xl:pb-7">
         {loading && <SavingOverlay />}
         <Header title="Summary" onBackClick={onBackClick} />
-        {message && <ErrorDialog message={message} />}
+        <ErrorDialog message={message} setMessage={setMessage} />
         <SummaryCard
           doctor={state.doctor}
           slot={state.slot}

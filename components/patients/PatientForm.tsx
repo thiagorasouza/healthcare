@@ -23,6 +23,7 @@ import { createPatient } from "@/server/actions/createPatient";
 import { ErrorDialog } from "@/components/shared/ErrorDialog";
 import { allowedFileTypes, maxFileSize } from "@/server/config/constants";
 import { SavingOverlay } from "@/components/shared/SavingOverlay";
+import { updatePatient } from "@/server/actions/updatePatient";
 
 export interface CreatePatientProps {
   mode: "create";
@@ -66,9 +67,9 @@ export default function PatientForm({
       form.setValue("identification", mockSizeZeroPDF(fileName), {
         shouldValidate: true,
       });
-
-      getIdentification();
     };
+
+    getIdentification();
   }, [form, mode, patient?.identificationId]);
 
   async function fillWithTestingData() {
@@ -81,19 +82,23 @@ export default function PatientForm({
       setMessage("");
       setLoading(true);
       const formData = objectToFormData(data);
-
       if (mode === "create") {
-        const createPatientResult = await createPatient(formData);
-        // console.log("🚀 ~ createPatientResult:", createPatientResult);
-
-        if (!createPatientResult.ok) {
-          setMessage(displayError(createPatientResult));
+        const createResult = await createPatient(formData);
+        if (!createResult.ok) {
+          setMessage(displayError(createResult));
           return;
         }
 
-        onPatientSaved(createPatientResult.value);
+        onPatientSaved(createResult.value);
       } else if (mode === "update") {
-        // TODO
+        formData.append("id", patient.id);
+        const updateResult = await updatePatient(formData);
+        if (!updateResult.ok) {
+          setMessage(displayError(updateResult));
+          return;
+        }
+
+        onPatientSaved(updateResult.value);
       }
     } catch (error) {
       console.log(error);
@@ -105,10 +110,10 @@ export default function PatientForm({
   }
 
   return (
-    <div className="relative flex-grow p-2 xl:p-6">
+    <>
       {loading && <SavingOverlay />}
       <Form {...form}>
-        {message && <ErrorDialog message={message} />}
+        <ErrorDialog message={message} setMessage={setMessage} />
         <TestingOption
           feature="Fill form with testing data"
           onClick={fillWithTestingData}
@@ -219,6 +224,6 @@ export default function PatientForm({
           <SubmitButton label="Save" form={form} />
         </form>
       </Form>
-    </div>
+    </>
   );
 }
