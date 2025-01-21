@@ -13,7 +13,7 @@ import { useEffect, useState } from "react";
 import { objectToFormData } from "@/lib/utils";
 import DateField from "@/components/forms/DateField";
 import { mockPatientData } from "@/server/domain/mocks/patient.mock";
-import { TestingOption } from "@/components/shared/TestingOption";
+import { TestingOption } from "@/components/testing/TestingOption";
 import { PatientData } from "@/server/domain/models/patientData";
 import { PatientModel } from "@/server/domain/models/patientModel";
 import { getFile } from "@/server/actions/getFile.bypass";

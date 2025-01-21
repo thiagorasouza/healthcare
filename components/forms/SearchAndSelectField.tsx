@@ -1,5 +1,3 @@
-import { SelectedEntity } from "@/components/forms/SelectedEntity";
-import ErrorCard from "@/components/shared/ErrorCard";
 import {
   Command,
   CommandEmpty,
@@ -20,8 +18,9 @@ import { Popover, PopoverContent } from "@/components/ui/popover";
 import { useDebouncedCallback } from "@/lib/hooks/useDebouncedCallback";
 import { cn } from "@/lib/utils";
 import { Anchor } from "@radix-ui/react-popover";
-import { Search } from "lucide-react";
-import { useEffect, useState } from "react";
+import { ArrowUpRight, Search, UserIcon } from "lucide-react";
+import Link from "next/link";
+import { memo, useEffect, useState } from "react";
 import { UseFormReturn } from "react-hook-form";
 
 type KeysWithStringValues<T> = {
@@ -89,6 +88,32 @@ export function SearchAndSelectField<Entity extends HasId>({
     />
   );
 }
+
+// Memoized
+const SelectedEntity = memo(function SelectedEntity({
+  link,
+  text,
+}: {
+  link?: string;
+  text?: string;
+}) {
+  return (
+    <div className="border-1 flex w-full items-center gap-2 rounded-md border border-input bg-accent p-3 text-sm">
+      <UserIcon className="h-4 w-4" />
+      <p>{text || "Nothing selected."}</p>
+      {link && (
+        <Link
+          href={link}
+          target="_blank"
+          className="group ml-auto flex cursor-pointer items-center gap-2 pt-[2px]"
+        >
+          <p className="hidden text-xs uppercase md:block">VIEW</p>
+          <ArrowUpRight className="h-4 w-4 transition-transform group-hover:-translate-y-1 group-hover:translate-x-1" />
+        </Link>
+      )}
+    </div>
+  );
+});
 
 export interface SearchEntityProps<Entity extends HasId> {
   form: UseFormReturn<any>;

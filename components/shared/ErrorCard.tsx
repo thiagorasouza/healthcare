@@ -24,10 +24,17 @@ export default function ErrorCard({
           <ServerOff className="mr-3 h-5 w-5 text-destructive" />
           {text}
         </div>
-        <Button size="sm" variant="outline" className="flex w-fit" onClick={() => router.refresh()}>
-          <RefreshCcw className="mr-1 h-4 w-4" />
-          Try again
-        </Button>
+        {refresh && (
+          <Button
+            size="sm"
+            variant="outline"
+            className="flex w-fit"
+            onClick={() => router.refresh()}
+          >
+            <RefreshCcw className="mr-1 h-4 w-4" />
+            Try again
+          </Button>
+        )}
       </CardContent>
     </Card>
   );

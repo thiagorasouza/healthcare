@@ -1,7 +1,7 @@
 "use client";
 
 import { AdminBreadcrumbWithBackLink } from "@/components/admin/AdminBreadcrumbWithBackLink";
-import DoctorsForm from "@/components/doctors/DoctorsForm";
+import DoctorForm from "@/components/doctors/DoctorForm";
 import DefaultCard from "@/components/shared/DefaultCard";
 import ErrorCard from "@/components/shared/ErrorCard";
 import { LoadingSpinner } from "@/components/ui/loading-spinner";
@@ -46,7 +46,7 @@ export default function PatientEditPage({ params }: { params: { doctorId: string
         {loading ? (
           <LoadingSpinner size={24} className="mx-auto" />
         ) : (
-          <DoctorsForm mode="update" doctor={doctor} />
+          <DoctorForm mode="update" doctor={doctor} />
         )}
       </DefaultCard>
     </div>

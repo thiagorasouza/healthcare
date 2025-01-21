@@ -1,6 +1,6 @@
 "use server";
 
-import { MobileMenu } from "@/components/landing/MobileMenu";
+import { MobileMenu } from "@/components/home/MobileMenu";
 import { landingNavbarLinks } from "@/lib/constants";
 import { Calendar, CalendarDays } from "lucide-react";
 import Image from "next/image";

@@ -31,7 +31,7 @@ export interface UpdateDoctorFormProps {
   doctor: DoctorModel;
 }
 
-export default function DoctorsForm({
+export default function DoctorForm({
   doctor,
   mode,
 }: CreateDoctorFormProps | UpdateDoctorFormProps) {
