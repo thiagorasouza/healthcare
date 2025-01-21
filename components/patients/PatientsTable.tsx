@@ -11,55 +11,53 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { getImageLink } from "@/lib/actions/getImageLink";
 import { useDeleteDialog } from "@/lib/hooks/useDeleteDialog";
-import { deleteDoctor } from "@/server/actions/deleteDoctor.bypass";
-import { listDoctors } from "@/server/actions/listDoctors.bypass";
+import { deletePatient } from "@/server/actions/deletePatient.bypass";
+import { listPatients } from "@/server/actions/listPatients.bypass";
 import { displayError } from "@/server/config/errors";
-import { DoctorModel } from "@/server/domain/models/doctorModel";
+import { PatientModel } from "@/server/domain/models/patientModel";
 import { objectToFormData } from "@/server/useCases/shared/helpers/utils";
 import { CalendarDays, PlusCircle, SquarePen, Trash2 } from "lucide-react";
-import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
 
-export default function DoctorsTable() {
+export default function PatientsTable() {
   const { openDeleteDialog, deleteDialog } = useDeleteDialog(handleDelete);
-  const [doctors, setDoctors] = useState<DoctorModel[] | "error">();
+  const [patients, setPatients] = useState<PatientModel[] | "error">();
 
-  const loading = doctors === undefined;
-  const error = doctors === "error";
-  const empty = doctors?.length === 0;
+  const loading = patients === undefined;
+  const error = patients === "error";
+  const empty = patients?.length === 0;
 
-  async function loadDoctors() {
+  async function loadPatients() {
     try {
-      const result = await listDoctors();
+      const result = await listPatients();
       if (!result.ok) {
-        setDoctors("error");
+        setPatients("error");
       } else {
-        setDoctors(result.value);
+        setPatients(result.value);
       }
     } catch (error) {
       console.log(error);
-      setDoctors("error");
+      setPatients("error");
     }
   }
 
   useEffect(() => {
-    loadDoctors();
+    loadPatients();
   }, []);
 
   async function handleDelete(id: string) {
     try {
-      const deleteResult = await deleteDoctor(objectToFormData({ id }));
+      const deleteResult = await deletePatient(objectToFormData({ id }));
       if (!deleteResult.ok) {
         toast(displayError(deleteResult));
         return;
       }
 
-      toast(`Doctor deleted successfully.`);
-      loadDoctors();
+      toast(`Patient deleted successfully.`);
+      loadPatients();
     } catch (error) {
       console.log(error);
     }
@@ -74,7 +72,7 @@ export default function DoctorsTable() {
   } else if (empty) {
     return (
       <>
-        <p>No doctors yet.</p>
+        <p>No patients yet.</p>
         <Button asChild className="mt-6">
           <Link href="/admin/appointments/create">
             <PlusCircle className="mr-2 h-4 w-4" />
@@ -84,7 +82,7 @@ export default function DoctorsTable() {
       </>
     );
   } else if (error) {
-    return <ErrorCard text="Unable to query for doctors at this time. Please try again later." />;
+    return <ErrorCard text="Unable to query for patients at this time. Please try again later." />;
   }
 
   return (
@@ -93,38 +91,30 @@ export default function DoctorsTable() {
       <Table>
         <TableHeader>
           <TableRow>
-            <TableHead>Picture</TableHead>
             <TableHead>Name</TableHead>
-            <TableHead>Specialty</TableHead>
-            <TableHead>Biography</TableHead>
+            <TableHead>Email</TableHead>
+            <TableHead>Phone</TableHead>
+            <TableHead>Insurance</TableHead>
             <TableHead className="text-right">Actions</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
-          {doctors.map((doctor) => (
-            <TableRow key={doctor.id}>
-              <TableCell>
-                <Image
-                  alt="doctor picture"
-                  className="aspect-square rounded-md object-cover"
-                  height="64"
-                  src={getImageLink(doctor.pictureId)}
-                  width="64"
-                />
-              </TableCell>
-              <TableCell>{doctor.name}</TableCell>
-              <TableCell>{doctor.specialty}</TableCell>
-              <TableCell>{doctor.bio}</TableCell>
+          {patients.map((patient) => (
+            <TableRow key={patient.id}>
+              <TableCell>{patient.name}</TableCell>
+              <TableCell>{patient.email}</TableCell>
+              <TableCell>{patient.phone}</TableCell>
+              <TableCell>{patient.insuranceProvider}</TableCell>
               <TableCell>
                 <div className="flex justify-center gap-2">
                   <Button size="sm" variant="outline" asChild>
-                    <Link target="_blank" href={`/admin/doctors/${doctor.id}/slots`}>
+                    <Link target="_blank" href={`/admin/patients/${patient.id}/appointments`}>
                       <CalendarDays className="h-4 w-4" />
-                      Slots
+                      Appointments
                     </Link>
                   </Button>
                   <Button size="sm" asChild>
-                    <Link href={`/admin/doctors/${doctor.id}`}>
+                    <Link href={`/admin/patients/${patient.id}`}>
                       <SquarePen className="h-4 w-4" />
                       Edit
                     </Link>
@@ -134,8 +124,8 @@ export default function DoctorsTable() {
                     variant="destructive"
                     onClick={() =>
                       openDeleteDialog({
-                        id: doctor.id,
-                        description: doctor.name,
+                        id: patient.id,
+                        description: patient.name,
                       })
                     }
                   >

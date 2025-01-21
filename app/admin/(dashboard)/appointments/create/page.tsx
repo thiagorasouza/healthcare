@@ -6,7 +6,7 @@ import DefaultCard from "@/components/shared/DefaultCard";
 
 export default async function CreateAppointmentPage() {
   return (
-    <div className="mx-auto w-full max-w-[600px]">
+    <div className="mx-auto w-full max-w-[600px] space-y-6">
       <AdminBreadcrumbWithBackLink backLink="/admin/appointments" />
       <DefaultCard
         title="Create Appointment"

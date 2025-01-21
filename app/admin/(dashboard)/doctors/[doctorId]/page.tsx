@@ -43,7 +43,7 @@ export default function DoctorsUpdatePage({ params }: { params: { doctorId: stri
     <div className="mx-auto w-full max-w-[600px] space-y-6">
       <AdminBreadcrumbWithBackLink backLink="/admin/doctors" />
       <DefaultCard
-        title="Create Doctor"
+        title="Edit Doctor"
         description="Create a new doctor and a user account associated with it"
       >
         {loading ? (
