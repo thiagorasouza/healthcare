@@ -2,10 +2,10 @@
 
 import DefaultCard from "@/components/shared/DefaultCard";
 import ErrorCard from "@/components/shared/ErrorCard";
+import { SearchDoctorForm } from "@/components/slots/SearchDoctorForm";
 import { DateTimePicker } from "@/components/ui/datetime-picker";
 import { LoadingSpinner } from "@/components/ui/loading-spinner";
 import { cn } from "@/lib/utils";
-import { getDoctor } from "@/server/actions/getDoctor.bypass";
 import { getPatterns } from "@/server/actions/getPatterns.bypass";
 import { getSlots } from "@/server/actions/getSlots";
 import { fullWeekdays } from "@/server/config/constants";
@@ -19,25 +19,22 @@ import {
   objectToFormData,
 } from "@/server/useCases/shared/helpers/utils";
 import { format } from "date-fns";
-import { CalendarDays, Clock, Fingerprint, Hourglass, Repeat2, Target } from "lucide-react";
-import { useEffect, useMemo, useState } from "react";
+import { CalendarDays, Clock, Hourglass, Repeat2, Target } from "lucide-react";
+import { useMemo, useState } from "react";
 
-export default function DoctorSlotsPage({ params }: { params: { doctorId: string } }) {
-  const { doctorId } = params;
+export default function SlotsPage() {
   const [doctor, setDoctor] = useState<DoctorModel | "error">();
   const [slots, setSlots] = useState<SlotsModel | "error">();
   const [patterns, setPatterns] = useState<PatternModel[] | "error">();
   const [selectedDate, setSelectedDate] = useState<Date>();
   const [selectedHour, setSelectedHour] = useState("");
+  const [loading, setLoading] = useState(false);
 
-  async function loadDoctorSlots() {
+  async function loadDoctorSlots(doctor: DoctorModel) {
+    setLoading(true);
     try {
-      const doctorResult = await getDoctor(objectToFormData({ id: doctorId }));
-      if (!doctorResult.ok) {
-        setDoctor("error");
-        return;
-      }
-      setDoctor(doctorResult.value);
+      const doctorId = doctor.id;
+      setDoctor(doctor);
 
       const slotsResult = await getSlots(
         objectToFormData({
@@ -45,7 +42,6 @@ export default function DoctorSlotsPage({ params }: { params: { doctorId: string
           startDate: new Date(),
         }),
       );
-      // console.log("🚀 ~ slotsResult:", slotsResult);
       if (!slotsResult.ok) {
         setSlots("error");
         return;
@@ -64,41 +60,45 @@ export default function DoctorSlotsPage({ params }: { params: { doctorId: string
       setDoctor("error");
       setSlots("error");
       setPatterns("error");
+    } finally {
+      setLoading(false);
     }
   }
 
-  useEffect(() => {
-    loadDoctorSlots();
-  }, []);
-
-  const loading = !doctor || !slots || !patterns;
+  const idle = !doctor || !slots || !patterns;
   const error = doctor === "error" || slots === "error" || patterns === "error";
 
   const dates = useMemo(() => {
-    if (loading || error) return [];
+    if (idle || error) return [];
     return [...slots.keys()];
-  }, [slots, error, loading]);
+  }, [slots, error, idle]);
 
   const hours = useMemo(() => {
     const dateStr = selectedDate && selectedDate.toISOString();
-    if (loading || error || !dateStr || !slots.has(dateStr)) return [];
+    if (idle || error || !dateStr || !slots.has(dateStr)) return [];
 
     const hours = slots.get(dateStr) as string[][];
 
     return hours;
-  }, [selectedDate, loading, error, slots]);
+  }, [selectedDate, idle, error, slots]);
 
   if (error) {
     return <ErrorCard text="There was an error while trying to load this page." />;
   }
 
   return (
-    <DefaultCard title="Doctor Slots" description="View this doctor slots">
-      {loading ? (
+    <DefaultCard
+      title="Slots"
+      description="Select a doctor to manage available slots"
+      className="mx-auto max-w-[800px]"
+    >
+      <SearchDoctorForm onSelect={loadDoctorSlots} className="mb-6" />
+      {loading && (
         <div className="flex items-center justify-center py-4">
           <LoadingSpinner />
         </div>
-      ) : (
+      )}
+      {!idle && !loading && (
         <div className="flex flex-col gap-6">
           <div className="flex flex-col gap-3">
             <p className="text-sm font-semibold">Patterns:</p>

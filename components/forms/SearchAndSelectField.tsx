@@ -23,10 +23,6 @@ import Link from "next/link";
 import { memo, useEffect, useState } from "react";
 import { UseFormReturn } from "react-hook-form";
 
-type KeysWithStringValues<T> = {
-  [K in keyof T]: T[K] extends string ? K : never;
-}[keyof T];
-
 interface HasId {
   id: string;
 }
@@ -45,6 +41,7 @@ export interface SearchAndSelectFieldProps<Entity extends HasId> {
   parameter: keyof Entity;
   makeText: (entity: Entity) => string;
   makeLink: (entity: Entity) => string;
+  onSelect?: (entity: Entity) => void;
   className?: string;
 }
 
@@ -57,6 +54,7 @@ export function SearchAndSelectField<Entity extends HasId>({
   parameter,
   makeText,
   makeLink,
+  onSelect,
   className,
 }: SearchAndSelectFieldProps<Entity>) {
   const [entity, setEntity] = useState<Entity | undefined>(defaultValue);
@@ -77,7 +75,10 @@ export function SearchAndSelectField<Entity extends HasId>({
                 entities={entities}
                 parameter={parameter}
                 makeText={makeText}
-                onSelect={setEntity}
+                onSelect={(entity) => {
+                  setEntity(entity);
+                  if (onSelect) onSelect(entity);
+                }}
               />
             </>
           </FormControl>
@@ -138,7 +139,7 @@ export function SearchEntity<Entity extends HasId>({
 
   const entitiesLoading = !entities;
 
-  // === SEARCHING PATIENTS ==
+  // === SEARCHING ENTITIES ==
   const searchEntities = useDebouncedCallback(
     (searchValue: string) => {
       if (!entities || searchValue.length === 0) {

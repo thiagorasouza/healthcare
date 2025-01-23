@@ -224,16 +224,7 @@ export function AppointmentForm({
             parameter="name"
             makeText={(doctor: DoctorModel) => `${doctor.name} | ${doctor.specialty}`}
             makeLink={(doctor: DoctorModel) => `/admin/doctors/${doctor.id}`}
-            // defaultValue={mockDoctor()}
           />
-          {/* <SelectedEntity
-            text={
-              appointment
-                ? `${appointment.doctor.name} | ${appointment.doctor.specialty}`
-                : "Select a doctor"
-            }
-            link={appointment ? `/admin/doctors/${appointment.doctor.id}` : "#"}
-          /> */}
           <DateField
             form={form}
             name="date"

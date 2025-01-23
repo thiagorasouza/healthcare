@@ -25,6 +25,10 @@ export const adminNavbarLinks = [
     href: "/admin/doctors",
   },
   {
+    label: "Slots",
+    href: "/admin/slots",
+  },
+  {
     label: "Patients",
     href: "/admin/patients",
   },
