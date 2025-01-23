@@ -15,7 +15,7 @@ export class PatternsRepository
     super(env.patternsCollectionId);
   }
 
-  public async getByDoctorId(doctorId: string) {
+  public async listByDoctorId(doctorId: string) {
     return this.listByField("doctorId", [doctorId]);
   }
 

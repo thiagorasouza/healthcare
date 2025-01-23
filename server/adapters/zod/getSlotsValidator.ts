@@ -1,5 +1,5 @@
 import { GenericValidator } from "@/server/adapters/zod/genericValidator";
-import { GetSlotsRequest } from "@/server/useCases/getDoctorSlots/getSlotsUseCase";
+import { GetSlotsRequest } from "@/server/useCases/getSlots/getSlotsUseCase";
 import { z } from "zod";
 
 export const getSlotsSchema = z.object({

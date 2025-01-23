@@ -11,12 +11,23 @@ export const identificationTypes: IdentificationType[] = [
   "driversLicense",
   "other",
 ];
+
 export const idLabels = {
   identityCard: "Identity Card",
   driversLicense: "Driver's License",
   passport: "Passport",
   other: "Other",
 };
+export const fullWeekdays = {
+  sun: "Sunday",
+  mon: "Monday",
+  tue: "Tuesday",
+  wed: "Wednesday",
+  thu: "Thursday",
+  fri: "Friday",
+  sat: "Saturday",
+};
+
 export const allowedFileTypes = ["application/pdf"];
 export const allowedFileTypesTextual = ["PDF"];
 export const maxFileSize = 5 * 1024 * 1024; // 5 MB

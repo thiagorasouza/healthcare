@@ -31,7 +31,7 @@ export class GetSlotsUseCase implements UseCase {
     try {
       const { doctorId, startDate } = request;
 
-      const patternsResult = await this.patternsRepository.getByDoctorId(doctorId);
+      const patternsResult = await this.patternsRepository.listByDoctorId(doctorId);
       if (!patternsResult.ok) {
         return new Success(new Map());
       }

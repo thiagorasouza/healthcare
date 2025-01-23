@@ -32,7 +32,7 @@ describe("PatternsRepository Test Suite", () => {
     const { sut } = makeSut();
 
     const doctorId = "non_existent_id";
-    const result = await sut.getByDoctorId(doctorId);
+    const result = await sut.listByDoctorId(doctorId);
 
     expect(result).toStrictEqual(new Success([]));
   });
@@ -43,7 +43,7 @@ describe("PatternsRepository Test Suite", () => {
     const patternId = patternCreated.id!;
     const doctorId = patternCreated.doctorId;
     const success = new Success<PatternModel[]>([{ ...patternMock, id: patternId }]);
-    const result = await sut.getByDoctorId(doctorId);
+    const result = await sut.listByDoctorId(doctorId);
 
     expect(result).toStrictEqual(success);
   });

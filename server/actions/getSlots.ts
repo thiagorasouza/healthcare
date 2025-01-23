@@ -4,8 +4,8 @@ import { AppointmentsRepository } from "@/server/adapters/appwrite/appointmentsR
 import { DoctorsRepository } from "@/server/adapters/appwrite/doctorsRepository";
 import { PatternsRepository } from "@/server/adapters/appwrite/patternsRepository";
 import { getSlotsValidator } from "@/server/adapters/zod/getSlotsValidator";
-import { GetSlotsController } from "@/server/useCases/getDoctorSlots/getSlotsController";
-import { GetSlotsUseCase } from "@/server/useCases/getDoctorSlots/getSlotsUseCase";
+import { GetSlotsController } from "@/server/useCases/getSlots/getSlotsController";
+import { GetSlotsUseCase } from "@/server/useCases/getSlots/getSlotsUseCase";
 
 export const getSlots = async (formData: FormData) => {
   const doctorsRepository = new DoctorsRepository();

@@ -93,7 +93,7 @@ export class UpdateAppointmentUseCase implements UseCase {
         current.doctorId !== doctorId ||
         current.startTime.toISOString() !== startTime.toISOString()
       ) {
-        const patternsResult = await this.patternsRepository.getByDoctorId(doctorId);
+        const patternsResult = await this.patternsRepository.listByDoctorId(doctorId);
         if (!patternsResult.ok) {
           return patternsResult;
         }

@@ -686,6 +686,7 @@ type DateTimePickerProps = {
   startMonth?: Date;
   endMonth?: Date;
   side?: Side;
+  noPopover?: boolean;
 } & Pick<CalendarProps, "locale" | "weekStartsOn" | "showWeekNumber" | "showOutsideDays">;
 
 type DateTimePickerRef = {
@@ -711,6 +712,7 @@ const DateTimePicker = React.forwardRef<DateTimePickerRef, DateTimePickerProps>(
       startMonth,
       endMonth,
       side,
+      noPopover = false,
       ...props
     },
     ref,
@@ -769,6 +771,31 @@ const DateTimePicker = React.forwardRef<DateTimePickerRef, DateTimePickerProps>(
     const fixedRange =
       !yearRange && endMonth && differenceInYears(new Date(), endMonth) === 0 ? 0 : 120;
 
+    const calendar = (
+      <Calendar
+        mode="single"
+        selected={value}
+        month={month}
+        onSelect={(date) => {
+          onSelect && onSelect(date);
+          setIsOpen(false);
+          handleSelect(date);
+        }}
+        onMonthChange={handleSelect}
+        type={type}
+        yearRange={fixedRange}
+        locale={locale}
+        disabledFn={disabledFn}
+        startMonth={startMonth}
+        endMonth={endMonth}
+        {...props}
+      />
+    );
+
+    if (noPopover) {
+      return calendar;
+    }
+
     return (
       <Popover open={isOpen} onOpenChange={setIsOpen}>
         <PopoverTrigger asChild disabled={disabled}>
@@ -792,24 +819,7 @@ const DateTimePicker = React.forwardRef<DateTimePickerRef, DateTimePickerProps>(
           </Button>
         </PopoverTrigger>
         <PopoverContent side={side} className="w-auto p-0">
-          <Calendar
-            mode="single"
-            selected={value}
-            month={month}
-            onSelect={(date) => {
-              onSelect && onSelect(date);
-              setIsOpen(false);
-              handleSelect(date);
-            }}
-            onMonthChange={handleSelect}
-            type={type}
-            yearRange={fixedRange}
-            locale={locale}
-            disabledFn={disabledFn}
-            startMonth={startMonth}
-            endMonth={endMonth}
-            {...props}
-          />
+          {calendar}
           {granularity !== "day" && (
             <div className="border-t border-border p-3">
               <TimePicker

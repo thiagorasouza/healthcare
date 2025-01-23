@@ -70,7 +70,7 @@ export class CreateAppointmentUseCase implements UseCase {
 
     const doctorUnavailableFailure = new DoctorUnavailableFailure(doctorId, startTime);
 
-    const doctorPatternsResult = await this.patternsRepository.getByDoctorId(doctorId);
+    const doctorPatternsResult = await this.patternsRepository.listByDoctorId(doctorId);
     // console.log("🚀 ~ doctorPatternsResult:", doctorPatternsResult);
     if (!doctorPatternsResult.ok) {
       return doctorUnavailableFailure;
