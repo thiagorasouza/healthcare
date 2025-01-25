@@ -25,12 +25,14 @@ import {
 } from "@/server/useCases/shared/helpers/utils";
 import { format } from "date-fns";
 import {
+  ArrowDown,
   ArrowRight,
   CalendarDays,
   CirclePlus,
   Clock,
   Hourglass,
   Repeat2,
+  SquarePen,
   Target,
   Trash2,
 } from "lucide-react";
@@ -99,16 +101,16 @@ export default function SlotsPage() {
     return hours;
   }, [selectedDate, idle, error, slots]);
 
-  function handlePatternClick(pattern: PatternModel) {
+  function editPatternClick(pattern: PatternModel) {
     setSelectedPattern(pattern);
     setEditDialogOpen(true);
   }
 
-  function handleNewPatternClick() {
+  function createPatternClick() {
     setCreateDialogOpen(true);
   }
 
-  function onPatternSaved(pattern: PatternModel) {
+  function onPatternSaved() {
     setEditDialogOpen(false);
     loadDoctorSlots(doctor as DoctorModel);
   }
@@ -172,18 +174,18 @@ export default function SlotsPage() {
           <div className="flex flex-col gap-6">
             <div className="flex flex-col gap-3">
               <p className="text-sm font-semibold">Patterns:</p>
-              <div className="flex flex-wrap gap-6">
+              <div className="grid grid-cols-2 items-start gap-6">
                 {patterns.map((pattern) => (
                   <Pattern
                     key={pattern.id}
                     pattern={pattern}
-                    onClick={handlePatternClick}
+                    onEditClick={editPatternClick}
                     openDeleteDialog={openDeleteDialog}
                   />
                 ))}
                 <div
                   className="group flex cursor-pointer items-center justify-center gap-2 rounded-md border px-8 py-4 text-sm shadow-md"
-                  onClick={handleNewPatternClick}
+                  onClick={createPatternClick}
                 >
                   <CirclePlus className="h-5 w-5 transition-all group-hover:scale-110" />
                   <div className="text-base font-semibold">New pattern</div>
@@ -192,7 +194,7 @@ export default function SlotsPage() {
             </div>
             <div className="flex gap-6">
               <div className="flex flex-col gap-3">
-                <p className="text-sm font-semibold">Dates:</p>
+                <p className="text-sm font-semibold">All Dates:</p>
                 <div className="w-max rounded-md border shadow-md">
                   <DateTimePicker
                     value={selectedDate}
@@ -225,18 +227,18 @@ export default function SlotsPage() {
 
 function Pattern({
   pattern,
-  onClick,
+  onEditClick,
   openDeleteDialog,
 }: {
   pattern: PatternModel;
-  onClick: (pattern: PatternModel) => void;
+  onEditClick: (pattern: PatternModel) => void;
   openDeleteDialog: ({ id, description }: { id: string; description: string }) => void;
 }) {
   const slotsNum = countSlotsInTimespan(pattern.startTime, pattern.endTime, pattern.duration);
   const recurring = pattern.recurring;
   const deleteDescription = `${format(pattern.startDate, "PPP")} pattern`;
   return (
-    <div className="flex overflow-hidden rounded-md border text-sm shadow-md">
+    <div className="flex flex-col overflow-hidden rounded-md border text-sm shadow-md">
       <div className="flex flex-col gap-2 p-4">
         <div className="flex items-center gap-2 font-semibold">
           <CalendarDays className="h-4 w-4" />
@@ -267,26 +269,39 @@ function Pattern({
           <Repeat2 className="h-4 w-4" />
           {recurring ? "Recurring" : "Non recurring"}
         </div>
-        <Button
-          size="sm"
-          variant="outline"
-          onClick={() =>
-            openDeleteDialog({
-              id: pattern.id,
-              description: deleteDescription,
-            })
-          }
-        >
-          <Trash2 className="h-4 w-4" />
-          Delete
-        </Button>
+        <div className="mt-4 flex gap-2">
+          <Button
+            size="sm"
+            // variant="outline"
+            className="flex-1"
+            onClick={() => onEditClick(pattern)}
+          >
+            <SquarePen className="h-4 w-4" />
+            Edit
+          </Button>
+          <Button
+            size="sm"
+            variant="outline"
+            onClick={() =>
+              openDeleteDialog({
+                id: pattern.id,
+                description: deleteDescription,
+              })
+            }
+            className="flex-1"
+          >
+            <Trash2 className="h-4 w-4" />
+            Delete
+          </Button>
+        </div>
       </div>
-      <div
-        onClick={() => onClick(pattern)}
-        className="ml-4 flex cursor-pointer items-center bg-muted px-2 transition-all hover:ml-0 hover:px-4"
+      {/* <div
+        onClick={() => onViewClick(pattern)}
+        className="group absolute bottom-0 left-0 right-0 flex w-full cursor-pointer items-center justify-center gap-2 bg-muted py-2 transition-all hover:py-10"
       >
-        <ArrowRight className="h-3.5 w-3.5" />
-      </div>
+        <ArrowDown className="h-4 w-4" />
+        <p className="text-xs uppercase">View</p>
+      </div> */}
     </div>
   );
 }

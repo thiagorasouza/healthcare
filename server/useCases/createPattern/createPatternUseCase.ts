@@ -23,7 +23,7 @@ export class CreatePatternUseCase implements UseCase {
 
       const pattern = new Pattern(request);
       const storedPatterns = doctorResult.value;
-      console.log("🚀 ~ storedPatterns:", storedPatterns);
+      // console.log("🚀 ~ storedPatterns:", storedPatterns);
 
       for (const storedPattern of storedPatterns) {
         if (pattern.isConflicting(storedPattern)) {

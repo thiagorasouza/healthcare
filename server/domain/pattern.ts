@@ -1,12 +1,13 @@
-import { PatternData } from "@/lib/schemas/patternsSchema";
 import { getMinutesSinceMidnight } from "@/lib/utils";
+import { PatternFormData } from "@/server/adapters/zod/patternValidator";
 import { Weekday } from "@/server/domain/models/patternModel";
+import { getWeekday } from "@/server/useCases/shared/helpers/date";
 import { areIntervalsOverlapping } from "date-fns";
 
 export class Pattern {
-  private data: PatternData;
+  private data: PatternFormData;
 
-  public constructor(data: PatternData) {
+  public constructor(data: PatternFormData) {
     this.data = data;
   }
 
@@ -14,7 +15,7 @@ export class Pattern {
     return this.data;
   }
 
-  public isConflicting(newPattern: PatternData) {
+  public isConflicting(newPattern: PatternFormData) {
     const areDatesOverlapping = () => {
       return areIntervalsOverlapping(
         { start: this.data.startDate, end: this.data.endDate },
@@ -37,18 +38,21 @@ export class Pattern {
       return false;
     };
 
-    if (this.data.recurring && newPattern.recurring) {
-      // console.log("Recurring");
-      const conflictingWeekdays = this.data.weekdays.filter((weekday) =>
-        newPattern.weekdays.includes(weekday),
-      ) as Weekday[];
-      console.log("🚀 ~ conflictingWeekdays:", conflictingWeekdays);
+    const currentWeekdays = this.getWeekdaysArray(this.data);
+    const newWeekdays = this.getWeekdaysArray(newPattern);
 
-      if (conflictingWeekdays.length === 0) {
-        return false;
-      }
+    const conflictingWeekdays = currentWeekdays.filter((weekday) =>
+      newWeekdays.includes(weekday),
+    ) as Weekday[];
+
+    if (conflictingWeekdays.length === 0) {
+      return false;
     }
 
     return areDatesOverlapping() && areTimesOverlapping();
+  }
+
+  protected getWeekdaysArray(pattern: PatternFormData) {
+    return pattern.recurring ? pattern.weekdays : [getWeekday(pattern.startDate)];
   }
 }
