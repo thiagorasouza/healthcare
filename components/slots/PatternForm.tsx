@@ -9,6 +9,7 @@ import DrawerAnimation from "@/components/shared/DrawerAnimation";
 import { Form } from "@/components/ui/form";
 import { patternDefaultValues } from "@/lib/schemas/patternsSchema";
 import { objectToFormData } from "@/lib/utils";
+import { createPattern } from "@/server/actions/createPattern";
 import { updatePattern } from "@/server/actions/updatePattern";
 import { PatternFormData, patternFormSchema } from "@/server/adapters/zod/patternValidator";
 import { displayError } from "@/server/config/errors";
@@ -22,12 +23,14 @@ import { toast } from "sonner";
 
 export interface CreatePatternFormProps {
   mode: "create";
+  doctorId: string;
   pattern?: undefined;
   onSaved?: (pattern: PatternModel) => void;
 }
 
 export interface UpdatePatternFormProps {
   mode: "update";
+  doctorId?: undefined;
   pattern: PatternModel;
   onSaved?: (pattern: PatternModel) => void;
 }
@@ -36,11 +39,12 @@ export function PatternForm({
   pattern,
   mode,
   onSaved,
+  doctorId,
 }: CreatePatternFormProps | UpdatePatternFormProps) {
   const [message, setMessage] = useState("");
   const form = useForm<PatternFormData>({
     resolver: zodResolver(patternFormSchema),
-    defaultValues: pattern || patternDefaultValues,
+    defaultValues: pattern || { ...patternDefaultValues, doctorId },
   });
 
   const recurring = form.watch("recurring");
@@ -74,19 +78,26 @@ export function PatternForm({
     try {
       if (mode === "update") {
         formData.append("id", pattern.id);
-        formData.append("doctorId", pattern.doctorId);
-        // console.log("formData", [...formData.entries()]);
 
-        const patternResult = await updatePattern(formData);
-        if (!patternResult.ok) {
-          setMessage(displayError(patternResult));
+        const updateResult = await updatePattern(formData);
+        if (!updateResult.ok) {
+          setMessage(displayError(updateResult));
           return;
         }
 
         toast("Pattern updated.");
-        if (onSaved) onSaved(patternResult.value);
+        if (onSaved) onSaved(updateResult.value);
       } else if (mode === "create") {
-        console.log("data", data);
+        const createResult = await createPattern(formData);
+        console.log("🚀 ~ createResult:", createResult);
+
+        if (!createResult.ok) {
+          setMessage(displayError(createResult));
+          return;
+        }
+
+        toast("Pattern created.");
+        if (onSaved) onSaved(createResult.value);
       }
     } catch (error) {
       setMessage(displayError());

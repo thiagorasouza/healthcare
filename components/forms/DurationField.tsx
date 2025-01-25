@@ -7,13 +7,12 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { PatternData } from "@/lib/schemas/patternsSchema";
 import { UseFormReturn } from "react-hook-form";
 
 interface DurationFieldProps {
-  form: UseFormReturn<PatternData>;
+  form: UseFormReturn<any>;
   label: string;
-  name: keyof PatternData;
+  name: string;
   description: string;
 }
 

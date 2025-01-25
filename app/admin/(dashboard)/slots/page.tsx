@@ -5,12 +5,15 @@ import ErrorCard from "@/components/shared/ErrorCard";
 import { CreatePatternDialog } from "@/components/slots/CreatePatternDialog";
 import { EditPatternDialog } from "@/components/slots/EditPatternDialog";
 import { SearchDoctorForm } from "@/components/slots/SearchDoctorForm";
+import { Button } from "@/components/ui/button";
 import { DateTimePicker } from "@/components/ui/datetime-picker";
 import { LoadingSpinner } from "@/components/ui/loading-spinner";
-import { cn } from "@/lib/utils";
+import { useDeleteDialog } from "@/lib/hooks/useDeleteDialog";
+import { deletePattern } from "@/server/actions/deletePattern.bypass";
 import { getPatterns } from "@/server/actions/getPatterns.bypass";
 import { getSlots } from "@/server/actions/getSlots";
 import { fullWeekdays } from "@/server/config/constants";
+import { displayError } from "@/server/config/errors";
 import { DoctorModel } from "@/server/domain/models/doctorModel";
 import { PatternModel, Weekday } from "@/server/domain/models/patternModel";
 import { SlotsModel } from "@/server/domain/models/slotsModel";
@@ -29,8 +32,10 @@ import {
   Hourglass,
   Repeat2,
   Target,
+  Trash2,
 } from "lucide-react";
-import { ReactNode, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
+import { toast } from "sonner";
 
 export default function SlotsPage() {
   const [doctor, setDoctor] = useState<DoctorModel | "error">();
@@ -41,6 +46,7 @@ export default function SlotsPage() {
   const [loading, setLoading] = useState(false);
   const [editDialogOpen, setEditDialogOpen] = useState(false);
   const [createDialogOpen, setCreateDialogOpen] = useState(false);
+  const { openDeleteDialog, deleteDialog } = useDeleteDialog(handleDelete);
 
   async function loadDoctorSlots(doctor: DoctorModel) {
     setLoading(true);
@@ -109,6 +115,23 @@ export default function SlotsPage() {
 
   function onPatternCreated(pattern: PatternModel) {
     console.log("🚀 ~ pattern:", pattern);
+    setCreateDialogOpen(false);
+    loadDoctorSlots(doctor as DoctorModel);
+  }
+
+  async function handleDelete(id: string) {
+    try {
+      const deleteResult = await deletePattern(objectToFormData({ id }));
+      if (!deleteResult.ok) {
+        toast(displayError(deleteResult));
+        return;
+      }
+
+      toast("Pattern deleted successfully.");
+      loadDoctorSlots(doctor as DoctorModel);
+    } catch (error) {
+      console.log(error);
+    }
   }
 
   if (error) {
@@ -117,11 +140,14 @@ export default function SlotsPage() {
 
   return (
     <>
-      <CreatePatternDialog
-        open={createDialogOpen}
-        setOpen={setCreateDialogOpen}
-        onSaved={onPatternCreated}
-      />
+      {doctor && (
+        <CreatePatternDialog
+          open={createDialogOpen}
+          setOpen={setCreateDialogOpen}
+          onSaved={onPatternCreated}
+          doctorId={doctor.id}
+        />
+      )}
       {selectedPattern && (
         <EditPatternDialog
           pattern={selectedPattern}
@@ -130,6 +156,7 @@ export default function SlotsPage() {
           onSaved={onPatternSaved}
         />
       )}
+      {deleteDialog}
       <DefaultCard
         title="Slots"
         description="Select a doctor to manage available slots"
@@ -145,12 +172,17 @@ export default function SlotsPage() {
           <div className="flex flex-col gap-6">
             <div className="flex flex-col gap-3">
               <p className="text-sm font-semibold">Patterns:</p>
-              <div className="flex gap-6">
+              <div className="flex flex-wrap gap-6">
                 {patterns.map((pattern) => (
-                  <Pattern key={pattern.id} pattern={pattern} onClick={handlePatternClick} />
+                  <Pattern
+                    key={pattern.id}
+                    pattern={pattern}
+                    onClick={handlePatternClick}
+                    openDeleteDialog={openDeleteDialog}
+                  />
                 ))}
                 <div
-                  className="group flex cursor-pointer items-center justify-center gap-2 rounded-md border px-8 text-sm shadow-md"
+                  className="group flex cursor-pointer items-center justify-center gap-2 rounded-md border px-8 py-4 text-sm shadow-md"
                   onClick={handleNewPatternClick}
                 >
                   <CirclePlus className="h-5 w-5 transition-all group-hover:scale-110" />
@@ -194,44 +226,65 @@ export default function SlotsPage() {
 function Pattern({
   pattern,
   onClick,
+  openDeleteDialog,
 }: {
   pattern: PatternModel;
   onClick: (pattern: PatternModel) => void;
+  openDeleteDialog: ({ id, description }: { id: string; description: string }) => void;
 }) {
   const slotsNum = countSlotsInTimespan(pattern.startTime, pattern.endTime, pattern.duration);
   const recurring = pattern.recurring;
+  const deleteDescription = `${format(pattern.startDate, "PPP")} pattern`;
   return (
-    <div
-      className="group flex cursor-pointer overflow-hidden rounded-md border text-sm shadow-md"
-      onClick={() => onClick(pattern)}
-    >
-      <div className="flex flex-col gap-2 p-4 [&>div]:flex [&>div]:items-center [&_svg]:mr-3 [&_svg]:h-4 [&_svg]:w-4">
-        <div className="font-semibold">
-          <CalendarDays />
-          {format(pattern.startDate, "PPP")}
-          {recurring && <span>&rarr; {format(pattern.endDate, "PPP")}</span>}
+    <div className="flex overflow-hidden rounded-md border text-sm shadow-md">
+      <div className="flex flex-col gap-2 p-4">
+        <div className="flex items-center gap-2 font-semibold">
+          <CalendarDays className="h-4 w-4" />
+          <span>{format(pattern.startDate, "PPP")}</span>
+          {recurring && (
+            <>
+              <span>&rarr;</span>
+              <span>{format(pattern.endDate, "PPP")}</span>
+            </>
+          )}
         </div>
         {recurring && (
-          <div>
-            <Target />
+          <div className="flex items-center gap-3">
+            <Target className="h-4 w-4" />
             {formatList((pattern.weekdays as Weekday[]).map((w) => fullWeekdays[w]))}
           </div>
         )}
-        <div>
-          <Clock />
+        <div className="flex items-center gap-3">
+          <Clock className="h-4 w-4" />
           {getHoursStr(new Date(pattern.startTime))} &rarr; {getHoursStr(new Date(pattern.endTime))}{" "}
           ({slotsNum} slots per day)
         </div>
-        <div>
-          <Hourglass />
+        <div className="flex items-center gap-3">
+          <Hourglass className="h-4 w-4" />
           {pattern.duration} minutes each
         </div>
-        <div className="font-semibold">
-          <Repeat2 />
+        <div className="flex items-center gap-3 font-semibold">
+          <Repeat2 className="h-4 w-4" />
           {recurring ? "Recurring" : "Non recurring"}
         </div>
+        <Button
+          size="sm"
+          variant="outline"
+          onClick={() =>
+            openDeleteDialog({
+              id: pattern.id,
+              description: deleteDescription,
+            })
+          }
+        >
+          <Trash2 className="h-4 w-4" />
+          Delete
+        </Button>
       </div>
-      <div className="ml-4 flex items-center bg-muted px-1 transition-all group-hover:ml-0 group-hover:px-3">
+      <div
+        onClick={() => onClick(pattern)}
+        className="ml-4 flex cursor-pointer items-center bg-muted px-2 transition-all hover:ml-0 hover:px-4"
+      >
         <ArrowRight className="h-3.5 w-3.5" />
       </div>
     </div>
@@ -244,7 +297,7 @@ function Hours({ hours }: { hours: string[][] }) {
       {hours.map((hour, index) => (
         <li
           key={index}
-          className="w-[70px] cursor-pointer rounded-md border border-input px-3 py-2 transition-transform"
+          className="w-[70px] rounded-md border border-input px-3 py-2 transition-transform"
         >
           {hour[0]}
         </li>

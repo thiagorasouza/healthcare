@@ -1,15 +1,14 @@
 import { FormControl, FormDescription, FormField, FormItem, FormLabel } from "@/components/ui/form";
 import { Switch } from "@/components/ui/switch";
-import { PatternData } from "@/lib/schemas/patternsSchema";
 import { UseFormReturn } from "react-hook-form";
 
 interface ToggleFieldProps {
-  form: UseFormReturn<PatternData>;
+  form: UseFormReturn<any>;
   labelOn: string;
   descriptionOn: string;
   labelOff: string;
   descriptionOff: string;
-  name: keyof PatternData;
+  name: string;
 }
 
 export default function ToggleField({

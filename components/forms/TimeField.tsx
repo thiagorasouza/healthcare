@@ -7,13 +7,12 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import { PatternData } from "@/lib/schemas/patternsSchema";
 import { UseFormReturn } from "react-hook-form";
 
 interface TimeFieldProps {
-  form: UseFormReturn<PatternData>;
+  form: UseFormReturn<any>;
   label: string;
-  name: keyof PatternData;
+  name: string;
   description: string;
 }
 

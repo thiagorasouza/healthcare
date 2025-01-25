@@ -6,7 +6,7 @@ import { FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/comp
 import { PatternData, weekdays } from "@/lib/schemas/patternsSchema";
 import { capitalize } from "@/lib/utils";
 
-export function WeekdaysField({ form }: { form: UseFormReturn<PatternData> }) {
+export function WeekdaysField({ form }: { form: UseFormReturn<any> }) {
   return (
     <FormField
       control={form.control}

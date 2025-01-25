@@ -38,11 +38,13 @@ export class Pattern {
     };
 
     if (this.data.recurring && newPattern.recurring) {
+      // console.log("Recurring");
       const conflictingWeekdays = this.data.weekdays.filter((weekday) =>
         newPattern.weekdays.includes(weekday),
       ) as Weekday[];
+      console.log("🚀 ~ conflictingWeekdays:", conflictingWeekdays);
 
-      if (!conflictingWeekdays) {
+      if (conflictingWeekdays.length === 0) {
         return false;
       }
     }

@@ -1,5 +1,6 @@
 import { GenericValidator } from "@/server/adapters/zod/genericValidator";
 import { weekdays } from "@/server/config/constants";
+import { CreatePatternRequest } from "@/server/useCases/createPattern/createPatternUseCase";
 import { UpdatePatternRequest } from "@/server/useCases/updatePattern/updatePatternUseCase";
 import { differenceInMonths } from "date-fns";
 import { z } from "zod";
@@ -12,6 +13,7 @@ export const patternDefaultValues = {
   duration: 0,
   recurring: false,
   weekdays: [],
+  doctorId: undefined,
 };
 
 const isMultipleOf = (num: number, divisor: number) => num % divisor === 0;
@@ -42,13 +44,13 @@ const patternFormSchemaBase = z.object({
     (val) => (typeof val === "string" ? val.split(",") : val),
     z.array(z.string()),
   ),
+  doctorId: z.string(),
 });
 
 export type PatternFormData = z.infer<typeof patternFormSchemaBase>;
 
 export const updatePatternSchemaBase = patternFormSchemaBase.extend({
   id: z.string(),
-  doctorId: z.string(),
 });
 
 export type UpdatePatternData = z.infer<typeof updatePatternSchemaBase>;
@@ -113,9 +115,9 @@ const refinePatternSchema = (schema: typeof patternFormSchemaBase) =>
     });
 
 export const patternFormSchema = refinePatternSchema(patternFormSchemaBase);
-
 export const updatePatternSchema = refinePatternSchema(updatePatternSchemaBase);
 
+export const createPatternValidator = new GenericValidator<CreatePatternRequest>(patternFormSchema);
 export const updatePatternValidator = new GenericValidator<UpdatePatternRequest>(
   updatePatternSchema,
 );

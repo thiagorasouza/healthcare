@@ -19,6 +19,7 @@ interface TextFieldProps {
   description?: string;
   form: UseFormReturn<any>;
   className?: string;
+  hidden?: boolean;
 }
 
 const TextField = ({
@@ -29,6 +30,7 @@ const TextField = ({
   description,
   form,
   className,
+  hidden = false,
 }: TextFieldProps) => {
   return (
     <FormField
@@ -42,6 +44,7 @@ const TextField = ({
               <div className="flex items-center rounded-md border border-input pl-3">
                 {React.cloneElement(icon, { className: "h-4 w-4" })}
                 <Input
+                  hidden={hidden}
                   data-cy={name}
                   placeholder={placeholder}
                   readOnly={form.formState.isSubmitting}

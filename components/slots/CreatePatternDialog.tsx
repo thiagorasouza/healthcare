@@ -12,9 +12,15 @@ export interface CreatePatternDialogProps {
   open: boolean;
   setOpen: (open: boolean) => void;
   onSaved?: (pattern: PatternModel) => void;
+  doctorId: string;
 }
 
-export function CreatePatternDialog({ open, setOpen, onSaved }: CreatePatternDialogProps) {
+export function CreatePatternDialog({
+  open,
+  setOpen,
+  onSaved,
+  doctorId,
+}: CreatePatternDialogProps) {
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogContent>
@@ -22,7 +28,7 @@ export function CreatePatternDialog({ open, setOpen, onSaved }: CreatePatternDia
           <DialogTitle>Create Pattern</DialogTitle>
           <DialogDescription>Add slots for a single date or a recurring pattern</DialogDescription>
         </DialogHeader>
-        <PatternForm mode="create" onSaved={onSaved} />
+        <PatternForm mode="create" doctorId={doctorId} onSaved={onSaved} />
       </DialogContent>
     </Dialog>
   );
