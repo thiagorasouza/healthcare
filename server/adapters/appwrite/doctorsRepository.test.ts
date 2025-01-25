@@ -33,7 +33,7 @@ describe("DoctorsRepository Test Suite", () => {
     const { sut } = makeSut();
 
     const doctorId = "non_existent_id";
-    const failure = new NotFoundFailure(doctorId);
+    const failure = new NotFoundFailure("doctor");
     const result = await sut.getById(doctorId);
 
     expect(result).toStrictEqual(failure);

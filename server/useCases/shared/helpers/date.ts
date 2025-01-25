@@ -1,5 +1,5 @@
 import { DURATION_UNIT, weekdays } from "@/server/config/constants";
-import { differenceInMinutes, parse, set, startOfDay } from "date-fns";
+import { differenceInMinutes, getHours, getMinutes, parse, set, startOfDay } from "date-fns";
 
 export function getHoursStr(date: Date | string) {
   // console.log("🚀 ~ date:", date);
@@ -73,4 +73,21 @@ export function subtractTimeStrings(startTime: string, endTime: string): number 
   const difference = differenceInMinutes(end, start);
 
   return difference;
+}
+
+export function setDateKeepTime(originalDate: Date, newDate: Date) {
+  if (!originalDate) return newDate;
+
+  const hours = originalDate.getHours();
+  const minutes = originalDate.getMinutes();
+  const seconds = originalDate.getSeconds();
+  const milliseconds = originalDate.getMilliseconds();
+
+  return set(newDate, { hours, minutes, seconds, milliseconds });
+}
+
+export function getMinutesSinceMidnight(date: Date) {
+  const hours = getHours(date);
+  const minutes = getMinutes(date);
+  return hours * 60 + minutes;
 }

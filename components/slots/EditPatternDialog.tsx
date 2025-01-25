@@ -1,4 +1,4 @@
-import PatternForm from "@/components/slots/PatternForm";
+import { PatternForm } from "@/components/slots/PatternForm";
 import {
   Dialog,
   DialogContent,
@@ -6,41 +6,24 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { CreatePatternResult } from "@/lib/actions/createPattern";
-import { UpdatePatternResult } from "@/lib/actions/updatePattern";
-import { PatternDocumentSchema } from "@/lib/schemas/appwriteSchema";
+import { PatternModel } from "@/server/domain/models/patternModel";
 
-interface EditPatternDialogProps {
-  doctorId: string;
-  data: PatternDocumentSchema;
+export interface EditPatternDialogProps {
+  pattern: PatternModel;
   open: boolean;
-  onCloseClick: () => void;
-  onSaveClick: (form: FormData) => Promise<UpdatePatternResult>;
-  onSuccess: (patternData: PatternDocumentSchema) => void;
+  setOpen: (open: boolean) => void;
+  onSaved?: (pattern: PatternModel) => void;
 }
 
-export function EditPatternDialog({
-  doctorId,
-  data,
-  open,
-  onCloseClick,
-  onSaveClick,
-  onSuccess,
-}: EditPatternDialogProps) {
+export function EditPatternDialog({ pattern, open, setOpen, onSaved }: EditPatternDialogProps) {
   return (
-    <Dialog open={open} onOpenChange={onCloseClick}>
+    <Dialog open={open} onOpenChange={setOpen}>
       <DialogContent>
         <DialogHeader>
           <DialogTitle>Edit Pattern</DialogTitle>
-          <DialogDescription>Modify current pattern details</DialogDescription>
+          <DialogDescription>Modify current pattern parameters</DialogDescription>
         </DialogHeader>
-        <PatternForm
-          patternData={data}
-          doctorId={doctorId}
-          action={onSaveClick}
-          onSuccess={onSuccess}
-          submitLabel="Save"
-        />
+        <PatternForm mode="update" pattern={pattern} onSaved={onSaved} />
       </DialogContent>
     </Dialog>
   );

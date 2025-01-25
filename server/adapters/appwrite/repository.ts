@@ -66,7 +66,7 @@ export abstract class Repository<Model> implements RepositoryInterface<Model> {
       return new Success<Model>(this.map(result));
     } catch (error) {
       if (isAppwriteException(error) && error.type === "document_not_found") {
-        return new NotFoundFailure(id);
+        return new NotFoundFailure("document");
       }
 
       console.log(error);

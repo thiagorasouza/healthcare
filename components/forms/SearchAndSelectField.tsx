@@ -179,6 +179,7 @@ export function SearchEntity<Entity extends HasId>({
           placeholder={entitiesLoading ? "Please wait..." : "Type to search"}
           disabled={entitiesLoading || form.formState.isSubmitting}
           className="border-none focus-visible:outline-none focus-visible:ring-0 focus-visible:ring-offset-0"
+          autoComplete="off"
         />
       </Anchor>
       <PopoverContent className="popover-content p-0" onOpenAutoFocus={(e) => e.preventDefault()}>

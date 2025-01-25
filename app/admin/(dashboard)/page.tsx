@@ -24,7 +24,7 @@ export default async function DashboardPage() {
       <div className="space-y-4 md:space-y-8">
         <div className="grid gap-4 md:grid-cols-2 md:gap-8 lg:grid-cols-3">
           <DashboardStatsCard
-            title="Doctor"
+            title="Doctors"
             stats={doctorsCount}
             Icon={<Activity />}
             href="/admin/doctors"

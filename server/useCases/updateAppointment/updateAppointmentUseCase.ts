@@ -86,7 +86,7 @@ export class UpdateAppointmentUseCase implements UseCase {
         }
       }
 
-      const doctorUnavailableFailure = new DoctorUnavailableFailure(doctorId, startTime);
+      const doctorUnavailableFailure = new DoctorUnavailableFailure();
 
       // checks if slot is valid
       if (

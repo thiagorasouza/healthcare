@@ -1,10 +1,7 @@
 import { env } from "@/server/config/env";
 import { PatternModel, Weekday } from "@/server/domain/models/patternModel";
 import { Repository } from "@/server/adapters/appwrite/repository";
-import { Query } from "@/server/adapters/appwrite/nodeClient";
 import { Appwritify } from "@/server/adapters/appwrite/helpers";
-import { FoundSuccess } from "@/server/useCases/shared/successes/foundSuccess";
-import { NotFoundFailure } from "@/server/useCases/shared/failures/notFoundFailure";
 import { PatternsRepositoryInterface } from "@/server/repositories";
 
 export class PatternsRepository

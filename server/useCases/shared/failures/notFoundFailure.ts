@@ -1,7 +1,7 @@
 import { Failure } from "@/server/useCases/shared/core/failure";
 
-export class NotFoundFailure extends Failure<{ id: string }> {
-  constructor(id: string) {
-    super({ id });
+export class NotFoundFailure extends Failure<{ what: string }> {
+  constructor(what: string) {
+    super({ what });
   }
 }

@@ -3,7 +3,7 @@ import type { CalendarProps } from "@/components/ui/calendar";
 import { Input } from "@/components/ui/input";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { cn } from "@/lib/utils";
-import { add, differenceInYears, format, getMonth } from "date-fns";
+import { add, differenceInYears, format, getMonth, startOfDay } from "date-fns";
 import { type Locale, enUS } from "date-fns/locale";
 import { Calendar as CalendarIcon, ChevronLeft, ChevronRight } from "lucide-react";
 import { Clock } from "lucide-react";
@@ -720,22 +720,25 @@ const DateTimePicker = React.forwardRef<DateTimePickerRef, DateTimePickerProps>(
     const [isOpen, setIsOpen] = React.useState(false);
     const [month, setMonth] = React.useState<Date>(value ?? new Date());
     const buttonRef = useRef<HTMLButtonElement>(null);
-    /**
-     * carry over the current time when a user clicks a new day
-     * instead of resetting to 00:00
-     */
+
     const handleSelect = (newDay: Date | undefined) => {
       if (!newDay) return;
-      if (!value) {
-        onChange?.(newDay);
-        setMonth(newDay);
-        return;
-      }
-      const diff = newDay.getTime() - value.getTime();
-      const diffInDays = diff / (1000 * 60 * 60 * 24);
-      const newDateFull = add(value, { days: Math.ceil(diffInDays) });
-      onChange?.(newDateFull);
-      setMonth(newDateFull);
+      onChange?.(newDay);
+      setMonth(newDay);
+      /**
+       * carry over the current time when a user clicks a new day
+       * instead of resetting to 00:00
+       */
+      // if (!value) {
+      //   onChange?.(newDay);
+      //   setMonth(newDay);
+      //   return;
+      // }
+      // const diff = newDay.getTime() - value.getTime();
+      // const diffInDays = diff / (1000 * 60 * 60 * 24);
+      // const newDateFull = add(value, { days: Math.ceil(diffInDays) });
+      // onChange?.(newDateFull);
+      // setMonth(newDateFull);
     };
 
     useImperativeHandle(
@@ -777,7 +780,8 @@ const DateTimePicker = React.forwardRef<DateTimePickerRef, DateTimePickerProps>(
         selected={value}
         month={month}
         onSelect={(date) => {
-          onSelect && onSelect(date);
+          // console.log("onSelect", date);
+          if (onSelect) onSelect(date);
           setIsOpen(false);
           handleSelect(date);
         }}

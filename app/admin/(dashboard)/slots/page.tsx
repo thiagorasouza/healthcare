@@ -2,6 +2,8 @@
 
 import DefaultCard from "@/components/shared/DefaultCard";
 import ErrorCard from "@/components/shared/ErrorCard";
+import { CreatePatternDialog } from "@/components/slots/CreatePatternDialog";
+import { EditPatternDialog } from "@/components/slots/EditPatternDialog";
 import { SearchDoctorForm } from "@/components/slots/SearchDoctorForm";
 import { DateTimePicker } from "@/components/ui/datetime-picker";
 import { LoadingSpinner } from "@/components/ui/loading-spinner";
@@ -19,16 +21,26 @@ import {
   objectToFormData,
 } from "@/server/useCases/shared/helpers/utils";
 import { format } from "date-fns";
-import { CalendarDays, Clock, Hourglass, Repeat2, Target } from "lucide-react";
-import { useMemo, useState } from "react";
+import {
+  ArrowRight,
+  CalendarDays,
+  CirclePlus,
+  Clock,
+  Hourglass,
+  Repeat2,
+  Target,
+} from "lucide-react";
+import { ReactNode, useMemo, useState } from "react";
 
 export default function SlotsPage() {
   const [doctor, setDoctor] = useState<DoctorModel | "error">();
   const [slots, setSlots] = useState<SlotsModel | "error">();
   const [patterns, setPatterns] = useState<PatternModel[] | "error">();
   const [selectedDate, setSelectedDate] = useState<Date>();
-  const [selectedHour, setSelectedHour] = useState("");
+  const [selectedPattern, setSelectedPattern] = useState<PatternModel>();
   const [loading, setLoading] = useState(false);
+  const [editDialogOpen, setEditDialogOpen] = useState(false);
+  const [createDialogOpen, setCreateDialogOpen] = useState(false);
 
   async function loadDoctorSlots(doctor: DoctorModel) {
     setLoading(true);
@@ -49,7 +61,6 @@ export default function SlotsPage() {
       setSlots(slotsResult.value);
 
       const patternsResults = await getPatterns(objectToFormData({ id: doctorId }));
-      console.log("🚀 ~ patternsResults:", patternsResults);
       if (!patternsResults.ok) {
         setPatterns("error");
         return;
@@ -82,118 +93,158 @@ export default function SlotsPage() {
     return hours;
   }, [selectedDate, idle, error, slots]);
 
+  function handlePatternClick(pattern: PatternModel) {
+    setSelectedPattern(pattern);
+    setEditDialogOpen(true);
+  }
+
+  function handleNewPatternClick() {
+    setCreateDialogOpen(true);
+  }
+
+  function onPatternSaved(pattern: PatternModel) {
+    setEditDialogOpen(false);
+    loadDoctorSlots(doctor as DoctorModel);
+  }
+
+  function onPatternCreated(pattern: PatternModel) {
+    console.log("🚀 ~ pattern:", pattern);
+  }
+
   if (error) {
     return <ErrorCard text="There was an error while trying to load this page." />;
   }
 
   return (
-    <DefaultCard
-      title="Slots"
-      description="Select a doctor to manage available slots"
-      className="mx-auto max-w-[800px]"
-    >
-      <SearchDoctorForm onSelect={loadDoctorSlots} className="mb-6" />
-      {loading && (
-        <div className="flex items-center justify-center py-4">
-          <LoadingSpinner />
-        </div>
+    <>
+      <CreatePatternDialog
+        open={createDialogOpen}
+        setOpen={setCreateDialogOpen}
+        onSaved={onPatternCreated}
+      />
+      {selectedPattern && (
+        <EditPatternDialog
+          pattern={selectedPattern}
+          open={editDialogOpen}
+          setOpen={setEditDialogOpen}
+          onSaved={onPatternSaved}
+        />
       )}
-      {!idle && !loading && (
-        <div className="flex flex-col gap-6">
-          <div className="flex flex-col gap-3">
-            <p className="text-sm font-semibold">Patterns:</p>
-            <div className="flex grow-0">
-              {patterns.map((pattern) => (
-                <Pattern key={pattern.id} pattern={pattern} />
-              ))}
-            </div>
+      <DefaultCard
+        title="Slots"
+        description="Select a doctor to manage available slots"
+        className="mx-auto max-w-[800px]"
+      >
+        <SearchDoctorForm onSelect={loadDoctorSlots} className="mb-6" />
+        {loading && (
+          <div className="flex items-center justify-center py-4">
+            <LoadingSpinner />
           </div>
-          <div className="flex gap-6">
+        )}
+        {!idle && !loading && (
+          <div className="flex flex-col gap-6">
             <div className="flex flex-col gap-3">
-              <p className="text-sm font-semibold">Dates:</p>
-              <div className="w-max rounded-md border shadow-md">
-                <DateTimePicker
-                  value={selectedDate}
-                  onChange={setSelectedDate}
-                  granularity="day"
-                  className="w-full"
-                  noPopover={true}
-                  type="future"
-                  {...(dates.length > 0
-                    ? {
-                        startMonth: new Date(dates[0]),
-                        endMonth: new Date(dates[dates.length - 1]),
-                        disabledFn: (date) => !dates.includes(date.toISOString()),
-                      }
-                    : { disabledFn: () => true })}
-                />
+              <p className="text-sm font-semibold">Patterns:</p>
+              <div className="flex gap-6">
+                {patterns.map((pattern) => (
+                  <Pattern key={pattern.id} pattern={pattern} onClick={handlePatternClick} />
+                ))}
+                <div
+                  className="group flex cursor-pointer items-center justify-center gap-2 rounded-md border px-8 text-sm shadow-md"
+                  onClick={handleNewPatternClick}
+                >
+                  <CirclePlus className="h-5 w-5 transition-all group-hover:scale-110" />
+                  <div className="text-base font-semibold">New pattern</div>
+                </div>
               </div>
             </div>
-            <div className="flex flex-col gap-3">
-              <p className="text-sm font-semibold">Hours:</p>
-              <Hours hours={hours} onSelect={setSelectedHour} selectedHour={selectedHour} />
+            <div className="flex gap-6">
+              <div className="flex flex-col gap-3">
+                <p className="text-sm font-semibold">Dates:</p>
+                <div className="w-max rounded-md border shadow-md">
+                  <DateTimePicker
+                    value={selectedDate}
+                    onChange={setSelectedDate}
+                    granularity="day"
+                    className="w-full"
+                    noPopover={true}
+                    type="future"
+                    {...(dates.length > 0
+                      ? {
+                          startMonth: new Date(dates[0]),
+                          endMonth: new Date(dates[dates.length - 1]),
+                          disabledFn: (date) => !dates.includes(date.toISOString()),
+                        }
+                      : { disabledFn: () => true })}
+                  />
+                </div>
+              </div>
+              <div className="flex flex-col gap-3">
+                <p className="text-sm font-semibold">Hours:</p>
+                <Hours hours={hours} />
+              </div>
             </div>
           </div>
-        </div>
-      )}
-    </DefaultCard>
+        )}
+      </DefaultCard>
+    </>
   );
 }
 
-export function Pattern({ pattern }: { pattern: PatternModel }) {
+function Pattern({
+  pattern,
+  onClick,
+}: {
+  pattern: PatternModel;
+  onClick: (pattern: PatternModel) => void;
+}) {
   const slotsNum = countSlotsInTimespan(pattern.startTime, pattern.endTime, pattern.duration);
   const recurring = pattern.recurring;
   return (
-    <div className="flex cursor-pointer flex-col gap-2 rounded-md border p-4 text-sm shadow-md transition-transform hover:scale-105 [&>div]:flex [&>div]:items-center [&_svg]:mr-3 [&_svg]:h-4 [&_svg]:w-4">
-      <div className="font-semibold">
-        <CalendarDays />
-        {format(pattern.startDate, "PPP")}
-        {recurring && <span>&rarr; {format(pattern.endDate, "PPP")}</span>}
-      </div>
-      {recurring && (
-        <div>
-          <Target />
-          {formatList((pattern.weekdays as Weekday[]).map((w) => fullWeekdays[w]))}
+    <div
+      className="group flex cursor-pointer overflow-hidden rounded-md border text-sm shadow-md"
+      onClick={() => onClick(pattern)}
+    >
+      <div className="flex flex-col gap-2 p-4 [&>div]:flex [&>div]:items-center [&_svg]:mr-3 [&_svg]:h-4 [&_svg]:w-4">
+        <div className="font-semibold">
+          <CalendarDays />
+          {format(pattern.startDate, "PPP")}
+          {recurring && <span>&rarr; {format(pattern.endDate, "PPP")}</span>}
         </div>
-      )}
-      <div>
-        <Clock />
-        {getHoursStr(new Date(pattern.startTime))} &rarr; {getHoursStr(new Date(pattern.endTime))} (
-        {slotsNum} slots per day)
+        {recurring && (
+          <div>
+            <Target />
+            {formatList((pattern.weekdays as Weekday[]).map((w) => fullWeekdays[w]))}
+          </div>
+        )}
+        <div>
+          <Clock />
+          {getHoursStr(new Date(pattern.startTime))} &rarr; {getHoursStr(new Date(pattern.endTime))}{" "}
+          ({slotsNum} slots per day)
+        </div>
+        <div>
+          <Hourglass />
+          {pattern.duration} minutes each
+        </div>
+        <div className="font-semibold">
+          <Repeat2 />
+          {recurring ? "Recurring" : "Non recurring"}
+        </div>
       </div>
-      <div>
-        <Hourglass />
-        {pattern.duration} minutes each
-      </div>
-      <div className="font-semibold">
-        <Repeat2 />
-        {recurring ? "Recurring" : "Non recurring"}
+      <div className="ml-4 flex items-center bg-muted px-1 transition-all group-hover:ml-0 group-hover:px-3">
+        <ArrowRight className="h-3.5 w-3.5" />
       </div>
     </div>
   );
 }
 
-export function Hours({
-  hours,
-  selectedHour,
-  onSelect,
-}: {
-  hours: string[][];
-  selectedHour: string;
-  onSelect: (hour: string) => void;
-}) {
+function Hours({ hours }: { hours: string[][] }) {
   return (
     <ul className="flex flex-wrap gap-3 text-center text-sm">
       {hours.map((hour, index) => (
         <li
           key={index}
-          onClick={() => onSelect(hour[0])}
-          className={cn(
-            "w-[70px] cursor-pointer rounded-md border border-input px-3 py-2 transition-transform hover:scale-105 hover:border-black hover:bg-light-yellow",
-            {
-              "bg-accent": hour[0] === selectedHour,
-            },
-          )}
+          className="w-[70px] cursor-pointer rounded-md border border-input px-3 py-2 transition-transform"
         >
           {hour[0]}
         </li>

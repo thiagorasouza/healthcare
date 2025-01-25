@@ -1,3 +1,4 @@
+import { PatternForm } from "@/components/slots/PatternForm";
 import {
   Dialog,
   DialogContent,
@@ -5,38 +6,23 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import PatternForm from "@/components/slots/PatternForm";
-import { CreatePatternResult } from "@/lib/actions/createPattern";
-import { PatternDocumentSchema } from "@/lib/schemas/appwriteSchema";
+import { PatternModel } from "@/server/domain/models/patternModel";
 
-interface CreatePatternDialog {
-  doctorId: string;
+export interface CreatePatternDialogProps {
   open: boolean;
-  onCloseClick: () => void;
-  onSaveClick: (form: FormData) => Promise<CreatePatternResult>;
-  onSuccess: (patternData: PatternDocumentSchema) => void;
+  setOpen: (open: boolean) => void;
+  onSaved?: (pattern: PatternModel) => void;
 }
 
-export function CreatePatternDialog({
-  doctorId,
-  open,
-  onCloseClick,
-  onSaveClick,
-  onSuccess,
-}: CreatePatternDialog) {
+export function CreatePatternDialog({ open, setOpen, onSaved }: CreatePatternDialogProps) {
   return (
-    <Dialog open={open} onOpenChange={onCloseClick}>
+    <Dialog open={open} onOpenChange={setOpen}>
       <DialogContent>
         <DialogHeader>
           <DialogTitle>Create Pattern</DialogTitle>
-          <DialogDescription>Add slots for a single date or recurring pattern</DialogDescription>
+          <DialogDescription>Add slots for a single date or a recurring pattern</DialogDescription>
         </DialogHeader>
-        <PatternForm
-          doctorId={doctorId}
-          action={onSaveClick}
-          onSuccess={onSuccess}
-          submitLabel="Save"
-        />
+        <PatternForm mode="create" onSaved={onSaved} />
       </DialogContent>
     </Dialog>
   );

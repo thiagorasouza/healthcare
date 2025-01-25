@@ -4,7 +4,7 @@ import { PatientsRepository } from "@/server/adapters/appwrite/patientsRepositor
 import { StorageRepository } from "@/server/adapters/appwrite/storageRepository";
 import { updatePatientValidator } from "@/server/adapters/zod/patientValidator";
 import { UpdateAppointmentController } from "@/server/useCases/updateAppointment/updateAppointmentController";
-import { UpdatePatientController } from "@/server/useCases/updatePatient/updateAppointmentController";
+import { UpdatePatientController } from "@/server/useCases/updatePatient/updatePatientController";
 import { UpdatePatientUseCase } from "@/server/useCases/updatePatient/updatePatientUseCase";
 
 export const updatePatient = async (formData: FormData) => {

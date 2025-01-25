@@ -6,10 +6,12 @@ import {
   DoctorNotFoundFailure,
   DoctorUnavailableFailure,
   InvalidCredentialsFailure,
+  NotFoundFailure,
   PatientNotFoundFailure,
   PatientUnavailableFailure,
   ServerFailure,
 } from "@/server/useCases/shared/failures";
+import { ConflictingPatternsFailure } from "@/server/useCases/shared/failures/ConflictingPatternsFailure";
 import { ForbiddenInTestingFailure } from "@/server/useCases/shared/failures/forbiddenInTestingFailure";
 
 export const errorMsgs = {
@@ -17,6 +19,7 @@ export const errorMsgs = {
   [AppointmentTooShortFailure.name]: `Appointment too short. Mininum appointment duration is configured to ${MIN_DURATION} ${DURATION_UNIT}.`,
   [DoctorNotFoundFailure.name]: "Doctor not found.",
   [PatientNotFoundFailure.name]: "Patient not found.",
+  [NotFoundFailure.name]: "Not found.",
   [DoctorUnavailableFailure.name]:
     "This doctor is currently unavailable at this day and hour. Please try getting an appointment in another hour or another day.",
   [PatientUnavailableFailure.name]:
@@ -26,6 +29,8 @@ export const errorMsgs = {
   [InvalidCredentialsFailure.name]: "Invalid email or password.",
   [ForbiddenInTestingFailure.name]:
     "To keep this demo usable, testing users cannot manipulate doctors or delete data.",
+  [ConflictingPatternsFailure.name]:
+    "The pattern you are trying to create conflicts with another existing one.",
 };
 
 export const displayError = <T>(failure?: Failure<T>): string => {
