@@ -107,12 +107,6 @@ export default function PatientsTable() {
               <TableCell>{patient.insuranceProvider}</TableCell>
               <TableCell>
                 <div className="flex justify-center gap-2">
-                  <Button size="sm" variant="outline" asChild>
-                    <Link target="_blank" href={`/admin/patients/${patient.id}/appointments`}>
-                      <CalendarDays className="h-4 w-4" />
-                      Appointments
-                    </Link>
-                  </Button>
                   <Button size="sm" asChild>
                     <Link href={`/admin/patients/${patient.id}`}>
                       <SquarePen className="h-4 w-4" />

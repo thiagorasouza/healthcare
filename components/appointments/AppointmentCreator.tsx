@@ -22,14 +22,15 @@ import { ErrorDialog } from "@/components/shared/ErrorDialog";
 import { displayError } from "@/server/config/errors";
 import { joinDateTime } from "@/server/useCases/shared/helpers/date";
 import { Button } from "@/components/ui/button";
-import { ArrowLeft } from "lucide-react";
+import { ArrowLeft, CalendarDays } from "lucide-react";
 import { cn, scrollToTop } from "@/lib/utils";
 import { ConfirmationCard } from "@/components/appointments/create/ConfirmationCard";
 import { LoadingSpinner } from "@/components/ui/loading-spinner";
 import { SavingOverlay } from "@/components/shared/SavingOverlay";
+import { Landing } from "@/components/appointments/create/Landing";
 
 interface AppointmentCreatorProps {
-  doctors: DoctorModel[] | "error";
+  doctors: DoctorModel[];
   state: State;
   dispatch: Dispatch<Action>;
 }
@@ -42,6 +43,10 @@ export default function AppointmentCreator({ doctors, state, dispatch }: Appoint
     resolver: zodResolver(patientsZodSchema),
     defaultValues: state.patientFormSave || patientZodDefaultValues,
   });
+
+  function onStartClick() {
+    dispatch({ type: "start" });
+  }
 
   async function onDoctorClick(doctor: DoctorModel) {
     if (state.phase === "date_selection" && state.doctor.id === doctor.id) {
@@ -126,9 +131,12 @@ export default function AppointmentCreator({ doctors, state, dispatch }: Appoint
     }
   }
 
-  if (doctors === "error") {
-    // === TODO===
-    return;
+  function onHomeClick() {
+    dispatch({ type: "reset" });
+  }
+
+  if (state.phase === "initial") {
+    return <Landing onStartClick={onStartClick} />;
   }
 
   if (
@@ -203,6 +211,7 @@ export default function AppointmentCreator({ doctors, state, dispatch }: Appoint
         slot={state.slot}
         patient={state.patient}
         appointmentId={state.appointmentId}
+        onHomeClick={onHomeClick}
       />
     );
   }

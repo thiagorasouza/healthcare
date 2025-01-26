@@ -74,6 +74,7 @@ export default function SlotsPage() {
         return;
       }
       setPatterns(patternsResults.value);
+      setSelectedDate(new Date(slotsResult.value.keys().next().value as string));
     } catch (error) {
       console.log(error);
       setDoctor("error");
@@ -172,26 +173,6 @@ export default function SlotsPage() {
         )}
         {!idle && !loading && (
           <div className="flex flex-col gap-6">
-            <div className="flex flex-col gap-3">
-              <p className="text-sm font-semibold">Patterns:</p>
-              <div className="grid grid-cols-2 items-start gap-6">
-                {patterns.map((pattern) => (
-                  <Pattern
-                    key={pattern.id}
-                    pattern={pattern}
-                    onEditClick={editPatternClick}
-                    openDeleteDialog={openDeleteDialog}
-                  />
-                ))}
-                <div
-                  className="group flex cursor-pointer items-center justify-center gap-2 rounded-md border px-8 py-4 text-sm shadow-md"
-                  onClick={createPatternClick}
-                >
-                  <CirclePlus className="h-5 w-5 transition-all group-hover:scale-110" />
-                  <div className="text-base font-semibold">New pattern</div>
-                </div>
-              </div>
-            </div>
             <div className="flex gap-6">
               <div className="flex flex-col gap-3">
                 <p className="text-sm font-semibold">All Dates:</p>
@@ -218,6 +199,26 @@ export default function SlotsPage() {
                 <Hours hours={hours} />
               </div>
             </div>
+            <div className="flex flex-col gap-3">
+              <p className="text-sm font-semibold">Patterns:</p>
+              <div className="grid grid-cols-2 gap-6">
+                {patterns.map((pattern) => (
+                  <Pattern
+                    key={pattern.id}
+                    pattern={pattern}
+                    onEditClick={editPatternClick}
+                    openDeleteDialog={openDeleteDialog}
+                  />
+                ))}
+                <div
+                  className="group flex cursor-pointer items-center justify-center gap-2 rounded-md border px-8 py-4 text-sm shadow-md"
+                  onClick={createPatternClick}
+                >
+                  <CirclePlus className="h-5 w-5 transition-all group-hover:scale-110" />
+                  <div className="text-base font-semibold">New pattern</div>
+                </div>
+              </div>
+            </div>
           </div>
         )}
       </DefaultCard>
@@ -238,70 +239,61 @@ function Pattern({
   const recurring = pattern.recurring;
   const deleteDescription = `${format(pattern.startDate, "PPP")} pattern`;
   return (
-    <div className="flex flex-col overflow-hidden rounded-md border text-sm shadow-md">
-      <div className="flex flex-col gap-2 p-4">
-        <div className="flex items-center gap-2 font-semibold">
-          <CalendarDays className="h-4 w-4" />
-          <span>{format(pattern.startDate, "PPP")}</span>
-          {recurring && (
-            <>
-              <span>&rarr;</span>
-              <span>{format(pattern.endDate, "PPP")}</span>
-            </>
-          )}
-        </div>
+    <div className="flex h-full flex-col gap-2 rounded-md border p-4 text-sm shadow-md">
+      <div className="flex items-center gap-2 font-semibold">
+        <CalendarDays className="h-4 w-4" />
+        <span>{format(pattern.startDate, "PPP")}</span>
         {recurring && (
-          <div className="flex items-center gap-3">
-            <Target className="h-4 w-4" />
-            {formatList((pattern.weekdays as Weekday[]).map((w) => fullWeekdays[w]))}
-          </div>
+          <>
+            <span>&rarr;</span>
+            <span>{format(pattern.endDate, "PPP")}</span>
+          </>
         )}
-        <div className="flex items-center gap-3">
-          <Clock className="h-4 w-4" />
-          {getHoursStr(new Date(pattern.startTime))} &rarr; {getHoursStr(new Date(pattern.endTime))}{" "}
-          ({slotsNum} slots per day)
-        </div>
-        <div className="flex items-center gap-3">
-          <Hourglass className="h-4 w-4" />
-          {pattern.duration} minutes each
-        </div>
-        <div className="flex items-center gap-3 font-semibold">
-          <Repeat2 className="h-4 w-4" />
-          {recurring ? "Recurring" : "Non recurring"}
-        </div>
-        <div className="mt-4 flex gap-2">
-          <Button
-            size="sm"
-            // variant="outline"
-            className="flex-1"
-            onClick={() => onEditClick(pattern)}
-          >
-            <SquarePen className="h-4 w-4" />
-            Edit
-          </Button>
-          <Button
-            size="sm"
-            variant="outline"
-            onClick={() =>
-              openDeleteDialog({
-                id: pattern.id,
-                description: deleteDescription,
-              })
-            }
-            className="flex-1"
-          >
-            <Trash2 className="h-4 w-4" />
-            Delete
-          </Button>
-        </div>
       </div>
-      {/* <div
-        onClick={() => onViewClick(pattern)}
-        className="group absolute bottom-0 left-0 right-0 flex w-full cursor-pointer items-center justify-center gap-2 bg-muted py-2 transition-all hover:py-10"
-      >
-        <ArrowDown className="h-4 w-4" />
-        <p className="text-xs uppercase">View</p>
-      </div> */}
+      {recurring && (
+        <div className="flex items-center gap-3">
+          <Target className="h-4 w-4" />
+          {formatList((pattern.weekdays as Weekday[]).map((w) => fullWeekdays[w]))}
+        </div>
+      )}
+      <div className="flex items-center gap-3">
+        <Clock className="h-4 w-4" />
+        {getHoursStr(new Date(pattern.startTime))} &rarr; {getHoursStr(new Date(pattern.endTime))} (
+        {slotsNum} slots per day)
+      </div>
+      <div className="flex items-center gap-3">
+        <Hourglass className="h-4 w-4" />
+        {pattern.duration} minutes each
+      </div>
+      <div className="flex items-center gap-3 font-semibold">
+        <Repeat2 className="h-4 w-4" />
+        {recurring ? "Recurring" : "Non recurring"}
+      </div>
+      <div className="mt-auto flex gap-2">
+        <Button
+          size="sm"
+          // variant="outline"
+          className="flex-1"
+          onClick={() => onEditClick(pattern)}
+        >
+          <SquarePen className="h-4 w-4" />
+          Edit
+        </Button>
+        <Button
+          size="sm"
+          variant="outline"
+          onClick={() =>
+            openDeleteDialog({
+              id: pattern.id,
+              description: deleteDescription,
+            })
+          }
+          className="flex-1"
+        >
+          <Trash2 className="h-4 w-4" />
+          Delete
+        </Button>
+      </div>
     </div>
   );
 }

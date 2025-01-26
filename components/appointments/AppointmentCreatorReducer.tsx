@@ -4,10 +4,18 @@ import { PatientModel } from "@/server/domain/models/patientModel";
 import { SlotsModel } from "@/server/domain/models/slotsModel";
 
 export const initialState: State = {
-  phase: "doctor_selection",
+  phase: "initial",
 };
 
 export type State =
+  | {
+      phase: "initial";
+      doctor?: DoctorModel;
+      slots?: SlotsModel;
+      patientFormSave?: PatientData;
+      patient?: PatientModel;
+      slot?: { date?: string; hour?: string; duration?: number };
+    }
   | {
       phase: "doctor_selection";
       doctor?: DoctorModel;
@@ -59,6 +67,8 @@ export type State =
     };
 
 export type Action =
+  | { type: "reset" }
+  | { type: "start" }
   | { type: "remove_doctor" }
   | { type: "set_doctor"; payload: { doctor: DoctorModel; slots: SlotsModel } }
   | { type: "set_date"; payload: { date: string } }
@@ -71,6 +81,17 @@ export type Action =
 
 export function reducer(state: State, action: Action): State {
   switch (action.type) {
+    case "reset":
+      return {
+        phase: "initial",
+      };
+    case "start":
+      if (state.phase !== "initial") {
+        throw new Error("Invalid application flow.");
+      }
+      return {
+        phase: "doctor_selection",
+      };
     case "remove_doctor":
       if (
         state.phase !== "doctor_selection" &&
@@ -79,7 +100,9 @@ export function reducer(state: State, action: Action): State {
       ) {
         throw new Error("Invalid application flow.");
       }
-      return initialState;
+      return {
+        phase: "doctor_selection",
+      };
     case "set_doctor":
       return {
         phase: "date_selection",

@@ -1,83 +1,157 @@
-"use server";
+"use client";
 
-import { MobileMenu } from "@/components/home/MobileMenu";
-import { landingNavbarLinks } from "@/lib/constants";
-import { Calendar, CalendarDays } from "lucide-react";
+import LoadingPage from "@/app/loading";
+import AppointmentCreator from "@/components/appointments/AppointmentCreator";
+import { initialState, reducer, State } from "@/components/appointments/AppointmentCreatorReducer";
+import { ErrorScreen } from "@/components/shared/ErrorScreen";
+import { cn } from "@/lib/utils";
+import { listDoctors } from "@/server/actions/listDoctors.bypass";
+import { DoctorModel } from "@/server/domain/models/doctorModel";
+import {
+  BadgeCheck,
+  CalendarDays,
+  Check,
+  Clock,
+  House,
+  ListCheck,
+  Pointer,
+  UserRound,
+} from "lucide-react";
 import Image from "next/image";
-import Link from "next/link";
+import { ReactNode, useEffect, useMemo, useReducer, useState } from "react";
 
-const OnboardingPage = () => {
+interface MenuItem {
+  icon: ReactNode;
+  text: string;
+  phase: State["phase"];
+}
+
+const menu: MenuItem[] = [
+  {
+    icon: <House />,
+    text: "Home",
+    phase: "initial",
+  },
+  {
+    icon: <Pointer />,
+    text: "Doctor",
+    phase: "doctor_selection",
+  },
+  {
+    icon: <CalendarDays />,
+    text: "Date",
+    phase: "date_selection",
+  },
+  {
+    icon: <Clock />,
+    text: "Hour",
+    phase: "hour_selection",
+  },
+  {
+    icon: <UserRound />,
+    text: "Patient",
+    phase: "patient_creation",
+  },
+  {
+    icon: <ListCheck />,
+    text: "Summary",
+    phase: "summary",
+  },
+  {
+    icon: <BadgeCheck />,
+    text: "Confirmation",
+    phase: "confirmation",
+  },
+];
+
+export default function BookingPage() {
+  const [doctors, setDoctors] = useState<DoctorModel[] | "error">();
+  const [state, dispatch] = useReducer(reducer, initialState);
+
+  async function loadDoctors() {
+    try {
+      const doctorsResult = await listDoctors();
+      if (!doctorsResult.ok) {
+        setDoctors("error");
+        return;
+      }
+
+      setDoctors(doctorsResult.value);
+    } catch (error) {
+      console.log(error);
+      setDoctors("error");
+    }
+  }
+
+  useEffect(() => {
+    loadDoctors();
+  }, []);
+
+  let mainContent;
+  if (!doctors) {
+    mainContent = <LoadingPage fullScreen={false} />;
+  } else if (doctors === "error") {
+    mainContent = (
+      <ErrorScreen
+        title="Server Error"
+        message="It looks like the server couldn't fetch the information required to load this page. Please try again."
+      />
+    );
+  } else if (doctors.length === 0) {
+    mainContent = (
+      <ErrorScreen title="Error" message="Sorry, there are no doctors available." refresh={false} />
+    );
+  } else {
+    mainContent = <AppointmentCreator doctors={doctors} state={state} dispatch={dispatch} />;
+  }
+
+  const phaseIndex = useMemo(() => {
+    for (let i = 0; i < menu.length; i++) {
+      if (menu[i].phase === state.phase) {
+        return i;
+      }
+    }
+    return 0;
+  }, [state.phase]);
+  console.log("🚀 ~ phaseIndex:", phaseIndex);
+
   return (
-    <div className="flex min-h-screen w-full justify-center">
-      <div className="relative flex w-full max-w-[1440px] flex-col px-8 py-4 text-black md:px-16 md:py-8">
-        <nav className="mb-8 flex items-center justify-between">
-          {/* Hamburger mobile menu */}
-          <MobileMenu />
-
-          <header className="flex items-center gap-3">
+    <div className="min-h-screen w-full md:bg-[#212121]">
+      <div className="mx-auto flex max-w-[1580px] flex-1 justify-center gap-10 p-3">
+        <aside className="hidden flex-shrink-0 flex-col py-4 xl:flex">
+          <header className="mb-8 flex items-center gap-2 px-4">
             <Image
-              src="/img/logo.png"
+              src="/img/logo-dark.svg"
               alt="heartbeat logo"
               width={42}
               height={42}
               className="hidden md:block"
             />
-            <h2 className="text-2xl font-bold">Mednow</h2>
+            <h2 className="text-2xl font-medium text-white">Mednow</h2>
           </header>
-          <ul className="hidden font-medium text-black md:flex md:gap-8">
-            {landingNavbarLinks.map((link, index) => (
-              <li key={index}>
-                <Link className="text-black" href={link.href}>
-                  {link.label}
-                </Link>
-              </li>
-            ))}
-          </ul>
-          <button className="flex h-[52px] items-center gap-[9px] rounded-full bg-white p-[5px] focus:outline-none">
-            <div className="flex h-[42px] w-[42px] items-center justify-center rounded-full bg-yellow">
-              <CalendarDays className="h-4 w-4 text-white" />
-            </div>
-            <span className="mr-[27px] hidden font-semibold text-yellow md:block">
-              <Link href="/appointments/recover">Appointment Details</Link>
-            </span>
-          </button>
-        </nav>
-        <main className="flex flex-1 flex-col gap-8 pt-[15vh] text-center md:items-start md:justify-center md:gap-10 md:pl-28 md:pt-0 md:text-left">
-          <h1 className="text-[52px] font-semibold leading-[1.2] md:text-6xl">
-            Medical &<br /> Health Care
-            <br /> Services
-          </h1>
-          <p className="font-medium text-gray">
-            Online consultations with certified medical
-            <br /> professionals
-          </p>
-          <Link href="/appointments/create" className="mx-auto mt-10 md:m-0">
-            <button className="flex h-[60px] items-center gap-[9px] rounded-full bg-darker-purple p-[5px] focus:outline-none">
-              <div className="flex h-[50px] w-[50px] items-center justify-center rounded-full bg-white">
-                <Image
-                  src="/img/arrow.svg"
-                  alt="user icon"
-                  width={18}
-                  height={18}
-                  className="mt-[1px] text-white"
-                />
-              </div>
-              <span className="mr-[27px] text-[17px] font-medium text-white">
-                Book An Appointment
-              </span>
-            </button>
-          </Link>
+          <nav>
+            <ul className="ml-4 flex flex-col gap-2 text-base font-semibold text-white">
+              {menu.map((item, index) => (
+                <li
+                  key={index}
+                  className={cn(
+                    "flex items-center gap-4 p-3 text-dark-gray transition duration-700 [&>svg]:h-5 [&>svg]:w-5",
+                    {
+                      "text-dark-purple": index === phaseIndex,
+                    },
+                  )}
+                >
+                  {index < phaseIndex ? <Check /> : item.icon}
+                  <p>{item.text}</p>
+                </li>
+              ))}
+            </ul>
+          </nav>
+        </aside>
+        <main className="relative w-full overflow-hidden rounded-3xl bg-white p-2 md:px-3 lg:px-6 xl:w-[80%]">
+          {mainContent}
         </main>
       </div>
-      <Image
-        src="/img/side.png"
-        alt="Doctor"
-        width={1418}
-        height={2048}
-        className="absolute right-0 top-0 -z-10 hidden h-full max-h-[100vh] w-fit md:block"
-      />
     </div>
   );
-};
-
-export default OnboardingPage;
+}

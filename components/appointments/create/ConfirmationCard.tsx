@@ -1,15 +1,16 @@
+"use client";
+
 import { CalendarLink } from "@/components/appointments/create/CalendarLink";
 import { DoctorCard } from "@/components/appointments/create/DoctorCard";
 import SendEmailDialog from "@/components/appointments/create/SendEmailDialog";
 import { Button } from "@/components/ui/button";
-import { cn, colorize, generateRandomPassword } from "@/lib/utils";
+import { cn, colorize } from "@/lib/utils";
 import { idLabels } from "@/server/config/constants";
 import { DoctorModel } from "@/server/domain/models/doctorModel";
 import { PatientModel } from "@/server/domain/models/patientModel";
 import { displayDate, joinDateTime } from "@/server/useCases/shared/helpers/date";
 import { format } from "date-fns";
 import { CalendarDays, CheckCircle, Clock, Cross, House, Mail, User } from "lucide-react";
-import Link from "next/link";
 
 interface ConfirmationCardProps {
   doctor: DoctorModel;
@@ -20,18 +21,20 @@ interface ConfirmationCardProps {
   };
   patient: PatientModel;
   appointmentId: string;
+  onHomeClick: () => void;
 }
 
-export function ConfirmationCard({ doctor, patient, slot, appointmentId }: ConfirmationCardProps) {
+export function ConfirmationCard({
+  doctor,
+  patient,
+  slot,
+  appointmentId,
+  onHomeClick,
+}: ConfirmationCardProps) {
   const dateBgColor = colorize(1);
   const hourBgColor = colorize(2);
 
   const idTypeLabel = patient && idLabels[patient?.identificationType];
-
-  // function onShareClick() {
-  //   console.log("Sharing");
-  //   window.history.pushState(null, "", `/book/${generateRandomPassword(12)}`);
-  // }
 
   return (
     <article className="lg:flex-center flex flex-col gap-6 py-8">
@@ -113,11 +116,9 @@ export function ConfirmationCard({ doctor, patient, slot, appointmentId }: Confi
       </section>
 
       <div className="mt-4 flex flex-col gap-4 lg:flex-row">
-        <Button variant="outline" asChild>
-          <Link href="/">
-            <House />
-            Back to Home
-          </Link>
+        <Button variant="outline" onClick={onHomeClick}>
+          <House />
+          Back to Home
         </Button>
         <SendEmailDialog appointmentId={appointmentId} />
         <CalendarLink
