@@ -1,6 +1,5 @@
-import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
-import { CalendarDays, Lock, LockKeyhole, LockOpen } from "lucide-react";
+import { CalendarDays, Lock, LockKeyhole, LockOpen, Search } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 
@@ -52,13 +51,13 @@ export function Landing({ onStartClick }: { onStartClick: () => void }) {
           </div>
           <div className="mt-2">
             <button className="group h-[60px] rounded-full bg-yellow p-[5px] transition-colors hover:bg-black focus:outline-none">
-              <Link href="/appointments" className="flex items-center gap-[9px]">
+              <Link href="/find" className="flex items-center gap-[9px]">
                 <div
                   className={cn(
                     "flex h-[50px] w-[50px] items-center justify-center rounded-full bg-white",
                   )}
                 >
-                  <CalendarDays className="h-5 w-5 text-yellow transition-colors group-hover:text-black" />
+                  <Search className="h-5 w-5 text-yellow transition-colors group-hover:text-black" />
                 </div>
                 <span
                   className={cn(
@@ -66,7 +65,7 @@ export function Landing({ onStartClick }: { onStartClick: () => void }) {
                     "transition-colors group-hover:text-white",
                   )}
                 >
-                  Your Appointments
+                  Find Your Appointment
                 </span>
               </Link>
             </button>
