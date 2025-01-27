@@ -3,22 +3,22 @@
 import { AppointmentsRepository } from "@/server/adapters/appwrite/appointmentsRepository";
 import { DoctorsRepository } from "@/server/adapters/appwrite/doctorsRepository";
 import { PatientsRepository } from "@/server/adapters/appwrite/patientsRepository";
-import { recoverAppointmentValidator } from "@/server/adapters/zod/recoverAppointmentValidator";
-import { RecoverAppointmentController } from "@/server/useCases/recoverAppointment/recoverAppointmentController";
-import { RecoverAppointmentUseCase } from "@/server/useCases/recoverAppointment/recoverAppointmentUseCase";
+import { findAppointmentValidator } from "@/server/adapters/zod/findAppointmentValidator";
+import { FindAppointmentController } from "@/server/useCases/findAppointment/findAppointmentController";
+import { FindAppointmentUseCase } from "@/server/useCases/findAppointment/findAppointmentUseCase";
 
-export const recoverAppointment = async (formData: FormData) => {
+export const findAppointment = async (formData: FormData) => {
   // console.log("🚀 ~ formData:", formData);
 
   const patientsRepository = new PatientsRepository();
   const doctorsRepository = new DoctorsRepository();
   const appointmentsRepository = new AppointmentsRepository();
-  const useCase = new RecoverAppointmentUseCase(
+  const useCase = new FindAppointmentUseCase(
     patientsRepository,
     doctorsRepository,
     appointmentsRepository,
   );
-  const controller = new RecoverAppointmentController(useCase, recoverAppointmentValidator);
+  const controller = new FindAppointmentController(useCase, findAppointmentValidator);
 
   const result = await controller.handle(formData);
   const plainObject = Object.assign({}, result);

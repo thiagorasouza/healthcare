@@ -6,7 +6,7 @@ import Image from "next/image";
 
 interface DoctorCardProps {
   colorIndex: number;
-  doctor: DoctorModel;
+  doctor: Pick<DoctorModel, "name" | "specialty" | "pictureId">;
   muted?: boolean;
   active?: boolean;
   fixed?: boolean;
@@ -41,6 +41,7 @@ export function DoctorCard({
           { "cursor-pointer hover:scale-105": !fixed },
           bgColor,
         )}
+        // @ts-ignore
         onClick={() => onDoctorClick && onDoctorClick(doctor)}
       >
         <Image

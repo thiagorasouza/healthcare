@@ -1,19 +1,19 @@
 export const currentPictureName = "___current___.jpg";
 
-export const landingNavbarLinks = [
-  {
-    label: "Home",
-    href: "/",
-  },
-  {
-    label: "Book",
-    href: "/appointments/create",
-  },
-  {
-    label: "Dashboard",
-    href: "/admin",
-  },
-];
+// export const landingNavbarLinks = [
+//   {
+//     label: "Home",
+//     href: "/",
+//   },
+//   {
+//     label: "Book",
+//     href: "/appointments/create",
+//   },
+//   {
+//     label: "Dashboard",
+//     href: "/admin",
+//   },
+// ];
 
 export const adminNavbarLinks = [
   {

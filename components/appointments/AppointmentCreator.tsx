@@ -28,6 +28,7 @@ import { ConfirmationCard } from "@/components/appointments/create/ConfirmationC
 import { LoadingSpinner } from "@/components/ui/loading-spinner";
 import { SavingOverlay } from "@/components/shared/SavingOverlay";
 import { Landing } from "@/components/appointments/create/Landing";
+import { saveAppointmentLS } from "@/lib/localStorage";
 
 interface AppointmentCreatorProps {
   doctors: DoctorModel[];
@@ -119,6 +120,15 @@ export default function AppointmentCreator({ doctors, state, dispatch }: Appoint
         setMessage(displayError(createAppointmentResult));
         return;
       }
+
+      const appointmentId = createAppointmentResult.value.id;
+
+      saveAppointmentLS({
+        id: appointmentId,
+        patient: state.patient,
+        doctor: state.doctor,
+        ...state.slot,
+      });
 
       dispatch({
         type: "show_confirmation",

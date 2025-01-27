@@ -15,9 +15,11 @@ import {
   House,
   ListCheck,
   Pointer,
+  Search,
   UserRound,
 } from "lucide-react";
 import Image from "next/image";
+import Link from "next/link";
 import { ReactNode, useEffect, useMemo, useReducer, useState } from "react";
 
 interface MenuItem {
@@ -113,7 +115,6 @@ export default function BookingPage() {
     }
     return 0;
   }, [state.phase]);
-  console.log("🚀 ~ phaseIndex:", phaseIndex);
 
   return (
     <div className="min-h-screen w-full md:bg-[#212121]">
@@ -130,12 +131,12 @@ export default function BookingPage() {
             <h2 className="text-2xl font-medium text-white">Mednow</h2>
           </header>
           <nav>
-            <ul className="ml-4 flex flex-col gap-2 text-base font-semibold text-white">
+            <ul className="ml-3 flex flex-col gap-2 text-base font-semibold text-white">
               {menu.map((item, index) => (
                 <li
                   key={index}
                   className={cn(
-                    "flex items-center gap-4 p-3 text-dark-gray transition duration-700 [&>svg]:h-5 [&>svg]:w-5",
+                    "flex items-center gap-4 px-5 py-3 text-dark-gray transition duration-700 [&>svg]:h-5 [&>svg]:w-5",
                     {
                       "text-dark-purple": index === phaseIndex,
                     },
@@ -145,6 +146,12 @@ export default function BookingPage() {
                   <p>{item.text}</p>
                 </li>
               ))}
+              <li className="mt-8 cursor-pointer rounded-full px-5 py-3 font-medium text-white transition duration-300 hover:rounded-full hover:bg-black hover:text-white">
+                <Link href="/appointments" className="flex items-center gap-4">
+                  <Search className="h-5 w-5" />
+                  <p>Find</p>
+                </Link>
+              </li>
             </ul>
           </nav>
         </aside>

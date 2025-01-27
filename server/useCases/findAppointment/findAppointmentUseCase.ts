@@ -8,18 +8,20 @@ import {
 import { NotFoundFailure, ServerFailure } from "@/server/useCases/shared/failures";
 import { UseCase } from "@/server/useCases/shared/core/useCase";
 import { isSameDay } from "date-fns";
+import { AppointmentPublicData } from "@/lib/localStorage";
+import { getHoursStr } from "@/server/useCases/shared/helpers/date";
 
 // algorithm
 // - search patient by email
 // - check if birthdate matches patient
 // - look for appointments using patient id
 
-export interface RecoverAppointmentRequest {
+export interface FindAppointmentRequest {
   email: string;
   birthdate: Date;
 }
 
-export class RecoverAppointmentUseCase implements UseCase {
+export class FindAppointmentUseCase implements UseCase {
   public constructor(
     private readonly patientsRepository: PatientsRepositoryInterface,
     private readonly doctorsRepository: DoctorsRepositoryInterface,
@@ -27,8 +29,8 @@ export class RecoverAppointmentUseCase implements UseCase {
   ) {}
 
   public async execute(
-    request: RecoverAppointmentRequest,
-  ): Promise<Success<AppointmentHydrated[]> | NotFoundFailure | ServerFailure> {
+    request: FindAppointmentRequest,
+  ): Promise<Success<AppointmentPublicData[]> | NotFoundFailure | ServerFailure> {
     const { email, birthdate } = request;
 
     const notFoundFailure = new NotFoundFailure("");
@@ -67,18 +69,24 @@ export class RecoverAppointmentUseCase implements UseCase {
     }
     const doctors = doctorsResult.value;
 
-    const hydratedAppointments: AppointmentHydrated[] = appointments.map((ap) => {
+    const publicAppointmentData: AppointmentPublicData[] = appointments.map((ap) => {
       const doctor = doctors.find((doctor) => doctor.id === ap.doctorId)!;
       return {
         id: ap.id!,
-        doctor,
-        patient,
-        startTime: ap.startTime,
+        doctor: {
+          name: doctor.name,
+          specialty: doctor.specialty,
+          pictureId: doctor.pictureId,
+        },
+        patient: {
+          name: patient.name,
+        },
+        date: ap.startTime.toISOString(),
+        hour: getHoursStr(ap.startTime),
         duration: ap.duration,
       };
     });
-    // console.log("🚀 ~ hydratedAppointments:", hydratedAppointments);
 
-    return new Success(hydratedAppointments);
+    return new Success(publicAppointmentData);
   }
 }
