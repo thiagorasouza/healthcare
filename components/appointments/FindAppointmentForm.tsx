@@ -3,7 +3,7 @@ import ErrorMessage from "@/components/forms/ErrorMessage";
 import SubmitButton from "@/components/forms/SubmitButton";
 import TextField from "@/components/forms/TextField";
 import { Form } from "@/components/ui/form";
-import { AppointmentPublicData } from "@/lib/localStorage";
+import { AppointmentPublicData } from "@/lib/actions/localStorage";
 import { objectToFormData } from "@/lib/utils";
 import { findAppointment } from "@/server/actions/findAppointment";
 import {

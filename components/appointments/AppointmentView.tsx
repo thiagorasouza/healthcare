@@ -1,6 +1,6 @@
 import DefaultCard from "@/components/shared/DefaultCard";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { getImageLink } from "@/lib/getImageLink";
+import { getImageLink } from "@/lib/actions/getImageLink";
 import { getInitials } from "@/lib/utils";
 import { AppointmentHydrated } from "@/server/domain/models/appointmentHydrated";
 import { getHoursStr } from "@/server/useCases/shared/helpers/date";

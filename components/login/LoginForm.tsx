@@ -1,7 +1,6 @@
 "use client";
 
 import { Form } from "@/components/ui/form";
-import { unexpectedError } from "@/lib/results";
 import { useRouter } from "next/navigation";
 import { useRef, useState } from "react";
 import { useForm } from "react-hook-form";
@@ -45,7 +44,7 @@ export default function LoginForm() {
       router.push("/admin");
     } catch (error) {
       console.log(error);
-      setMessage(unexpectedError().message);
+      setMessage(displayError());
     }
   }
 

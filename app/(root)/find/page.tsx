@@ -5,7 +5,7 @@ import { AppointmentCalendarLink } from "@/components/appointments/AppointmentCa
 import { AppointmentDoctorCard } from "@/components/appointments/AppointmentDoctorCard";
 import AppointmentSendEmailDialog from "@/components/appointments/AppointmentSendEmailDialog";
 import { FindAppointmentForm } from "@/components/appointments/FindAppointmentForm";
-import { AppointmentPublicData, getAppointmentsLS } from "@/lib/localStorage";
+import { AppointmentPublicData, getAppointmentsLS } from "@/lib/actions/localStorage";
 import { cn, colorize } from "@/lib/utils";
 import { joinDateTime } from "@/server/useCases/shared/helpers/date";
 import { format, isFuture } from "date-fns";

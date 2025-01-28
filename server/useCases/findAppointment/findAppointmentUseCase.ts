@@ -1,5 +1,4 @@
 import { Success } from "@/server/useCases/shared/core/success";
-import { AppointmentHydrated } from "@/server/domain/models/appointmentHydrated";
 import {
   AppointmentsRepositoryInterface,
   DoctorsRepositoryInterface,
@@ -8,7 +7,7 @@ import {
 import { NotFoundFailure, ServerFailure } from "@/server/useCases/shared/failures";
 import { UseCase } from "@/server/useCases/shared/core/useCase";
 import { isSameDay } from "date-fns";
-import { AppointmentPublicData } from "@/lib/localStorage";
+import { AppointmentPublicData } from "@/lib/actions/localStorage";
 import { getHoursStr } from "@/server/useCases/shared/helpers/date";
 
 // algorithm

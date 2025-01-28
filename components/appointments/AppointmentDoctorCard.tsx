@@ -1,4 +1,4 @@
-import { getImageLink } from "@/lib/getImageLink";
+import { getImageLink } from "@/lib/actions/getImageLink";
 import { cn, colorize, getFirstName } from "@/lib/utils";
 import { DoctorModel } from "@/server/domain/models/doctorModel";
 import { CircleCheckBig } from "lucide-react";

@@ -8,4 +8,5 @@ export interface UsersRepositoryInterface {
     email: string,
     password: string,
   ): Promise<Success<SessionModel> | InvalidCredentialsFailure | ServerFailure>;
+  logout: () => Promise<Success<string> | ServerFailure>;
 }

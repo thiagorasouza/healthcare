@@ -11,18 +11,27 @@ import {
 import { Button } from "@/components/ui/button";
 import { CircleUser } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { logout } from "@/lib/actions/logout";
 import { toast } from "sonner";
+import { logout } from "@/server/actions/logout.bypass";
+import { displayError } from "@/server/config/errors";
+// import { logout } from "@/lib/actions/logout";
 
 export default function AdminAccountDropdown() {
   const router = useRouter();
 
   async function handleLogout() {
-    const result = await logout();
-    if (result.success) {
-      router.push("/admin/login");
-    } else {
-      toast.warning("Unable to logout at this time");
+    try {
+      const logoutResult = await logout();
+      console.log("🚀 ~ logoutResult:", logoutResult);
+      if (!logoutResult.ok) {
+        throw logoutResult.error;
+      }
+
+      toast("Logged out.");
+      router.push("/admin");
+    } catch (error) {
+      console.log(error);
+      toast.warning(displayError());
     }
   }
 

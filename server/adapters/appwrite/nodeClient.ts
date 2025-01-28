@@ -1,5 +1,5 @@
 import { env } from "@/server/config/env";
-import { Account, Client, Databases, Storage, Users } from "node-appwrite";
+import { Account, Client, Databases, Storage, Users, Models } from "node-appwrite";
 
 const client = new Client()
   .setEndpoint("https://cloud.appwrite.io/v1")
@@ -21,4 +21,5 @@ export {
   Storage,
   Databases,
   Account,
+  type Models,
 } from "node-appwrite";

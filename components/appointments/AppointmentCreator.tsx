@@ -23,7 +23,7 @@ import { AppointmentConfirmationCard } from "@/components/appointments/Appointme
 import { LoadingSpinner } from "@/components/ui/loading-spinner";
 import { SavingOverlay } from "@/components/shared/SavingOverlay";
 import { AppointmentLanding } from "@/components/appointments/AppointmentLanding";
-import { saveAppointmentLS } from "@/lib/localStorage";
+import { saveAppointmentLS } from "@/lib/actions/localStorage";
 import {
   patientDefaultValues,
   PatientFormData,

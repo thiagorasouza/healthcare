@@ -7,7 +7,7 @@ import TextField from "@/components/forms/TextField";
 import { ErrorDialog } from "@/components/shared/ErrorDialog";
 import { TestDoctorForm } from "@/components/testing/TestDoctorForm";
 import { Form } from "@/components/ui/form";
-import { getImageLink } from "@/lib/getImageLink";
+import { getImageLink } from "@/lib/actions/getImageLink";
 import { createDoctor } from "@/server/actions/createDoctor";
 import { updateDoctor } from "@/server/actions/updateDoctor";
 import { DoctorFormData, doctorsFormSchema } from "@/server/adapters/zod/doctorValidator";
