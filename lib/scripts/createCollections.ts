@@ -1,6 +1,6 @@
-import { databases, ID } from "@/lib/appwrite/adminClient";
 import { genderTypes, idTypes } from "@/lib/constants";
 import { env } from "@/lib/env";
+import { databases, ID } from "@/server/adapters/appwrite/nodeClient";
 
 const dbId = env.databaseId;
 

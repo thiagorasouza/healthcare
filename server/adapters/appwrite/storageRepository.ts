@@ -1,10 +1,10 @@
-import { storage, Storage, ID } from "@/lib/appwrite/adminClient";
 import { env } from "@/server/config/env";
 import { Success } from "@/server/useCases/shared/core/success";
 import { FileModel } from "@/server/domain/models/fileModel";
 import { AppwritifyFile } from "@/server/adapters/appwrite/helpers";
 import { ServerFailure } from "@/server/useCases/shared/failures";
 import { StorageRepositoryInterface } from "@/server/repositories";
+import { ID, Storage, storage } from "@/server/adapters/appwrite/nodeClient";
 
 export class StorageRepository implements StorageRepositoryInterface {
   storage: Storage;

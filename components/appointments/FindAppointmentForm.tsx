@@ -1,5 +1,5 @@
 import DateField from "@/components/forms/DateField";
-import FormMessage from "@/components/forms/FormMessage";
+import ErrorMessage from "@/components/forms/ErrorMessage";
 import SubmitButton from "@/components/forms/SubmitButton";
 import TextField from "@/components/forms/TextField";
 import { Form } from "@/components/ui/form";
@@ -49,7 +49,7 @@ export function FindAppointmentForm({
 
   return (
     <Form {...form}>
-      <FormMessage message={message} />
+      <ErrorMessage message={message} />
       <form onSubmit={form.handleSubmit(onSubmit, () => console.log(form.formState.errors))}>
         <div className="mb-6 flex gap-6">
           <TextField form={form} name="email" label="Email" placeholder="name@example.com" />

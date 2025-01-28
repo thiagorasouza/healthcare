@@ -11,7 +11,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { getImageLink } from "@/lib/actions/getImageLink";
+import { getImageLink } from "@/lib/getImageLink";
 import { useDeleteDialog } from "@/lib/hooks/useDeleteDialog";
 import { deleteDoctor } from "@/server/actions/deleteDoctor.bypass";
 import { listDoctors } from "@/server/actions/listDoctors.bypass";

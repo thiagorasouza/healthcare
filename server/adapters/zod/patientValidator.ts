@@ -1,5 +1,4 @@
-import { allowedFileTypes } from "@/lib/schemas/patientsSchema";
-import { maxFileSize } from "@/server/config/constants";
+import { allowedFileTypes, maxFileSize } from "@/server/config/constants";
 import { PatientData } from "@/server/domain/models/patientData";
 import { GenericValidator } from "@/server/adapters/zod/genericValidator";
 import { z } from "zod";
@@ -43,6 +42,8 @@ export const patientDefaultValues = {
   usageConsent: undefined,
   privacyConsent: undefined,
 };
+
+export type PatientFormData = z.infer<typeof patientFormSchema>;
 
 export const updatePatientSchema = patientFormSchema.extend({
   id: z.string(),

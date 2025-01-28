@@ -1,9 +1,9 @@
 import { FormControl, FormField, FormItem } from "@/components/ui/form";
-import { allowedFileTypesTextual } from "@/lib/schemas/patientsSchema";
 import { cn, semanticJoin } from "@/lib/utils";
+import { allowedFileTypesTextual } from "@/server/config/constants";
 import { CircleCheckBig, ImageUp } from "lucide-react";
 import Image from "next/image";
-import { useCallback, useEffect } from "react";
+import { useCallback } from "react";
 import { useDropzone } from "react-dropzone";
 import { UseFormReturn } from "react-hook-form";
 

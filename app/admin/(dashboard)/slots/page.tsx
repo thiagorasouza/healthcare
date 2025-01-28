@@ -2,9 +2,9 @@
 
 import DefaultCard from "@/components/shared/DefaultCard";
 import ErrorCard from "@/components/shared/ErrorCard";
-import { CreatePatternDialog } from "@/components/slots/CreatePatternDialog";
-import { EditPatternDialog } from "@/components/slots/EditPatternDialog";
-import { SearchDoctorForm } from "@/components/slots/SearchDoctorForm";
+import { PatternCreateDialog } from "@/components/patterns/PatternCreateDialog";
+import { PatternEditDialog } from "@/components/patterns/PatternEditDialog";
+import { SearchDoctorForm } from "@/components/patterns/SearchDoctorForm";
 import { Button } from "@/components/ui/button";
 import { DateTimePicker } from "@/components/ui/datetime-picker";
 import { LoadingSpinner } from "@/components/ui/loading-spinner";
@@ -144,7 +144,7 @@ export default function SlotsPage() {
   return (
     <>
       {doctor && (
-        <CreatePatternDialog
+        <PatternCreateDialog
           open={createDialogOpen}
           setOpen={setCreateDialogOpen}
           onSaved={onPatternCreated}
@@ -152,7 +152,7 @@ export default function SlotsPage() {
         />
       )}
       {selectedPattern && (
-        <EditPatternDialog
+        <PatternEditDialog
           pattern={selectedPattern}
           open={editDialogOpen}
           setOpen={setEditDialogOpen}

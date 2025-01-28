@@ -4,7 +4,8 @@ import { type ClassValue, clsx } from "clsx";
 import { twMerge } from "tailwind-merge";
 import { SafeParseError, ZodError } from "zod";
 import { Day, differenceInMinutes, getHours, getMinutes, nextDay, parse, subDays } from "date-fns";
-import { Weekday, weekdays } from "@/lib/schemas/patternsSchema";
+import { Weekday } from "@/server/domain/models/patternModel";
+import { weekdays } from "@/server/config/constants";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));

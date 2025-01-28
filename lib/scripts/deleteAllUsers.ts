@@ -1,5 +1,5 @@
-import { users } from "@/lib/appwrite/adminClient";
 import { testAdminEmail } from "@/lib/constants";
+import { users } from "@/server/adapters/appwrite/nodeClient";
 import { Query } from "node-appwrite";
 
 async function deleteAllUsers() {

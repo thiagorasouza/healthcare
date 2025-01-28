@@ -1,4 +1,4 @@
-import { createDoctor } from "@/lib/actions/createDoctor";
+import { createDoctor } from "@/server/actions/createDoctor";
 import fs from "node:fs/promises";
 import path from "node:path";
 

@@ -1,9 +1,9 @@
 "use client";
 
 import LoadingPage from "@/app/loading";
-import { CalendarLink } from "@/components/appointments/create/CalendarLink";
-import { DoctorCard } from "@/components/appointments/create/DoctorCard";
-import SendEmailDialog from "@/components/appointments/create/SendEmailDialog";
+import { AppointmentCalendarLink } from "@/components/appointments/AppointmentCalendarLink";
+import { AppointmentDoctorCard } from "@/components/appointments/AppointmentDoctorCard";
+import AppointmentSendEmailDialog from "@/components/appointments/AppointmentSendEmailDialog";
 import { FindAppointmentForm } from "@/components/appointments/FindAppointmentForm";
 import { AppointmentPublicData, getAppointmentsLS } from "@/lib/localStorage";
 import { cn, colorize } from "@/lib/utils";
@@ -65,7 +65,7 @@ export default function AppointmentsPage() {
         <article key={index} className="flex flex-col items-center justify-center gap-6 py-8">
           <section className="flex flex-col gap-6 lg:flex-row lg:justify-center">
             {/* Doctor image and name */}
-            <DoctorCard colorIndex={3} doctor={doctor} fixed={true} className="flex-1" />
+            <AppointmentDoctorCard colorIndex={3} doctor={doctor} fixed={true} className="flex-1" />
             {/* Vertical Ruler */}
             <div className="inset-0 hidden items-center lg:flex">
               <span className="h-[70%] border-l-2 border-dashed"></span>
@@ -102,8 +102,8 @@ export default function AppointmentsPage() {
             </div>
           </section>
           <div className="mt-4 flex flex-col gap-4 lg:flex-row">
-            <SendEmailDialog appointmentId={id} />
-            <CalendarLink
+            <AppointmentSendEmailDialog appointmentId={id} />
+            <AppointmentCalendarLink
               name={doctor.name}
               specialty={doctor.specialty}
               startTime={joinDateTime(date, hour)}

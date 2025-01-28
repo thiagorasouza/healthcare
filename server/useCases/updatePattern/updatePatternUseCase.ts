@@ -1,6 +1,5 @@
-import { Weekday } from "@/lib/schemas/patternsSchema";
 import { UpdatePatternData } from "@/server/adapters/zod/patternValidator";
-import { PatternModel } from "@/server/domain/models/patternModel";
+import { PatternModel, Weekday } from "@/server/domain/models/patternModel";
 import { Pattern } from "@/server/domain/pattern";
 import { PatternsRepositoryInterface } from "@/server/repositories";
 import { Success } from "@/server/useCases/shared/core/success";

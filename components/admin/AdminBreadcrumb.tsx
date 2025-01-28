@@ -8,9 +8,7 @@ import {
   BreadcrumbPage,
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
-import { cn } from "@/lib/utils";
 import { usePathname } from "next/navigation";
-import { memo } from "react";
 
 interface AdminBreadCrumbProps {
   replace?: string;

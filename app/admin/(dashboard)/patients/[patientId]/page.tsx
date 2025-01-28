@@ -7,8 +7,7 @@ import ErrorCard from "@/components/shared/ErrorCard";
 import { LoadingSpinner } from "@/components/ui/loading-spinner";
 import { objectToFormData } from "@/lib/utils";
 import { getPatient } from "@/server/actions/getPatient.bypass";
-import { patientFormSchema } from "@/server/adapters/zod/patientValidator";
-import { PatientData } from "@/server/domain/models/patientData";
+import { PatientFormData, patientFormSchema } from "@/server/adapters/zod/patientValidator";
 import { PatientModel } from "@/server/domain/models/patientModel";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
@@ -62,7 +61,7 @@ export default function PatientEditPage({ params }: { params: { patientId: strin
 function PatientFormWrapper({ patient }: { patient: PatientModel }) {
   const router = useRouter();
 
-  const form = useForm<PatientData>({
+  const form = useForm<PatientFormData>({
     resolver: zodResolver(patientFormSchema),
     defaultValues: patient,
   });

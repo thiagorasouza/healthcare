@@ -1,9 +1,7 @@
-import { createPattern } from "@/lib/actions/createPattern";
-import { createMockDoctors, mockDoctors } from "@/lib/scripts/createMockDoctors";
+import { mockDoctors } from "@/lib/scripts/createMockDoctors";
 import { databases, ID, Query } from "@/server/adapters/appwrite/nodeClient";
 import { weekdays } from "@/server/config/constants";
 import { env } from "@/server/config/env";
-import { objectToFormData } from "@/server/useCases/shared/helpers/utils";
 import { faker } from "@faker-js/faker";
 import { addMonths } from "date-fns";
 

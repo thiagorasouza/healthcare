@@ -1,18 +1,13 @@
 "use client";
 
-import { DoctorSelector } from "@/components/appointments/create/DoctorSelector";
+import { AppointmentDoctorSelector } from "@/components/appointments/AppointmentDoctorSelector";
 import { DoctorModel } from "@/server/domain/models/doctorModel";
 import { Dispatch, useState } from "react";
-import { SlotSelector } from "@/components/appointments/create/SlotSelector";
+import { AppointmentSlotSelector } from "@/components/appointments/AppointmentSlotSelector";
 import { getSlots } from "@/server/actions/getSlots";
 import { objectToFormData } from "@/server/useCases/shared/helpers/utils";
 import { Action, State } from "@/components/appointments/AppointmentCreatorReducer";
-import {
-  patientsZodSchema,
-  PatientZodData,
-  patientZodDefaultValues,
-} from "@/lib/schemas/patientsSchema";
-import SummaryCard from "@/components/appointments/create/SummaryCard";
+import AppointmentSummaryCard from "@/components/appointments/AppointmentSummaryCard";
 import { createAppointment } from "@/server/actions/createAppointment";
 import PatientForm from "@/components/patients/PatientForm";
 import { useForm } from "react-hook-form";
@@ -22,13 +17,18 @@ import { ErrorDialog } from "@/components/shared/ErrorDialog";
 import { displayError } from "@/server/config/errors";
 import { joinDateTime } from "@/server/useCases/shared/helpers/date";
 import { Button } from "@/components/ui/button";
-import { ArrowLeft, CalendarDays } from "lucide-react";
+import { ArrowLeft } from "lucide-react";
 import { cn, scrollToTop } from "@/lib/utils";
-import { ConfirmationCard } from "@/components/appointments/create/ConfirmationCard";
+import { AppointmentConfirmationCard } from "@/components/appointments/AppointmentConfirmationCard";
 import { LoadingSpinner } from "@/components/ui/loading-spinner";
 import { SavingOverlay } from "@/components/shared/SavingOverlay";
-import { Landing } from "@/components/appointments/create/Landing";
+import { AppointmentLanding } from "@/components/appointments/AppointmentLanding";
 import { saveAppointmentLS } from "@/lib/localStorage";
+import {
+  patientDefaultValues,
+  PatientFormData,
+  patientFormSchema,
+} from "@/server/adapters/zod/patientValidator";
 
 interface AppointmentCreatorProps {
   doctors: DoctorModel[];
@@ -40,9 +40,9 @@ export default function AppointmentCreator({ doctors, state, dispatch }: Appoint
   const [message, setMessage] = useState("");
   const [loading, setLoading] = useState(false);
 
-  const form = useForm<PatientZodData>({
-    resolver: zodResolver(patientsZodSchema),
-    defaultValues: state.patientFormSave || patientZodDefaultValues,
+  const form = useForm<PatientFormData>({
+    resolver: zodResolver(patientFormSchema),
+    defaultValues: state.patientFormSave || patientDefaultValues,
   });
 
   function onStartClick() {
@@ -146,7 +146,7 @@ export default function AppointmentCreator({ doctors, state, dispatch }: Appoint
   }
 
   if (state.phase === "initial") {
-    return <Landing onStartClick={onStartClick} />;
+    return <AppointmentLanding onStartClick={onStartClick} />;
   }
 
   if (
@@ -156,7 +156,11 @@ export default function AppointmentCreator({ doctors, state, dispatch }: Appoint
   ) {
     return (
       <div className="flex flex-col gap-10 pb-8 pt-10">
-        <DoctorSelector doctors={doctors} doctor={state.doctor} onDoctorClick={onDoctorClick} />
+        <AppointmentDoctorSelector
+          doctors={doctors}
+          doctor={state.doctor}
+          onDoctorClick={onDoctorClick}
+        />
         {loading ? (
           <div className="flex justify-center py-32">
             <LoadingSpinner />
@@ -165,7 +169,7 @@ export default function AppointmentCreator({ doctors, state, dispatch }: Appoint
           // <div className="flex justify-center">Loading...</div>
           state.doctor &&
           state.slots && (
-            <SlotSelector
+            <AppointmentSlotSelector
               doctor={state.doctor}
               slots={state.slots}
               slot={state.slot}
@@ -183,7 +187,7 @@ export default function AppointmentCreator({ doctors, state, dispatch }: Appoint
       <div className="md:py-3 xl:py-4">
         <Header title="Patient" onBackClick={onBackClick} className="mb-2" />
         <div className="flex flex-col gap-4 xl:flex-row">
-          <SummaryCard
+          <AppointmentSummaryCard
             doctor={state.doctor}
             slot={state.slot}
             onBookClick={onBookClick}
@@ -203,7 +207,7 @@ export default function AppointmentCreator({ doctors, state, dispatch }: Appoint
         {loading && <SavingOverlay />}
         <Header title="Summary" onBackClick={onBackClick} />
         <ErrorDialog message={message} setMessage={setMessage} />
-        <SummaryCard
+        <AppointmentSummaryCard
           doctor={state.doctor}
           slot={state.slot}
           patient={state.patient}
@@ -216,7 +220,7 @@ export default function AppointmentCreator({ doctors, state, dispatch }: Appoint
 
   if (state.phase === "confirmation") {
     return (
-      <ConfirmationCard
+      <AppointmentConfirmationCard
         doctor={state.doctor}
         slot={state.slot}
         patient={state.patient}

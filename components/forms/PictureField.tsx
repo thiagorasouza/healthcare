@@ -1,6 +1,6 @@
 import { FormControl, FormField, FormItem } from "@/components/ui/form";
-import { allowedImageTypes } from "@/lib/schemas/doctorsSchema";
 import { cn } from "@/lib/utils";
+import { allowedImageTypes } from "@/server/config/constants";
 import { ImageUp } from "lucide-react";
 import Image from "next/image";
 import { useCallback } from "react";

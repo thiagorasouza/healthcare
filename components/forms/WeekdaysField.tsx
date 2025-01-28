@@ -3,8 +3,8 @@
 import { UseFormReturn } from "react-hook-form";
 import { Checkbox } from "@/components/ui/checkbox";
 import { FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
-import { PatternData, weekdays } from "@/lib/schemas/patternsSchema";
 import { capitalize } from "@/lib/utils";
+import { weekdays } from "@/server/config/constants";
 
 export function WeekdaysField({ form }: { form: UseFormReturn<any> }) {
   return (

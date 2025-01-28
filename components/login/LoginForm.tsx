@@ -6,16 +6,16 @@ import { useRouter } from "next/navigation";
 import { useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import FormMessage from "@/components/forms/FormMessage";
+import ErrorMessage from "@/components/forms/ErrorMessage";
 import TextField from "@/components/forms/TextField";
 import PasswordField from "@/components/forms/PasswordField";
 import SubmitButton from "@/components/forms/SubmitButton";
-import TestLoginAsTestUser from "@/components/testing/TestLoginAsAdmin";
 import { login } from "@/server/actions/login";
 import { objectToFormData } from "@/lib/utils";
 import { displayError } from "@/server/config/errors";
 import { loginSchema } from "@/server/adapters/zod/loginValidator";
 import { z } from "zod";
+import { TestLoginForm } from "@/components/testing/TestLoginForm";
 
 type LoginData = z.infer<typeof loginSchema>;
 
@@ -52,14 +52,14 @@ export default function LoginForm() {
   return (
     <>
       <Form {...form}>
-        <FormMessage message={message} />
+        <ErrorMessage message={message} />
         <form onSubmit={form.handleSubmit(onSubmit)} className="flex flex-col gap-3" ref={formRef}>
           <TextField form={form} name="email" label="Email" placeholder="name@example.com" />
           <PasswordField form={form} name="password" label="Password" />
           <SubmitButton form={form} label="Submit" />
         </form>
       </Form>
-      {/* <TestLoginAsTestUser form={form} formRef={formRef} /> */}
+      {/* <TestLoginForm form={form} formRef={formRef} /> */}
     </>
   );
 }
