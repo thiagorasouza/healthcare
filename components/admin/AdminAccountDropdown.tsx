@@ -22,13 +22,8 @@ export default function AdminAccountDropdown() {
   async function handleLogout() {
     try {
       const logoutResult = await logout();
-      console.log("🚀 ~ logoutResult:", logoutResult);
-      if (!logoutResult.ok) {
-        throw logoutResult.error;
-      }
-
       toast("Logged out.");
-      router.push("/admin");
+      router.push("/admin/login");
     } catch (error) {
       console.log(error);
       toast.warning(displayError());
@@ -45,10 +40,10 @@ export default function AdminAccountDropdown() {
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end">
         <DropdownMenuLabel>My Account</DropdownMenuLabel>
-        <DropdownMenuSeparator />
+        {/* <DropdownMenuSeparator />
         <DropdownMenuItem className="cursor-pointer hover:bg-muted">
           Change Password
-        </DropdownMenuItem>
+        </DropdownMenuItem> */}
         <DropdownMenuSeparator />
         <DropdownMenuItem className="cursor-pointer hover:bg-muted" onClick={handleLogout}>
           Logout

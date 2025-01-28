@@ -18,7 +18,6 @@ export class UpdateDoctorUseCase implements UseCase {
     request: UpdateDoctorRequest,
   ): Promise<Success<DoctorModel> | NotFoundFailure | ServerFailure> {
     try {
-      // console.log("🚀 ~ request:", request);
       const { id, name, email, phone, bio, specialty, picture } = request;
 
       const doctorResult = await this.doctorsRepository.getById(id);

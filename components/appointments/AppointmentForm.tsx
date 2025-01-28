@@ -84,9 +84,9 @@ export function AppointmentForm({
 
       // add current slot
       if (appointment) {
-        const dateStr = appointment.startTime.toISOString();
-        const startHour = getHoursStr(dateStr);
-        const endHour = getHoursStr(addMinutes(dateStr, appointment.duration));
+        const dateStr = startOfDay(appointment.startTime).toISOString();
+        const startHour = getHoursStr(appointment.startTime);
+        const endHour = getHoursStr(addMinutes(appointment.startTime, appointment.duration));
         const allSlots = slots.set(
           dateStr,
           (slots.get(dateStr) || []).concat([[startHour, endHour]]).sort(),
@@ -160,7 +160,6 @@ export function AppointmentForm({
   }, []);
 
   async function onSubmit(data: AppointmentFormData) {
-    console.log("🚀 ~ data:", data);
     if (slotsLoading || slotsError) return;
 
     const dateStr = data.date.toISOString();
@@ -175,7 +174,6 @@ export function AppointmentForm({
       if (mode === "update") {
         formData.append("id", appointment.id);
         const updateResult = await updateAppointment(formData);
-        console.log("🚀 ~ updateResult:", updateResult);
         if (!updateResult.ok) {
           setMessage(displayError(updateResult));
           return;

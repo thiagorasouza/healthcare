@@ -15,6 +15,7 @@ interface PasswordFieldProps {
   label: string;
   description?: string;
   form: UseFormReturn<any>;
+  readonly?: boolean;
 }
 
 const PasswordField = ({
@@ -22,6 +23,7 @@ const PasswordField = ({
   label,
   description,
   form,
+  readonly = false,
 }: PasswordFieldProps) => {
   return (
     <FormField
@@ -35,13 +37,11 @@ const PasswordField = ({
               type="password"
               data-cy={name}
               placeholder="&#9679;&#9679;&#9679;&#9679;&#9679;&#9679;&#9679;&#9679;"
-              readOnly={form.formState.isSubmitting}
+              readOnly={form.formState.isSubmitting || readonly}
               {...field}
             />
           </FormControl>
-          {description && (
-            <FormDescription className="text-xs">{description}</FormDescription>
-          )}
+          {description && <FormDescription className="text-xs">{description}</FormDescription>}
           <FormMessage data-cy={`${name}Error`} />
         </FormItem>
       )}

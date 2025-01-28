@@ -5,7 +5,7 @@ import { AppointmentsCard } from "@/components/appointments/AppointmentsCard";
 
 export default async function AppointmentsPage() {
   return (
-    <div className="space-y-6">
+    <div className="space-y-4">
       <AdminBreadcrumb />
       <AppointmentsCard />
     </div>

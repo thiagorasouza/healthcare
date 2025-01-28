@@ -5,9 +5,10 @@ import SubmitButton from "@/components/forms/SubmitButton";
 import TextareaField from "@/components/forms/TextareaField";
 import TextField from "@/components/forms/TextField";
 import { ErrorDialog } from "@/components/shared/ErrorDialog";
-import { TestDoctorForm } from "@/components/testing/TestDoctorForm";
+import { TestingOption } from "@/components/testing/TestingOption";
 import { Form } from "@/components/ui/form";
 import { getImageLink } from "@/lib/actions/getImageLink";
+import { getRandomDoctorSpecialty } from "@/lib/utils";
 import { createDoctor } from "@/server/actions/createDoctor";
 import { updateDoctor } from "@/server/actions/updateDoctor";
 import { DoctorFormData, doctorsFormSchema } from "@/server/adapters/zod/doctorValidator";
@@ -15,6 +16,7 @@ import { currentPictureName } from "@/server/config/constants";
 import { displayError } from "@/server/config/errors";
 import { DoctorModel } from "@/server/domain/models/doctorModel";
 import { objectToFormData } from "@/server/useCases/shared/helpers/utils";
+import { faker } from "@faker-js/faker";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
@@ -93,9 +95,28 @@ export default function DoctorForm({
     }
   }
 
+  async function fillWithTestingData() {
+    form.setValue("name", faker.person.firstName() + " " + faker.person.lastName(), {
+      shouldValidate: true,
+    });
+    const picture = await fetch(faker.image.avatarGitHub()).then((response) => response.blob());
+    form.setValue("picture", new File([picture], "randomPicture.png", { type: "image/png " }), {
+      shouldValidate: true,
+    });
+    form.setValue("specialty", getRandomDoctorSpecialty(), { shouldValidate: true });
+    form.setValue("bio", faker.lorem.paragraph(2), { shouldValidate: true });
+    form.setValue("email", faker.internet.email(), { shouldValidate: true });
+    form.setValue("phone", faker.helpers.fromRegExp("+3519[0-9]{8}"), { shouldValidate: true });
+  }
+
   return (
     <Form {...form}>
       <ErrorDialog message={message} setMessage={setMessage} />
+      <TestingOption
+        feature="Fill form with testing data"
+        onClick={fillWithTestingData}
+        className="mb-4"
+      />
       <form
         onSubmit={form.handleSubmit(onSubmit, () => console.log(form.formState.errors))}
         className="flex flex-col gap-3 md:gap-6"
@@ -144,7 +165,7 @@ export default function DoctorForm({
           </div>
         </fieldset>
         <SubmitButton form={form} label="Save" />
-        <TestDoctorForm form={form} formRef={formRef} />
+        {/* <TestDoctorForm form={form} formRef={formRef} /> */}
       </form>
     </Form>
   );

@@ -6,7 +6,6 @@ import { CreatePatternController } from "@/server/useCases/createPattern/createP
 import { CreatePatternUseCase } from "@/server/useCases/createPattern/createPatternUseCase";
 
 export const createPattern = async (formData: FormData) => {
-  // console.log("🚀 ~ formData:", formData);
   const repository = new PatternsRepository();
   const useCase = new CreatePatternUseCase(repository);
   const controller = new CreatePatternController(useCase, createPatternValidator);

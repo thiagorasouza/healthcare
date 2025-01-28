@@ -20,6 +20,7 @@ interface TextFieldProps {
   form: UseFormReturn<any>;
   className?: string;
   hidden?: boolean;
+  readonly?: boolean;
 }
 
 const TextField = ({
@@ -31,6 +32,7 @@ const TextField = ({
   form,
   className,
   hidden = false,
+  readonly = false,
 }: TextFieldProps) => {
   return (
     <FormField
@@ -47,7 +49,7 @@ const TextField = ({
                   hidden={hidden}
                   data-cy={name}
                   placeholder={placeholder}
-                  readOnly={form.formState.isSubmitting}
+                  readOnly={form.formState.isSubmitting || readonly}
                   {...field}
                   className="border-none focus-visible:outline-none focus-visible:ring-0 focus-visible:ring-offset-0"
                 />

@@ -275,13 +275,11 @@ function Calendar({
       startMonth ? getMonth(startMonth) : undefined,
       endMonth ? getMonth(endMonth) : undefined,
     );
-  }, [props.locale]);
+  }, [props.locale, endMonth, startMonth]);
 
   // const today = new Date();
   // const yearStart = startMonth && differenceInYears(today, startMonth);
-  // console.log("🚀 ~ yearStart:", yearStart);
   // const yearEnd = endMonth && differenceInYears(today, endMonth);
-  // console.log("🚀 ~ yearEnd:", yearEnd);
 
   const YEARS = React.useMemo(() => genYears(yearRange, type), [type, yearRange]);
 
@@ -780,7 +778,6 @@ const DateTimePicker = React.forwardRef<DateTimePickerRef, DateTimePickerProps>(
         selected={value}
         month={month}
         onSelect={(date) => {
-          // console.log("onSelect", date);
           if (onSelect) onSelect(date);
           setIsOpen(false);
           handleSelect(date);

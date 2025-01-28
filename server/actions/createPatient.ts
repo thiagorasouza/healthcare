@@ -9,8 +9,6 @@ import { CreatePatientUseCase } from "@/server/useCases/createPatient/createPati
 export type CreatePatientResult = ReturnType<typeof createPatient>;
 
 export const createPatient = async (formData: FormData) => {
-  // console.log("🚀 ~ formData:", formData);
-
   const patientsRepository = new PatientsRepository();
   const storageRepository = new StorageRepository();
   const useCase = new CreatePatientUseCase(patientsRepository, storageRepository);

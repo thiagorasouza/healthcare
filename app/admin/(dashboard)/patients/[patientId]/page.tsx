@@ -45,8 +45,8 @@ export default function PatientEditPage({ params }: { params: { patientId: strin
   }
 
   return (
-    <div className="mx-auto w-full max-w-[600px] space-y-6">
-      <AdminBreadcrumbWithBackLink backLink="/admin/doctors" />
+    <div className="mx-auto w-full max-w-[600px] space-y-4">
+      <AdminBreadcrumbWithBackLink backLink="/admin/patients" />
       <DefaultCard title="Edit Patient" description="Modify this patient's details">
         {loading ? (
           <LoadingSpinner size={24} className="mx-auto" />

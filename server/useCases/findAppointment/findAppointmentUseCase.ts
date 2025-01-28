@@ -41,15 +41,11 @@ export class FindAppointmentUseCase implements UseCase {
     }
 
     const patient = patientResult.value;
-    // console.log("🚀 ~ patient:", patient);
-    // console.log("🚀 ~ birthdate:", birthdate);
-    // console.log("comparison:", isSameDay(patient.birthdate, birthdate));
     if (!patient || !isSameDay(patient.birthdate, birthdate)) {
       return notFoundFailure;
     }
 
     const appointmentsResult = await this.appointmentsRepository.getByPatientId(patient.id);
-    // console.log("🚀 ~ appointmentsResult:", appointmentsResult);
     if (!appointmentsResult.ok) {
       return appointmentsResult;
     }

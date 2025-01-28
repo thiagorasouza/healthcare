@@ -59,7 +59,6 @@ const refinePatternSchema = (schema: typeof patternFormSchemaBase) =>
   schema
     .refine(
       ({ recurring, weekdays: weekdaysInput }) => {
-        // console.log("🚀 ~ weekdaysInput:", weekdaysInput);
         if (!recurring) return true;
         return (
           Array.isArray(weekdaysInput) &&

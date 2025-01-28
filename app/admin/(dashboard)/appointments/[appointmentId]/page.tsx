@@ -14,6 +14,9 @@ export default function EditAppointmentPage({ params }: { params: { appointmentI
   const { appointmentId } = params;
   const [appointment, setAppointment] = useState<AppointmentHydrated | "error">();
 
+  const loading = !appointment;
+  const error = appointment === "error";
+
   async function loadAppointment() {
     try {
       const appointmentResult = await getAppointment(objectToFormData({ id: appointmentId }));
@@ -28,9 +31,6 @@ export default function EditAppointmentPage({ params }: { params: { appointmentI
     }
   }
 
-  const loading = !appointment;
-  const error = appointment === "error";
-
   useEffect(() => {
     loadAppointment();
   }, []);
@@ -40,7 +40,7 @@ export default function EditAppointmentPage({ params }: { params: { appointmentI
   }
 
   return (
-    <div className="mx-auto w-full max-w-[600px] space-y-6">
+    <div className="mx-auto w-full max-w-[600px] space-y-4">
       <AdminBreadcrumbWithBackLink replace={appointmentId} backLink="/admin/appointments" />
       <DefaultCard
         title="Edit Appointment"

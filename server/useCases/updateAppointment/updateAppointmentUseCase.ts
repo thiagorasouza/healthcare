@@ -41,7 +41,6 @@ export class UpdateAppointmentUseCase implements UseCase {
   > {
     try {
       const { id, patientId, doctorId, startTime, duration } = request;
-      // console.log("🚀 ~ request:", request);
 
       const appointmentResult = await this.appointmentsRepository.getById(id);
       if (!appointmentResult.ok) {
@@ -49,8 +48,6 @@ export class UpdateAppointmentUseCase implements UseCase {
       }
 
       const current = appointmentResult.value;
-      console.log("🚀 ~ current:", current);
-      console.log("🚀 ~ request:", request);
 
       // if nothing has chaged, return success
       if (

@@ -19,6 +19,7 @@ import { TestLoginForm } from "@/components/testing/TestLoginForm";
 type LoginData = z.infer<typeof loginSchema>;
 
 export default function LoginForm() {
+  const [fetching, setFetching] = useState(false);
   const router = useRouter();
   const [message, setMessage] = useState("");
   const formRef = useRef<HTMLFormElement>(null);
@@ -33,6 +34,7 @@ export default function LoginForm() {
 
   async function onSubmit(data: LoginData) {
     setMessage("");
+    setFetching(true);
     try {
       const result = await login(objectToFormData(data));
 
@@ -41,10 +43,12 @@ export default function LoginForm() {
         return;
       }
 
-      router.push("/admin");
+      await router.push("/admin");
     } catch (error) {
       console.log(error);
       setMessage(displayError());
+    } finally {
+      setFetching(false);
     }
   }
 
@@ -53,12 +57,18 @@ export default function LoginForm() {
       <Form {...form}>
         <ErrorMessage message={message} />
         <form onSubmit={form.handleSubmit(onSubmit)} className="flex flex-col gap-3" ref={formRef}>
-          <TextField form={form} name="email" label="Email" placeholder="name@example.com" />
-          <PasswordField form={form} name="password" label="Password" />
-          <SubmitButton form={form} label="Submit" />
+          <TextField
+            form={form}
+            name="email"
+            label="Email"
+            placeholder="name@example.com"
+            readonly={fetching}
+          />
+          <PasswordField form={form} name="password" label="Password" readonly={fetching} />
+          <SubmitButton form={form} label="Submit" disabled={fetching} />
         </form>
       </Form>
-      {/* <TestLoginForm form={form} formRef={formRef} /> */}
+      <TestLoginForm form={form} formRef={formRef} />
     </>
   );
 }

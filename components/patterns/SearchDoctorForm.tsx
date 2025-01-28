@@ -29,6 +29,7 @@ export function SearchDoctorForm({
         throw doctorsResult.error;
       }
       setDoctors(doctorsResult.value);
+      // For demo purposes
     } catch (error) {
       console.log(error);
       setDoctors("error");
@@ -45,13 +46,11 @@ export function SearchDoctorForm({
   const form = useForm<SearchDoctorForm>({
     resolver: zodResolver(searchDoctorSchema),
     defaultValues: {
-      doctorId: "",
+      doctorId: "677d41f0001a454b1602",
     },
   });
 
-  function onSubmit(data: SearchDoctorForm) {
-    console.log("🚀 ~ data:", data);
-  }
+  function onSubmit(data: SearchDoctorForm) {}
 
   return (
     <Form {...form}>

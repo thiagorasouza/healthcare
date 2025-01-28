@@ -8,8 +8,6 @@ import { FindAppointmentController } from "@/server/useCases/findAppointment/fin
 import { FindAppointmentUseCase } from "@/server/useCases/findAppointment/findAppointmentUseCase";
 
 export const findAppointment = async (formData: FormData) => {
-  // console.log("🚀 ~ formData:", formData);
-
   const patientsRepository = new PatientsRepository();
   const doctorsRepository = new DoctorsRepository();
   const appointmentsRepository = new AppointmentsRepository();

@@ -54,6 +54,7 @@ export default function DateField({
             side={side}
             type={type}
             yearRange={yearRange}
+            disabled={form.formState.isSubmitting}
           />
           {description && <FormDescription className="text-xs">{description}</FormDescription>}
           <FormMessage />

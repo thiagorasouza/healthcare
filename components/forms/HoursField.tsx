@@ -19,6 +19,7 @@ interface HoursFieldLoadingProps {
   description?: string;
   form: UseFormReturn<any>;
   className?: string;
+  defaultValue?: string;
 }
 
 interface HoursFieldProps {
@@ -60,19 +61,26 @@ const HoursField = ({
         <FormItem className={cn("flex-1", className)}>
           {label && <FormLabel>{label}</FormLabel>}
           <FormControl>
-            {!loading && hours.length > 0 ? (
-              <ul className="grid grid-cols-4 gap-3 text-center text-sm md:grid-cols-5 lg:grid-cols-7">
+            {Array.isArray(hours) && hours.length > 0 ? (
+              <ul
+                className={cn(
+                  "grid grid-cols-4 gap-3 text-center text-sm md:grid-cols-5 lg:grid-cols-7",
+                )}
+              >
                 {hours.map((hour, index) => (
                   <li
                     key={index}
                     onClick={() => {
+                      if (form.formState.isSubmitting) return;
                       form.setValue(name, hour[0], { shouldValidate: true });
                       form.setValue("duration", subtractTimeStrings(hour[0], hour[1]));
                     }}
                     className={cn(
-                      "cursor-pointer rounded-md border border-input px-3 py-2 transition-transform hover:scale-105 hover:border-black hover:bg-light-yellow",
+                      "cursor-pointer rounded-md border border-input px-3 py-2 transition-transform",
                       {
                         "bg-accent": hour[0] === field.value,
+                        "hover:scale-105 hover:border-black hover:bg-light-yellow":
+                          !form.formState.isSubmitting,
                       },
                     )}
                   >
@@ -82,7 +90,7 @@ const HoursField = ({
               </ul>
             ) : (
               <p className="w-full rounded-md border border-input px-3 py-2 text-sm">
-                {placeholder}
+                {loading ? "..." : placeholder}
               </p>
             )}
           </FormControl>

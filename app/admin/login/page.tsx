@@ -24,7 +24,7 @@ export default function LoginPage() {
       <aside className="relative hidden min-h-screen flex-1 bg-zinc-900 lg:block">
         <h1 className="absolute right-0 top-0 m-8 text-lg font-semibold text-white">Mednow</h1>
         <Image
-          src="/img/side.png"
+          src="/img/login-side.png"
           alt="hospital building"
           width={720}
           height={1080}

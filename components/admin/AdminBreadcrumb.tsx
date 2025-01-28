@@ -50,7 +50,7 @@ export function AdminBreadcrumb({ replace, replacement }: AdminBreadCrumbProps) 
   const lastPath = pathParts.pop();
 
   return (
-    <Breadcrumb>
+    <Breadcrumb className="flex min-h-[36px] items-center">
       <BreadcrumbList>
         <BreadcrumbItem>
           <BreadcrumbLink href="/admin" className="capitalize">
@@ -61,7 +61,7 @@ export function AdminBreadcrumb({ replace, replacement }: AdminBreadCrumbProps) 
         {pathParts.slice(1).map((path, index) => (
           <BreadcrumbItemWithSeparator
             name={path}
-            link={"/" + pathParts.slice(0, index + 1).join("/")}
+            link={"/" + pathParts.slice(0, index + 2).join("/")}
             replace={replace}
             replacement={replacement}
             key={index}

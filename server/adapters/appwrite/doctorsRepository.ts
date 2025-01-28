@@ -20,7 +20,6 @@ export class DoctorsRepository
       phone: data.phone,
       specialty: data.specialty,
       bio: data.bio,
-      authId: data.authId,
       pictureId: data.pictureId,
     };
   }

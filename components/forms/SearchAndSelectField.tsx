@@ -177,7 +177,7 @@ export function SearchEntity<Entity extends HasId>({
           value={searchValue}
           onChange={(e) => setSearchValue(e.target.value)}
           placeholder={entitiesLoading ? "Please wait..." : "Type to search"}
-          disabled={entitiesLoading || form.formState.isSubmitting}
+          readOnly={entitiesLoading || form.formState.isSubmitting}
           className="border-none focus-visible:outline-none focus-visible:ring-0 focus-visible:ring-offset-0"
           autoComplete="off"
         />

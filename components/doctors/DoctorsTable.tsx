@@ -76,7 +76,7 @@ export default function DoctorsTable() {
       <>
         <p>No doctors yet.</p>
         <Button asChild className="mt-6">
-          <Link href="/admin/appointments/create">
+          <Link href="/admin/doctors/create">
             <PlusCircle className="mr-2 h-4 w-4" />
             Create
           </Link>

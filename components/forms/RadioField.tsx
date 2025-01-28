@@ -32,7 +32,6 @@ export function RadioField({
   form,
   className,
 }: RadioFieldProps) {
-  // console.log(`Radio field ${name}:`, form.getValues(name));
   return (
     <FormField
       control={form.control}

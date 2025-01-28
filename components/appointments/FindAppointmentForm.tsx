@@ -31,7 +31,6 @@ export function FindAppointmentForm({
     setMessage("");
     try {
       const findResult = await findAppointment(objectToFormData(data));
-      console.log("🚀 ~ findResult:", findResult);
 
       if (!findResult.ok) {
         setMessage(displayError(findResult));

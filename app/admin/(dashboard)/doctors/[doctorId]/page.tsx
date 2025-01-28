@@ -40,7 +40,7 @@ export default function PatientEditPage({ params }: { params: { doctorId: string
   }
 
   return (
-    <div className="mx-auto w-full max-w-[600px] space-y-6">
+    <div className="mx-auto w-full max-w-[600px] space-y-4">
       <AdminBreadcrumbWithBackLink backLink="/admin/doctors" />
       <DefaultCard title="Edit Doctor" description="Modify this doctor's details">
         {loading ? (

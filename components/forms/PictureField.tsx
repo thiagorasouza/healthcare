@@ -10,7 +10,6 @@ import { UseFormReturn } from "react-hook-form";
 const PictureField = ({ form }: { form: UseFormReturn<any> }) => {
   const onDrop = useCallback(
     (acceptedFiles: File[]) => {
-      // console.log("🚀 ~ acceptedFiles:", acceptedFiles);
       form.setValue("picture", acceptedFiles[0], { shouldValidate: true });
     },
     [form],

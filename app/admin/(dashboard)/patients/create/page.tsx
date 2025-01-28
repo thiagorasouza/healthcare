@@ -24,7 +24,7 @@ export default function PatientCreatePage() {
   }
 
   return (
-    <div className="mx-auto w-full max-w-[600px] space-y-6">
+    <div className="mx-auto w-full max-w-[600px] space-y-4">
       <AdminBreadcrumbWithBackLink backLink="/admin/patients" />
       <DefaultCard title="Create Patient" description="Fill the form to create a new patient">
         <PatientForm form={form} mode="create" onPatientSaved={onPatientSaved} />

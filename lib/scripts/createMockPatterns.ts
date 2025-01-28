@@ -31,8 +31,6 @@ async function createMockPatterns(doctorName: string) {
       doctorId: doctor.$id,
     },
   );
-
-  console.log("🚀 ~ result:", patternResult);
 }
 
 async function main() {

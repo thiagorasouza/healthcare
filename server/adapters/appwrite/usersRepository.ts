@@ -36,10 +36,10 @@ export class UsersRepository implements UsersRepositoryInterface {
         await webClient.setSession(sessionCookie.value);
         await new Account(webClient).deleteSession("current");
       }
-      return new Success("Logged out");
     } catch (error) {
       console.log(error);
-      return new ServerFailure("Server error");
+    } finally {
+      return new Success("Logged out");
     }
   }
 

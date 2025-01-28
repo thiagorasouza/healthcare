@@ -21,12 +21,12 @@ export const adminNavbarLinks = [
     href: "/admin",
   },
   {
-    label: "Doctors",
-    href: "/admin/doctors",
-  },
-  {
     label: "Slots",
     href: "/admin/slots",
+  },
+  {
+    label: "Doctors",
+    href: "/admin/doctors",
   },
   {
     label: "Patients",

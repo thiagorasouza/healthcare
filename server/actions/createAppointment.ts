@@ -9,8 +9,6 @@ import { CreateAppointmentController } from "@/server/useCases/createAppointment
 import { CreateAppointmentUseCase } from "@/server/useCases/createAppointment/createAppointmentUseCase";
 
 export const createAppointment = async (formData: FormData) => {
-  // console.log("🚀 ~ formData:", formData);
-
   const doctorsRepository = new DoctorsRepository();
   const patientsRepository = new PatientsRepository();
   const patternsRepository = new PatternsRepository();

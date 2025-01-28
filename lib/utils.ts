@@ -138,10 +138,6 @@ export function capitalize(str: string): string {
 export function getFirstWeekdayAfter(startDate: Date, targetWeekday: Weekday): Date {
   const targetWeekdayNumber = weekdays.indexOf(targetWeekday) as Day;
   const nextTargetDate = nextDay(subDays(startDate, 1), targetWeekdayNumber);
-  // console.log("-----------");
-  // console.log("🚀 ~ nextTargetDate:", nextTargetDate);
-  // console.log("🚀 ~ startDate:", startDate);
-  // console.log("🚀 ~ isBefore:", isBefore(startDate, nextTargetDate));
 
   return nextTargetDate;
 }
@@ -178,7 +174,6 @@ export function getInitials(name: string) {
 }
 
 export function getHourStrFromDate(date: Date) {
-  // console.log("🚀 ~ date:", date);
   return date.toLocaleTimeString("en-US", {
     hour: "2-digit",
     minute: "2-digit",

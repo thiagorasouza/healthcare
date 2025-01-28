@@ -73,7 +73,7 @@ export function AppointmentLanding({ onStartClick }: { onStartClick: () => void 
         </div>
       </div>
       <Image
-        src="/img/side.png"
+        src="/img/landing-side.png"
         alt="Doctor"
         width={1418}
         height={2048}

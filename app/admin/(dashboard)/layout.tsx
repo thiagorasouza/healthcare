@@ -8,7 +8,7 @@ export default function RootLayout({
   return (
     <div className="min-h-screen w-full bg-[#FBFBFB]">
       <AdminHeader />
-      <main className="mx-auto max-w-7xl p-4 md:p-8">{children}</main>
+      <main className="mx-auto max-w-7xl p-4 md:px-8 md:py-6">{children}</main>
     </div>
   );
 }
