@@ -43,7 +43,8 @@ export default function LoginForm() {
         return;
       }
 
-      await router.push("/admin");
+      await router.refresh();
+      router.push("/admin");
     } catch (error) {
       console.log(error);
       setMessage(displayError());
