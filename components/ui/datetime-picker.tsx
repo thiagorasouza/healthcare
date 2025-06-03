@@ -285,6 +285,7 @@ function Calendar({
 
   return (
     <DayPicker
+      timeZone="UTC"
       fixedWeeks
       startMonth={startMonth}
       endMonth={endMonth}

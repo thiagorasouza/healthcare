@@ -14,13 +14,13 @@ export function getHourMinNums(hourStr: string) {
 }
 
 export function joinDateTime(date: string, hourStr: string) {
-  console.log("🚀 ~ joinDateTime ~ date:", date);
-  console.log("🚀 ~ joinDateTime ~ hourStr:", hourStr);
+  // console.log("🚀 ~ joinDateTime ~ date:", date);
+  // console.log("🚀 ~ joinDateTime ~ hourStr:", hourStr);
   const [hours, minutes] = getHourMinNums(hourStr);
 
   const newDate = new Date(date);
   newDate.setUTCHours(hours, minutes, 0, 0);
-  console.log("🚀 ~ joinDateTime ~ newDate:", newDate.toISOString());
+  // console.log("🚀 ~ joinDateTime ~ newDate:", newDate.toISOString());
   return newDate;
 }
 

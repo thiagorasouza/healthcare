@@ -12,7 +12,7 @@ import { objectToFormData } from "@/server/useCases/shared/helpers/utils";
 import { SlotsModel } from "@/server/domain/models/slotsModel";
 import DateField from "@/components/forms/DateField";
 import { addMinutes, startOfDay } from "date-fns";
-import { getHoursStr, joinDateTime } from "@/server/useCases/shared/helpers/date";
+import { getHoursStr, joinDateTime, setToMidnightUTC } from "@/server/useCases/shared/helpers/date";
 import HoursField from "@/components/forms/HoursField";
 import { updateAppointment } from "@/server/actions/updateAppointment";
 import { ErrorDialog } from "@/components/shared/ErrorDialog";
@@ -117,16 +117,20 @@ export function AppointmentForm({
     return [...slots.keys()];
   }, [slots, slotsError, slotsLoading]);
 
+  // console.log("🚀 ~ dates ~ dates:", dates);
+
   const selectedDate = form.watch("date");
+  // console.log("🚀 ~ selectedDate:", selectedDate);
 
   const hours = useMemo(() => {
-    const dateStr = selectedDate.toISOString();
+    const dateStr = setToMidnightUTC(selectedDate).toISOString();
     if (slotsLoading || slotsError || !slots.has(dateStr)) return [];
 
     const hours = slots.get(dateStr) as string[][];
 
     return hours;
   }, [selectedDate, slotsLoading, slotsError, slots]);
+  // console.log("🚀 ~ hours ~ hours:", hours);
 
   async function loadDoctors() {
     try {
@@ -234,7 +238,7 @@ export function AppointmentForm({
               ? {
                   startMonth: new Date(dates[0]),
                   endMonth: new Date(dates[dates.length - 1]),
-                  disabledFn: (date) => !dates.includes(date.toISOString()),
+                  disabledFn: (date) => !dates.includes(setToMidnightUTC(date).toISOString()),
                 }
               : { disabledFn: () => true })}
           />

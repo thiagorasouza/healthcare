@@ -10,6 +10,7 @@ import {
   PatientNotFoundFailure,
   PatientUnavailableFailure,
   ServerFailure,
+  ValidationFailure,
 } from "@/server/useCases/shared/failures";
 import { ConflictingPatternsFailure } from "@/server/useCases/shared/failures/ConflictingPatternsFailure";
 import { ForbiddenInTestingFailure } from "@/server/useCases/shared/failures/forbiddenInTestingFailure";
@@ -31,6 +32,7 @@ export const errorMsgs = {
     "To keep this demo usable, testing users cannot manipulate doctors or delete data.",
   [ConflictingPatternsFailure.name]:
     "The pattern you are trying to create conflicts with another existing one.",
+  [ValidationFailure.name]: "Please fill all the fields properly.",
 };
 
 export const displayError = <T>(failure?: Failure<T>): string => {

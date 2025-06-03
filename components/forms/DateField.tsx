@@ -2,6 +2,7 @@ import { UseFormReturn } from "react-hook-form";
 import { FormDescription, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { DateTimePicker, RangeType, Side } from "@/components/ui/datetime-picker";
 import { cn } from "@/lib/utils";
+import { setToMidnightUTC } from "@/server/useCases/shared/helpers/date";
 
 interface DateFieldProps {
   name: string;

@@ -4,8 +4,8 @@ import { AppointmentModel } from "@/server/domain/models/appointmentModel";
 import { UpdateAppointmentRequest } from "@/server/useCases/updateAppointment/updateAppointmentUseCase";
 
 export const appointmentsSchema = z.object({
-  doctorId: z.string(),
-  patientId: z.string(),
+  doctorId: z.string().min(1),
+  patientId: z.string().min(1),
   startTime: z.coerce.date(),
   duration: z.coerce.number(),
 });
