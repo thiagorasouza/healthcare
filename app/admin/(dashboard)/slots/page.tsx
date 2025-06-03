@@ -17,7 +17,7 @@ import { displayError } from "@/server/config/errors";
 import { DoctorModel } from "@/server/domain/models/doctorModel";
 import { PatternModel, Weekday } from "@/server/domain/models/patternModel";
 import { SlotsModel } from "@/server/domain/models/slotsModel";
-import { getHoursStr } from "@/server/useCases/shared/helpers/date";
+import { getHoursStr, setToMidnightUTC } from "@/server/useCases/shared/helpers/date";
 import {
   countSlotsInTimespan,
   formatList,
@@ -93,7 +93,7 @@ export default function SlotsPage() {
   }, [slots, error, idle]);
 
   const hours = useMemo(() => {
-    const dateStr = selectedDate && selectedDate.toISOString();
+    const dateStr = selectedDate && setToMidnightUTC(selectedDate).toISOString();
     if (idle || error || !dateStr || !slots.has(dateStr)) return [];
 
     const hours = slots.get(dateStr) as string[][];
@@ -134,8 +134,6 @@ export default function SlotsPage() {
       console.log(error);
     }
   }
-
-  useEffect(() => {}, []);
 
   if (error) {
     return <ErrorCard text="There was an error while trying to load this page." />;
@@ -186,7 +184,8 @@ export default function SlotsPage() {
                         ? {
                             startMonth: new Date(dates[0]),
                             endMonth: new Date(dates[dates.length - 1]),
-                            disabledFn: (date) => !dates.includes(date.toISOString()),
+                            disabledFn: (date) =>
+                              !dates.includes(setToMidnightUTC(date).toISOString()),
                           }
                         : { disabledFn: () => true })}
                     />

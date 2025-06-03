@@ -44,6 +44,8 @@ export function PatternForm({
   onSaved,
   doctorId,
 }: CreatePatternFormProps | UpdatePatternFormProps) {
+  console.log("🚀 ~ pattern:", pattern);
+
   const [message, setMessage] = useState("");
   const form = useForm<PatternFormData>({
     resolver: zodResolver(patternFormSchema),
