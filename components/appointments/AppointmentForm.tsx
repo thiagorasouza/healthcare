@@ -11,7 +11,7 @@ import { getSlots } from "@/server/actions/getSlots";
 import { objectToFormData } from "@/server/useCases/shared/helpers/utils";
 import { SlotsModel } from "@/server/domain/models/slotsModel";
 import DateField from "@/components/forms/DateField";
-import { addMinutes, startOfDay } from "date-fns";
+import { addMinutes } from "date-fns";
 import { getHoursStr, joinDateTime, setToMidnightUTC } from "@/server/useCases/shared/helpers/date";
 import HoursField from "@/components/forms/HoursField";
 import { updateAppointment } from "@/server/actions/updateAppointment";
@@ -56,13 +56,15 @@ export function AppointmentForm({
   const [patients, setPatients] = useState<PatientModel[] | "error">();
   const router = useRouter();
 
+  // console.log("🚀 ~ appointment:", appointment);
+
   const form = useForm<AppointmentFormData>({
     resolver: zodResolver(appointmentFormSchema),
     defaultValues: {
       patientId: appointment?.patient.id || "",
       doctorId: appointment?.doctor.id || "",
       duration: appointment ? Number(appointment?.duration) : 0,
-      date: appointment ? startOfDay(appointment?.startTime) : startOfDay(new Date()),
+      date: appointment ? appointment?.startTime : setToMidnightUTC(new Date()),
       hour: appointment ? getHoursStr(appointment?.startTime) : "00:00",
     },
   });
@@ -84,7 +86,7 @@ export function AppointmentForm({
 
       // add current slot
       if (appointment) {
-        const dateStr = startOfDay(appointment.startTime).toISOString();
+        const dateStr = setToMidnightUTC(appointment.startTime).toISOString();
         const startHour = getHoursStr(appointment.startTime);
         const endHour = getHoursStr(addMinutes(appointment.startTime, appointment.duration));
         const allSlots = slots.set(
