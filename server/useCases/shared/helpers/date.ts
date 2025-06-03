@@ -25,13 +25,14 @@ export function joinDateTime(date: string, hourStr: string) {
 }
 
 export function displayDate(date: Date) {
-  return date.toLocaleDateString("pt-PT");
+  return date.toLocaleDateString("pt-PT", { timeZone: "UTC" });
 }
 
 export function displayTime(date: Date) {
   return date.toLocaleTimeString("pt-PT", {
     hour: "2-digit",
     minute: "2-digit",
+    timeZone: "UTC",
   });
 }
 

@@ -76,19 +76,11 @@ export class CreateAppointmentUseCase implements UseCase {
       return doctorUnavailableFailure;
     }
 
-    // const isSlotValid = new Slots()
-    //   .source(doctorPatternsResult.value)
-    //   .date(startTime)
-    //   .parse()
-    //   .isValid(startTime, duration);
-    console.log("🚀 ~ CreateAppointmentUseCase ~ startTime:", startTime);
-    console.log("🚀 ~ CreateAppointmentUseCase ~ duration:", duration);
-
-    const slots = new Slots().source(doctorPatternsResult.value).date(startTime).parse();
-    console.log("🚀 ~ CreateAppointmentUseCase ~ slots:", slots);
-
-    const isSlotValid = slots.isValid(startTime, duration);
-    console.log("🚀 ~ CreateAppointmentUseCase ~ isSlotValid:", isSlotValid);
+    const isSlotValid = new Slots()
+      .source(doctorPatternsResult.value)
+      .date(startTime)
+      .parse()
+      .isValid(startTime, duration);
 
     if (!isSlotValid) {
       return doctorUnavailableFailure;
