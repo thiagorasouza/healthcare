@@ -30,8 +30,10 @@ export class GetSlotsUseCase implements UseCase {
   public async execute(request: GetSlotsRequest): Promise<Success<SlotsModel> | ServerFailure> {
     try {
       const { doctorId, startDate } = request;
+      // console.log("🚀 ~ GetSlotsUseCase ~ execute ~ startDate:", startDate)
 
       const patternsResult = await this.patternsRepository.listByDoctorId(doctorId);
+      // console.log("🚀 ~ GetSlotsUseCase ~ execute ~ patternsResult:", patternsResult)
       if (!patternsResult.ok) {
         return new Success(new Map());
       }

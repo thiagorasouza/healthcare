@@ -2,7 +2,7 @@ import { weekdays } from "@/server/config/constants";
 import { PatternModel, Weekday } from "@/server/domain/models/patternModel";
 import { SlotsModel } from "@/server/domain/models/slotsModel";
 import { getDateStr, getHoursStr, getWeekday } from "@/server/useCases/shared/helpers/date";
-import { addDays, addMinutes, getDay, isAfter, isBefore, isSameDay } from "date-fns";
+import { addDays, addMinutes, getDay, isAfter, isBefore, isSameDay, startOfDay } from "date-fns";
 
 interface Options {
   start?: Date;
@@ -134,7 +134,7 @@ export class Slots {
 
     const hoursArray = this.getHoursArray(startTime, endTime, duration);
 
-    let date = startDate;
+    let date = startOfDay(startDate);
     while (date <= endDate) {
       if (!this.isDateOutOfRange(date)) {
         const weekday = getWeekday(date);

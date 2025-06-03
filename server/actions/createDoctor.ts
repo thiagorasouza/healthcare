@@ -8,10 +8,10 @@ import { CreateDoctorController } from "@/server/useCases/createDoctor/createDoc
 import { CreateDoctorUseCase } from "@/server/useCases/createDoctor/createDoctorUseCase";
 import { ForbiddenInTestingFailure } from "@/server/useCases/shared/failures/forbiddenInTestingFailure";
 
-export const createDoctor = async (formData: FormData) => {
+export const createDoctor = async (formData: FormData, skipCheck = false) => {
   let result;
 
-  if (await isTestingUser()) {
+  if (!skipCheck && (await isTestingUser())) {
     result = new ForbiddenInTestingFailure();
   } else {
     const patientsRepository = new DoctorsRepository();

@@ -94,6 +94,6 @@ async function createDoctorFormData(data: any) {
 export async function createMockDoctors() {
   for (const doctor of mockDoctors) {
     const formData = await createDoctorFormData(doctor);
-    await createDoctor(formData);
+    await createDoctor(formData, true);
   }
 }

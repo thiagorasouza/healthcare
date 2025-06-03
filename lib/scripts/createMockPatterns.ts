@@ -1,4 +1,4 @@
-import { mockDoctors } from "@/lib/scripts/createMockDoctors";
+import { createMockDoctors, mockDoctors } from "@/lib/scripts/createMockDoctors";
 import { databases, ID, Query } from "@/server/adapters/appwrite/nodeClient";
 import { weekdays } from "@/server/config/constants";
 import { env } from "@/server/config/env";
@@ -22,24 +22,19 @@ async function createMockPatterns(doctorName: string) {
 
   const doctor = doctorResult.documents[0];
 
-  const patternResult = await databases.createDocument(
-    env.databaseId,
-    env.patternsCollectionId,
-    ID.unique(),
-    {
-      ...mockPattern(),
-      doctorId: doctor.$id,
-    },
-  );
+  await databases.createDocument(env.databaseId, env.patternsCollectionId, ID.unique(), {
+    ...mockPattern(),
+    doctorId: doctor.$id,
+  });
 }
 
 async function main() {
-  // await createMockDoctors();
+  await createMockDoctors();
 
   for (const doctor of mockDoctors) {
     await createMockPatterns(doctor.name);
   }
-  createMockPatterns("Claire Dunlap");
+  // createMockPatterns("Claire Dunlap");
 }
 
 main();

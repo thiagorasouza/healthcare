@@ -90,3 +90,11 @@ export function getMinutesSinceMidnight(date: Date) {
   const minutes = getMinutes(date);
   return hours * 60 + minutes;
 }
+
+export function setToMidnightUTC(date: Date) {
+  const utcYear = date.getUTCFullYear();
+  const utcMonth = date.getUTCMonth();
+  const utcDate = date.getUTCDate();
+
+  return new Date(Date.UTC(utcYear, utcMonth, utcDate, 0, 0, 0, 0));
+}

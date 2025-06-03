@@ -57,11 +57,11 @@ export default function AppointmentCreator({ doctors, state, dispatch }: Appoint
 
     try {
       setLoading(true);
-      const slotsResult = await getSlots(
-        objectToFormData({ doctorId: doctor.id, startDate: new Date() }),
-      );
+      const startDate = new Date();
+      const slotsResult = await getSlots(objectToFormData({ doctorId: doctor.id, startDate }));
 
       if (slotsResult.ok) {
+        // console.log("slotsResult", slotsResult);
         dispatch({ type: "set_doctor", payload: { doctor, slots: slotsResult.value } });
       }
     } catch (error) {
@@ -115,6 +115,7 @@ export default function AppointmentCreator({ doctors, state, dispatch }: Appoint
       const createAppointmentResult = await createAppointment(
         objectToFormData({ doctorId, patientId, startTime, duration }),
       );
+      console.log("🚀 ~ onBookClick ~ createAppointmentResult:", createAppointmentResult);
 
       if (!createAppointmentResult.ok) {
         setMessage(displayError(createAppointmentResult));
