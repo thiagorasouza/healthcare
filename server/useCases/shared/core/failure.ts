@@ -9,12 +9,9 @@ export class Failure<T> extends Result {
   public readonly ok = false;
   public readonly error: Error<T>;
 
-  public constructor(data: T) {
+  public constructor(code: string, data: T) {
     super();
-    this.error = {
-      code: this.constructor.name,
-      data,
-    };
+    this.error = { code, data };
     Object.freeze(this);
   }
 }

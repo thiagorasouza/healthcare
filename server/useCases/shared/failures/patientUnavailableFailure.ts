@@ -7,6 +7,6 @@ export class PatientUnavailableFailure extends Failure<{
   conflictingAppointment: AppointmentModel;
 }> {
   constructor(patientId: string, startTime: Date, conflictingAppointment: AppointmentModel) {
-    super({ patientId, startTime, conflictingAppointment });
+    super("PatientUnavailableFailure", { patientId, startTime, conflictingAppointment });
   }
 }

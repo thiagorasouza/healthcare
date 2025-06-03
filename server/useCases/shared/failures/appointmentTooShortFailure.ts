@@ -7,7 +7,7 @@ export class AppointmentTooShortFailure extends Failure<{
   minDurationUnit: string;
 }> {
   constructor(duration: number) {
-    super({
+    super("AppointmentTooShortFailure", {
       duration,
       minDuration: MIN_DURATION,
       minDurationUnit: DURATION_UNIT,

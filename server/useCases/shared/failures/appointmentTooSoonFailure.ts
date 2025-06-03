@@ -7,7 +7,7 @@ export class AppointmentTooSoonFailure extends Failure<{
   minAdvanceUnit: string;
 }> {
   constructor(startTime: Date) {
-    super({
+    super("AppointmentTooSoonFailure", {
       startTime,
       minAdvance: MIN_ADVANCE,
       minAdvanceUnit: ADVANCE_UNIT,
