@@ -9,7 +9,7 @@ import { AppointmentPublicData, getAppointmentsLS } from "@/lib/actions/localSto
 import { cn, colorize } from "@/lib/utils";
 import { joinDateTime } from "@/server/useCases/shared/helpers/date";
 import { format, isFuture } from "date-fns";
-import { CalendarDays, Clock } from "lucide-react";
+import { CalendarDays, Clock, User } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";
@@ -35,24 +35,6 @@ export default function AppointmentsPage() {
   }
 
   return (
-    // <div className="min-h-screen w-full md:bg-[#212121]">
-    //   <div className="mx-auto flex max-w-[1580px] flex-1 justify-center gap-10 p-3">
-    //     <aside className="hidden flex-shrink-0 flex-col py-4 xl:flex">
-    //       <header className="mb-8 px-4">
-    //         <Link className="flex items-center gap-2" href="/">
-    //           <Image
-    //             src="/img/logo-dark.svg"
-    //             alt="heartbeat logo"
-    //             width={42}
-    //             height={42}
-    //             className="hidden md:block"
-    //           />
-    //           <h2 className="text-2xl font-medium text-white">Mednow</h2>
-    //         </Link>
-    //       </header>
-    //       <nav></nav>
-    //     </aside>
-    //     <main className="relative flex w-full flex-col items-center gap-8 rounded-3xl bg-white px-2 py-14 md:px-3 lg:px-6 xl:w-[80%]">
     <div className="flex flex-col items-center gap-8 py-14">
       <h1 className="text-center text-3xl font-semibold">Your Upcoming Appointments</h1>
       <div className="mt-4 max-w-[500px]">
@@ -74,7 +56,7 @@ export default function AppointmentsPage() {
             <div className="flex flex-1 flex-col justify-center gap-4">
               <div className="flex w-full items-center gap-4 rounded-3xl p-5 pr-7 shadow">
                 <div className={cn(patientBgColor, "w-fit rounded-2xl p-4")}>
-                  <Clock className="h-5 w-5" />
+                  <User className="h-5 w-5" />
                 </div>
                 <div>
                   <h2 className="text-xs font-semibold text-gray">Patient</h2>
@@ -113,8 +95,5 @@ export default function AppointmentsPage() {
         </article>
       ))}
     </div>
-    //     </main>
-    //   </div>
-    // </div>
   );
 }
