@@ -109,13 +109,14 @@ export default function AppointmentCreator({ doctors, state, dispatch }: Appoint
     try {
       const doctorId = state.doctor.id;
       const patientId = state.patient.id;
-      const startTime = joinDateTime(state.slot.date, state.slot.hour);
+      const startTime = joinDateTime(state.slot.date, state.slot.hour).toISOString();
+      console.log("🚀 ~ onBookClick ~ startTime:", startTime);
       const duration = state.slot.duration;
 
       const createAppointmentResult = await createAppointment(
         objectToFormData({ doctorId, patientId, startTime, duration }),
       );
-      console.log("🚀 ~ onBookClick ~ createAppointmentResult:", createAppointmentResult);
+      // console.log("🚀 ~ onBookClick ~ createAppointmentResult:", createAppointmentResult);
 
       if (!createAppointmentResult.ok) {
         setMessage(displayError(createAppointmentResult));

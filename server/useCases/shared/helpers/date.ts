@@ -1,5 +1,5 @@
 import { DURATION_UNIT, weekdays } from "@/server/config/constants";
-import { differenceInMinutes, getHours, getMinutes, parse, set, startOfDay } from "date-fns";
+import { differenceInMinutes, getHours, getMinutes, parse, set } from "date-fns";
 
 export function getHoursStr(date: Date | string) {
   return (typeof date === "string" ? new Date(date) : date).toLocaleTimeString("en-US", {
@@ -14,14 +14,14 @@ export function getHourMinNums(hourStr: string) {
 }
 
 export function joinDateTime(date: string, hourStr: string) {
+  console.log("🚀 ~ joinDateTime ~ date:", date);
+  console.log("🚀 ~ joinDateTime ~ hourStr:", hourStr);
   const [hours, minutes] = getHourMinNums(hourStr);
 
-  return set(new Date(date), {
-    hours,
-    minutes,
-    seconds: 0,
-    milliseconds: 0,
-  });
+  const newDate = new Date(date);
+  newDate.setUTCHours(hours, minutes, 0, 0);
+  console.log("🚀 ~ joinDateTime ~ newDate:", newDate.toISOString());
+  return newDate;
 }
 
 export function displayDate(date: Date) {
@@ -45,7 +45,7 @@ export function getWeekday(date: Date) {
 }
 
 export function getDateStr(date: Date) {
-  return startOfDay(date).toISOString();
+  return setToMidnightUTC(date).toISOString();
 }
 
 export function toGCISoString(date: Date) {

@@ -5,7 +5,7 @@ import { idLabels } from "@/server/config/constants";
 import { DoctorModel } from "@/server/domain/models/doctorModel";
 import { PatientModel } from "@/server/domain/models/patientModel";
 import { displayDate } from "@/server/useCases/shared/helpers/date";
-import { format } from "date-fns";
+import { formatInTimeZone } from "date-fns-tz";
 
 import { CalendarDays, Clock, Cross, User } from "lucide-react";
 
@@ -28,6 +28,7 @@ export default function AppointmentSummaryCard({
   onBookClick,
   className,
 }: SummaryCardProps) {
+  // console.log("🚀 ~ slot:", slot);
   const dateBgColor = colorize(1);
   const hourBgColor = colorize(2);
 
@@ -52,7 +53,7 @@ export default function AppointmentSummaryCard({
               </div>
               <div>
                 <h2 className="text-xs font-semibold text-gray">Date</h2>
-                <p className="text-base font-medium">{format(slot.date, "PPP")}</p>
+                <p className="text-base font-medium">{formatInTimeZone(slot.date, "UTC", "PPP")}</p>
               </div>
             </div>
             <div className="flex w-fit items-center gap-4 rounded-3xl p-5 pr-7 shadow">
