@@ -64,7 +64,7 @@ export class CreateAppointmentUseCase implements UseCase {
     }
 
     const patientExistsResult = await this.patientsRepository.getById(patientId);
-    console.log("🚀 ~ CreateAppointmentUseCase ~ patientExistsResult:", patientExistsResult);
+    // console.log("🚀 ~ CreateAppointmentUseCase ~ patientExistsResult:", patientExistsResult);
     if (!patientExistsResult.ok) {
       return new PatientNotFoundFailure(patientId);
     }
