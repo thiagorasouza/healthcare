@@ -4,7 +4,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { PlusCircle } from "lucide-react";
 import Link from "next/link";
 
-export function AppointmentsCard() {
+export function AppointmentsCard({ shrink = false }: { shrink?: boolean }) {
   return (
     <Card className="shadow">
       <CardHeader>
@@ -24,7 +24,7 @@ export function AppointmentsCard() {
         </div>
       </CardHeader>
       <CardContent>
-        <AppointmentsTable />
+        <AppointmentsTable shrink={shrink} />
       </CardContent>
     </Card>
   );

@@ -23,7 +23,7 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
 
-export default function AppointmentsTable() {
+export default function AppointmentsTable({ shrink = false }: { shrink?: boolean }) {
   const { openDeleteDialog, deleteDialog } = useDeleteDialog(handleDelete);
   const [appointments, setAppointments] = useState<AppointmentHydrated[] | "error">();
 
@@ -98,7 +98,7 @@ export default function AppointmentsTable() {
             <TableHead>Patient</TableHead>
             <TableHead>Date</TableHead>
             <TableHead>Hours</TableHead>
-            <TableHead>Duration</TableHead>
+            {!shrink && <TableHead>Duration</TableHead>}
             <TableHead className="text-right">Actions</TableHead>
           </TableRow>
         </TableHeader>
@@ -114,7 +114,7 @@ export default function AppointmentsTable() {
               <TableCell>{ap.patient.name}</TableCell>
               <TableCell>{displayDate(ap.startTime)}</TableCell>
               <TableCell>{displayTime(ap.startTime)}</TableCell>
-              <TableCell>{displayDuration(ap.duration)}</TableCell>
+              {!shrink && <TableCell>{displayDuration(ap.duration)}</TableCell>}
               <TableCell className="flex justify-end gap-2">
                 <Button
                   size="sm"
@@ -127,12 +127,12 @@ export default function AppointmentsTable() {
                   }
                 >
                   <Trash2 className="h-4 w-4" />
-                  Delete
+                  {!shrink ? "Delete" : ""}
                 </Button>
                 <Button size="sm" asChild>
                   <Link href={`/admin/appointments/${ap.id}`}>
                     <SquarePen className="h-4 w-4" />
-                    Edit
+                    {!shrink ? "Edit" : ""}
                   </Link>
                 </Button>
               </TableCell>

@@ -9,6 +9,7 @@ import React, { ReactElement, useEffect, useState } from "react";
 import Link from "next/link";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { LoadingSpinner } from "@/components/ui/loading-spinner";
+import SlotsCard from "@/components/slots/SlotsCard";
 
 export default function DashboardPage() {
   const [doctorsCount, setDoctorsCount] = useState<string | "error">();
@@ -34,8 +35,8 @@ export default function DashboardPage() {
 
   return (
     <>
-      <div className="space-y-4 md:space-y-8">
-        <div className="grid gap-4 md:grid-cols-2 md:gap-8 lg:grid-cols-3">
+      <div className="space-y-4 md:space-y-6">
+        <div className="grid gap-4 md:grid-cols-2 md:gap-6 lg:grid-cols-3">
           <DashboardStatsCard
             title="Doctors"
             stats={doctorsCount}
@@ -55,8 +56,13 @@ export default function DashboardPage() {
             href="/admin/appointments"
           />
         </div>
-        <div>
-          <AppointmentsCard />
+        <div className="grid grid-cols-3 gap-6">
+          <div className="col-span-2">
+            <AppointmentsCard shrink={true} />
+          </div>
+          <div>
+            <SlotsCard />
+          </div>
         </div>
       </div>
     </>
