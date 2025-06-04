@@ -37,8 +37,10 @@ import {
 import { useEffect, useMemo, useState } from "react";
 import { toast } from "sonner";
 import { AdminBreadcrumbWithBackLink } from "@/components/admin/AdminBreadcrumbWithBackLink";
+import { listDoctors } from "@/server/actions/listDoctors.bypass";
 
 export default function SlotsPage() {
+  const [doctors, setDoctors] = useState<DoctorModel[] | "error">();
   const [doctor, setDoctor] = useState<DoctorModel | "error">();
   const [slots, setSlots] = useState<SlotsModel | "error">();
   const [patterns, setPatterns] = useState<PatternModel[] | "error">();
@@ -84,8 +86,9 @@ export default function SlotsPage() {
     }
   }
 
-  const idle = !doctor || !slots || !patterns;
-  const error = doctor === "error" || slots === "error" || patterns === "error";
+  const idle = !doctors || !doctor || !slots || !patterns;
+  const error =
+    doctors === "error" || doctor === "error" || slots === "error" || patterns === "error";
 
   const dates = useMemo(() => {
     if (idle || error) return [];
@@ -135,6 +138,25 @@ export default function SlotsPage() {
     }
   }
 
+  useEffect(() => {
+    async function loadDoctors() {
+      try {
+        const doctorsResult = await listDoctors();
+        if (!doctorsResult.ok) {
+          throw doctorsResult.error;
+        }
+        const doctors = doctorsResult.value;
+        setDoctors(doctors);
+        loadDoctorSlots(doctors[0]);
+      } catch (error) {
+        console.log(error);
+        setDoctors("error");
+      }
+    }
+
+    loadDoctors();
+  }, []);
+
   if (error) {
     return <ErrorCard text="There was an error while trying to load this page." />;
   }
@@ -161,62 +183,70 @@ export default function SlotsPage() {
       <div className="mx-auto w-full max-w-[800px] space-y-4">
         <AdminBreadcrumbWithBackLink backLink="/admin" />
         <DefaultCard title="Slots" description="Select a doctor to manage available slots">
-          <SearchDoctorForm onSelect={loadDoctorSlots} className="mb-6" />
-          {loading && (
+          {(loading || idle) && (
             <div className="flex items-center justify-center py-4">
               <LoadingSpinner />
             </div>
           )}
+
           {!idle && !loading && (
-            <div className="flex flex-col gap-6">
-              <div className="flex gap-6">
-                <div className="flex flex-col gap-3">
-                  <p className="text-sm font-semibold">All Dates:</p>
-                  <div className="w-max rounded-md border shadow-md">
-                    <DateTimePicker
-                      value={selectedDate}
-                      onChange={setSelectedDate}
-                      granularity="day"
-                      className="w-full"
-                      noPopover={true}
-                      type="future"
-                      {...(dates.length > 0
-                        ? {
-                            startMonth: new Date(dates[0]),
-                            endMonth: new Date(dates[dates.length - 1]),
-                            disabledFn: (date) =>
-                              !dates.includes(setToMidnightUTC(date).toISOString()),
-                          }
-                        : { disabledFn: () => true })}
-                    />
+            <>
+              <SearchDoctorForm
+                doctors={doctors}
+                onSelect={loadDoctorSlots}
+                className="mb-6"
+                selectFirst
+              />
+              <div className="flex flex-col gap-6">
+                <div className="flex gap-6">
+                  <div className="flex flex-col gap-3">
+                    <p className="text-sm font-semibold">All Dates:</p>
+                    <div className="w-max rounded-md border shadow-md">
+                      <DateTimePicker
+                        value={selectedDate}
+                        onChange={setSelectedDate}
+                        granularity="day"
+                        className="w-full"
+                        noPopover={true}
+                        type="future"
+                        {...(dates.length > 0
+                          ? {
+                              startMonth: new Date(dates[0]),
+                              endMonth: new Date(dates[dates.length - 1]),
+                              disabledFn: (date) =>
+                                !dates.includes(setToMidnightUTC(date).toISOString()),
+                            }
+                          : { disabledFn: () => true })}
+                      />
+                    </div>
+                  </div>
+                  <div className="flex flex-col gap-3">
+                    <p className="text-sm font-semibold">Hours:</p>
+                    <Hours hours={hours} />
                   </div>
                 </div>
                 <div className="flex flex-col gap-3">
-                  <p className="text-sm font-semibold">Hours:</p>
-                  <Hours hours={hours} />
-                </div>
-              </div>
-              <div className="flex flex-col gap-3">
-                <p className="text-sm font-semibold">Patterns:</p>
-                <div className="grid grid-cols-2 gap-6">
-                  {patterns.map((pattern) => (
-                    <Pattern
-                      key={pattern.id}
-                      pattern={pattern}
-                      onEditClick={editPatternClick}
-                      openDeleteDialog={openDeleteDialog}
-                    />
-                  ))}
-                  <div
-                    className="group flex cursor-pointer items-center justify-center gap-2 rounded-md border px-8 py-4 text-sm shadow-md"
-                    onClick={createPatternClick}
-                  >
-                    <CirclePlus className="h-5 w-5 transition-all group-hover:scale-110" />
-                    <div className="text-base font-semibold">New pattern</div>
+                  <p className="text-sm font-semibold">Patterns:</p>
+                  <div className="grid grid-cols-2 gap-6">
+                    {patterns.map((pattern) => (
+                      <Pattern
+                        key={pattern.id}
+                        pattern={pattern}
+                        onEditClick={editPatternClick}
+                        openDeleteDialog={openDeleteDialog}
+                      />
+                    ))}
+                    <div
+                      className="group flex cursor-pointer items-center justify-center gap-2 rounded-md border px-8 py-4 text-sm shadow-md"
+                      onClick={createPatternClick}
+                    >
+                      <CirclePlus className="h-5 w-5 transition-all group-hover:scale-110" />
+                      <div className="text-base font-semibold">New pattern</div>
+                    </div>
                   </div>
                 </div>
               </div>
-            </div>
+            </>
           )}
         </DefaultCard>
       </div>

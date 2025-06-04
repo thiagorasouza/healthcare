@@ -13,40 +13,23 @@ const searchDoctorSchema = z.object({
 
 type SearchDoctorForm = z.infer<typeof searchDoctorSchema>;
 
-export function SearchDoctorForm({
-  onSelect,
-  className,
-}: {
+interface SearchDoctorFormProps {
+  doctors: DoctorModel[];
   onSelect: (doctor: DoctorModel) => void;
   className?: string;
-}) {
-  const [doctors, setDoctors] = useState<DoctorModel[] | "error">();
+  selectFirst?: boolean;
+}
 
-  async function loadDoctors() {
-    try {
-      const doctorsResult = await listDoctors();
-      if (!doctorsResult.ok) {
-        throw doctorsResult.error;
-      }
-      setDoctors(doctorsResult.value);
-      // For demo purposes
-    } catch (error) {
-      console.log(error);
-      setDoctors("error");
-    }
-  }
-
-  useEffect(() => {
-    loadDoctors();
-  }, []);
-
-  const error = doctors === "error";
-  const loading = !doctors;
-
+export function SearchDoctorForm({
+  doctors,
+  onSelect,
+  className,
+  selectFirst = false,
+}: SearchDoctorFormProps) {
   const form = useForm<SearchDoctorForm>({
     resolver: zodResolver(searchDoctorSchema),
     defaultValues: {
-      doctorId: "677d41f0001a454b1602",
+      doctorId: selectFirst ? doctors[0].id : undefined,
     },
   });
 
@@ -60,7 +43,8 @@ export function SearchDoctorForm({
           label="Doctor"
           name="doctorId"
           parameter="name"
-          entities={!error && !loading ? doctors : undefined}
+          defaultValue={selectFirst ? doctors[0] : undefined}
+          entities={doctors}
           makeText={(doctor) => `${doctor.name} | ${doctor.specialty}`}
           makeLink={(doctor) => `/admin/doctors/${doctor.id}`}
           onSelect={onSelect}
