@@ -232,7 +232,7 @@ export default function SlotsCard() {
               {/* Patterns */}
               <div className="flex flex-col gap-3">
                 <p className="text-sm font-semibold">Patterns:</p>
-                <div className="grid grid-cols-[repeat(auto-fit,minmax(320px,1fr))] gap-6">
+                <div className="grid gap-6 xl:grid-cols-[repeat(auto-fit,minmax(320px,1fr))]">
                   {patterns.map((pattern) => (
                     <Pattern
                       key={pattern.id}

@@ -56,8 +56,8 @@ export default function DashboardPage() {
             href="/admin/appointments"
           />
         </div>
-        <div className="grid grid-cols-3 gap-6">
-          <div className="col-span-2">
+        <div className="grid gap-6 lg:grid-cols-3">
+          <div className="lg:col-span-2">
             <AppointmentsCard shrink={true} />
           </div>
           <div>
