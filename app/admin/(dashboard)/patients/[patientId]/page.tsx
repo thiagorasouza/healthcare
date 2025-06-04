@@ -19,21 +19,21 @@ export default function PatientEditPage({ params }: { params: { patientId: strin
   const { patientId } = params;
   const [patient, setPatient] = useState<PatientModel | "error">();
 
-  async function loadPatient() {
-    try {
-      const patientResult = await getPatient(objectToFormData({ id: patientId }));
-      if (!patientResult.ok) {
-        setPatient("error");
-        return;
-      }
-      setPatient(patientResult.value);
-    } catch (error) {
-      console.log(error);
-      setPatient("error");
-    }
-  }
-
   useEffect(() => {
+    async function loadPatient() {
+      try {
+        const patientResult = await getPatient(objectToFormData({ id: patientId }));
+        if (!patientResult.ok) {
+          setPatient("error");
+          return;
+        }
+        setPatient(patientResult.value);
+      } catch (error) {
+        console.log(error);
+        setPatient("error");
+      }
+    }
+
     loadPatient();
   }, []);
 

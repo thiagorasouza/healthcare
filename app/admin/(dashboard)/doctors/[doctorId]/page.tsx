@@ -14,21 +14,21 @@ export default function PatientEditPage({ params }: { params: { doctorId: string
   const { doctorId } = params;
   const [doctor, setDoctor] = useState<DoctorModel | "error">();
 
-  async function loadDoctor() {
-    try {
-      const doctorResult = await getDoctor(objectToFormData({ id: doctorId }));
-      if (!doctorResult.ok) {
-        setDoctor("error");
-        return;
-      }
-      setDoctor(doctorResult.value);
-    } catch (error) {
-      console.log(error);
-      setDoctor("error");
-    }
-  }
-
   useEffect(() => {
+    async function loadDoctor() {
+      try {
+        const doctorResult = await getDoctor(objectToFormData({ id: doctorId }));
+        if (!doctorResult.ok) {
+          setDoctor("error");
+          return;
+        }
+        setDoctor(doctorResult.value);
+      } catch (error) {
+        console.log(error);
+        setDoctor("error");
+      }
+    }
+
     loadDoctor();
   }, []);
 

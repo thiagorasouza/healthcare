@@ -17,22 +17,21 @@ export default function EditAppointmentPage({ params }: { params: { appointmentI
   const loading = !appointment;
   const error = appointment === "error";
 
-  async function loadAppointment() {
-    try {
-      const appointmentResult = await getAppointment(objectToFormData({ id: appointmentId }));
-      if (!appointmentResult.ok) {
-        setAppointment("error");
-        return;
-      }
-      // console.log("🚀 ~ loadAppointment ~ appointmentResult:", appointmentResult);
-      setAppointment(appointmentResult.value);
-    } catch (error) {
-      console.log(error);
-      setAppointment("error");
-    }
-  }
-
   useEffect(() => {
+    async function loadAppointment() {
+      try {
+        const appointmentResult = await getAppointment(objectToFormData({ id: appointmentId }));
+        if (!appointmentResult.ok) {
+          setAppointment("error");
+          return;
+        }
+        // console.log("🚀 ~ loadAppointment ~ appointmentResult:", appointmentResult);
+        setAppointment(appointmentResult.value);
+      } catch (error) {
+        console.log(error);
+        setAppointment("error");
+      }
+    }
     loadAppointment();
   }, []);
 
