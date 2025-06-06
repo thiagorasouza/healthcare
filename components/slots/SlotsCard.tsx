@@ -91,7 +91,7 @@ export default function SlotsCard() {
 
   const dates = useMemo(() => {
     if (idle || error) return [];
-    return [...slots.keys()];
+    return [...slots.keys()].sort((a, b) => new Date(a).getTime() - new Date(b).getTime());
   }, [slots, error, idle]);
 
   const hours = useMemo(() => {

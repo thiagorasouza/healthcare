@@ -116,10 +116,8 @@ export function AppointmentForm({
 
   const dates = useMemo(() => {
     if (slotsLoading || slotsError) return [];
-    return [...slots.keys()];
+    return [...slots.keys()].sort((a, b) => new Date(a).getTime() - new Date(b).getTime());
   }, [slots, slotsError, slotsLoading]);
-
-  // console.log("🚀 ~ dates ~ dates:", dates);
 
   const selectedDate = form.watch("date");
   // console.log("🚀 ~ selectedDate:", selectedDate);

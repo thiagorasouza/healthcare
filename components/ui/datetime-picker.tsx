@@ -272,8 +272,8 @@ function Calendar({
     }
     return genMonths(
       locale,
-      startMonth ? getMonth(startMonth) : undefined,
-      endMonth ? getMonth(endMonth) : undefined,
+      startMonth ? startMonth.getUTCMonth() : undefined,
+      endMonth ? endMonth.getUTCMonth() : undefined,
     );
   }, [props.locale, endMonth, startMonth]);
 
