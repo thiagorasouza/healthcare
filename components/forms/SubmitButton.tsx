@@ -8,13 +8,15 @@ interface SubmitButtonProps {
   label: string;
   className?: string;
   disabled?: boolean;
+  outline?: boolean;
 }
 
-const SubmitButton = ({ form, label, className, disabled }: SubmitButtonProps) => {
+const SubmitButton = ({ form, label, className, disabled, outline = false }: SubmitButtonProps) => {
   return (
     <Button
       id="step-submit-button"
       type="submit"
+      variant={outline ? "outline" : "default"}
       data-cy="submit"
       className={cn("w-full", className)}
       disabled={form.formState.isSubmitting || disabled}

@@ -19,13 +19,14 @@ const steps: Tour[] = [
       {
         icon: "👋",
         title: "Welcome to Mednow",
-        content: (
-          <>
-            <p>This tour will help you to test this app and its main features.</p>
-            <br />
-            <p>First, start booking an appointment</p>
-          </>
-        ),
+        content: <p>This tour will help you to test this app and its main features.</p>,
+        // showSkip: true,
+        showControls: true,
+      },
+      {
+        icon: "🩺",
+        title: "Book an appointment",
+        content: <p>Start by booking an appointment</p>,
         selector: "#step-book",
         side: "right",
         showSkip: true,
@@ -34,11 +35,7 @@ const steps: Tour[] = [
       {
         icon: "⌨️",
         title: "Auto-type",
-        content: (
-          <>
-            <p>Use some help to fill the required fields.</p>
-          </>
-        ),
+        content: <p>Use some help to fill the required fields.</p>,
         selector: "#step-testing-option",
         side: "bottom",
         showSkip: true,
@@ -46,11 +43,7 @@ const steps: Tour[] = [
       {
         icon: "💾",
         title: "Save",
-        content: (
-          <>
-            <p>Save the mock data to proceed.</p>
-          </>
-        ),
+        content: <p>Save the mock data to proceed.</p>,
         selector: "#step-submit-button",
         side: "top",
         showSkip: true,
@@ -58,14 +51,20 @@ const steps: Tour[] = [
       {
         icon: "📩",
         title: "Email",
-        content: (
-          <>
-            <p>Receive all the booking information in your email.</p>
-          </>
-        ),
+        content: <p>Receive all the booking information in your email.</p>,
         selector: "#step-email-calendar",
         side: "top",
-        showSkip: true,
+        // showSkip: true,
+        showControls: true,
+      },
+      {
+        icon: "🔒",
+        title: "Dashboard",
+        content: <p>And do not forget to take a look at our fully functional dashboard</p>,
+        selector: "#step-dashboard",
+        side: "top-left",
+        pointerPadding: 15,
+        // showSkip: true,
         showControls: true,
       },
     ],
@@ -81,9 +80,7 @@ export default function RootLayout({
     <html lang="en" className="scrollbar-none">
       <body className={outfit.className}>
         <NextStepProvider>
-          <NextStep steps={steps} shadowOpacity="0.5">
-            {children}
-          </NextStep>
+          <NextStep steps={steps}>{children}</NextStep>
         </NextStepProvider>
         <Toaster />
       </body>

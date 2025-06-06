@@ -27,7 +27,7 @@ export function TestLoginForm({
           <span className="bg-background px-2 text-muted-foreground">Testing options</span>
         </div>
       </div>
-      <Button type="button" className="w-full" variant="outline" onClick={testLoginAsTestUser}>
+      <Button type="button" className="w-full" onClick={testLoginAsTestUser}>
         <FlaskConicalIcon className="mr-2 h-4 w-4" /> Login as a Testing User
       </Button>
     </div>

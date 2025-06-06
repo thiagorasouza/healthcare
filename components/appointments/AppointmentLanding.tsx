@@ -83,7 +83,7 @@ export function AppointmentLanding({ onStartClick }: { onStartClick: () => void 
       />
 
       <button className="group absolute right-0 top-[5px] z-20 h-[52px] rounded-full bg-white p-[5px] focus:outline-none md:right-[10px] md:top-[10px]">
-        <Link href="/admin" className="flex items-center gap-[9px]">
+        <Link href="/admin" className="flex items-center gap-[9px]" target="_blank">
           <div
             className={cn(
               "flex h-[42px] w-[42px] items-center justify-center rounded-full bg-black",

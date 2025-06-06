@@ -66,7 +66,7 @@ export default function LoginForm() {
             readonly={fetching}
           />
           <PasswordField form={form} name="password" label="Password" readonly={fetching} />
-          <SubmitButton form={form} label="Submit" disabled={fetching} />
+          <SubmitButton form={form} label="Submit" disabled={fetching} outline />
         </form>
       </Form>
       <TestLoginForm form={form} formRef={formRef} />

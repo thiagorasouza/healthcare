@@ -79,7 +79,7 @@ export default function AppointmentCreator({ doctors, state, dispatch }: Appoint
 
   function onHourClick(hour: string, duration: number) {
     startNextStep("bookingTour");
-    setCurrentStep(1); // Auto-type button
+    setCurrentStep(2); // Auto-type button
     dispatch({ type: "set_hour_duration", payload: { hour, duration } });
     scrollToTop();
   }
@@ -143,7 +143,7 @@ export default function AppointmentCreator({ doctors, state, dispatch }: Appoint
         payload: { appointmentId: createAppointmentResult.value.id },
       });
       startNextStep("bookingTour");
-      setCurrentStep(3);
+      setCurrentStep(4);
     } catch (error) {
       console.log(error);
     } finally {

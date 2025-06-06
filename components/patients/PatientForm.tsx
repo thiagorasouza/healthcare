@@ -75,7 +75,7 @@ export default function PatientForm({
   }, [form, mode, patient?.identificationId]);
 
   async function fillWithTestingData() {
-    setCurrentStep(2); // Save button
+    setCurrentStep(3); // Save button
     const patientDataMock = await mockPatientData();
     form.reset({ ...patientDataMock });
   }

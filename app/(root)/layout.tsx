@@ -10,12 +10,14 @@ import {
   Clock,
   House,
   ListCheck,
+  Lock,
   Pointer,
   Search,
   UserRound,
 } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { ReactNode, useMemo, useReducer } from "react";
 
 interface MenuItem {
@@ -63,6 +65,7 @@ export const mainMenu: MenuItem[] = [
 ];
 
 export default function AppointmentLayout({ children }: { children: ReactNode }) {
+  const router = useRouter();
   const [state, dispatch] = useReducer(reducer, initialState);
 
   const phaseIndex = useMemo(() => {
@@ -80,7 +83,7 @@ export default function AppointmentLayout({ children }: { children: ReactNode })
         <div className="mx-auto flex max-w-[1580px] flex-1 justify-center gap-10 p-3">
           <aside className="hidden flex-shrink-0 flex-col py-4 xl:flex">
             <header className="mb-8 px-4">
-              <Link href="/" className="flex items-center gap-2">
+              <Link href="/" className="flex items-center gap-2" onClick={() => router.refresh()}>
                 <Image
                   src="/img/logo-dark.svg"
                   alt="heartbeat logo"
@@ -112,6 +115,15 @@ export default function AppointmentLayout({ children }: { children: ReactNode })
                   <Link href="/find" className="flex items-center gap-4">
                     <Search className="h-5 w-5" />
                     <p>Find</p>
+                  </Link>
+                </li>
+                <li
+                  id="step-dashboard"
+                  className="cursor-pointer rounded-full px-5 py-3 font-semibold transition duration-300 hover:rounded-full hover:bg-black hover:text-white"
+                >
+                  <Link href="/admin" className="flex items-center gap-4" target="_blank">
+                    <Lock className="h-5 w-5" />
+                    <p>Dashboard</p>
                   </Link>
                 </li>
               </ul>
