@@ -11,7 +11,7 @@ export function TestingOption({
   className?: string;
 }) {
   return (
-    <div className={className}>
+    <div id="step-testing-option" className={className}>
       <div className="relative mb-4">
         <div className="absolute inset-0 flex items-center">
           <span className="w-full border-t"></span>

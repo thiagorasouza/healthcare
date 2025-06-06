@@ -13,6 +13,7 @@ interface SubmitButtonProps {
 const SubmitButton = ({ form, label, className, disabled }: SubmitButtonProps) => {
   return (
     <Button
+      id="step-submit-button"
       type="submit"
       data-cy="submit"
       className={cn("w-full", className)}

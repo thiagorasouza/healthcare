@@ -6,11 +6,13 @@ import { ErrorScreen } from "@/components/shared/ErrorScreen";
 import { ReducerContext } from "@/lib/context/reducerContext";
 import { listDoctors } from "@/server/actions/listDoctors.bypass";
 import { DoctorModel } from "@/server/domain/models/doctorModel";
+import { useNextStep } from "nextstepjs";
 import { useContext, useEffect, useState } from "react";
 
 export default function BookingPage() {
   const [doctors, setDoctors] = useState<DoctorModel[] | "error">();
   const { state, dispatch } = useContext(ReducerContext);
+  const { startNextStep } = useNextStep();
 
   async function loadDoctors() {
     try {
@@ -29,6 +31,7 @@ export default function BookingPage() {
 
   useEffect(() => {
     loadDoctors();
+    startNextStep("bookingTour");
   }, []);
 
   if (!doctors) {

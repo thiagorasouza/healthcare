@@ -29,6 +29,7 @@ import {
   PatientFormData,
   patientFormSchema,
 } from "@/server/adapters/zod/patientValidator";
+import { useNextStep } from "nextstepjs";
 
 interface AppointmentCreatorProps {
   doctors: DoctorModel[];
@@ -39,6 +40,7 @@ interface AppointmentCreatorProps {
 export default function AppointmentCreator({ doctors, state, dispatch }: AppointmentCreatorProps) {
   const [message, setMessage] = useState("");
   const [loading, setLoading] = useState(false);
+  const { startNextStep, setCurrentStep, closeNextStep } = useNextStep();
 
   const form = useForm<PatientFormData>({
     resolver: zodResolver(patientFormSchema),
@@ -46,6 +48,7 @@ export default function AppointmentCreator({ doctors, state, dispatch }: Appoint
   });
 
   function onStartClick() {
+    closeNextStep();
     dispatch({ type: "start" });
   }
 
@@ -75,6 +78,8 @@ export default function AppointmentCreator({ doctors, state, dispatch }: Appoint
   }
 
   function onHourClick(hour: string, duration: number) {
+    startNextStep("bookingTour");
+    setCurrentStep(1); // Auto-type button
     dispatch({ type: "set_hour_duration", payload: { hour, duration } });
     scrollToTop();
   }
@@ -98,6 +103,7 @@ export default function AppointmentCreator({ doctors, state, dispatch }: Appoint
   }
 
   function onPatientSaved(patient: PatientModel) {
+    closeNextStep();
     dispatch({ type: "show_summary", payload: { patient } });
   }
 
@@ -136,6 +142,8 @@ export default function AppointmentCreator({ doctors, state, dispatch }: Appoint
         type: "show_confirmation",
         payload: { appointmentId: createAppointmentResult.value.id },
       });
+      startNextStep("bookingTour");
+      setCurrentStep(3);
     } catch (error) {
       console.log(error);
     } finally {

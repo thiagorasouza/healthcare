@@ -11,6 +11,7 @@ import { PatientModel } from "@/server/domain/models/patientModel";
 import { displayDate, joinDateTime } from "@/server/useCases/shared/helpers/date";
 import { format } from "date-fns";
 import { CalendarDays, CheckCircle, Clock, Cross, House, Mail, User } from "lucide-react";
+import { useNextStep } from "nextstepjs";
 
 interface AppointmentConfirmationCardProps {
   doctor: DoctorModel;
@@ -31,6 +32,7 @@ export function AppointmentConfirmationCard({
   appointmentId,
   onHomeClick,
 }: AppointmentConfirmationCardProps) {
+  const { closeNextStep } = useNextStep();
   const dateBgColor = colorize(1);
   const hourBgColor = colorize(2);
 
@@ -115,7 +117,11 @@ export function AppointmentConfirmationCard({
         </div>
       </section>
 
-      <div className="mt-4 flex flex-col gap-4 lg:flex-row">
+      <div
+        className="mt-4 flex flex-col gap-4 lg:flex-row"
+        id="step-email-calendar"
+        onClick={() => closeNextStep()}
+      >
         <Button variant="outline" onClick={onHomeClick}>
           <House />
           Back to Home

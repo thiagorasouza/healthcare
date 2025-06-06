@@ -22,6 +22,7 @@ export function AppointmentLanding({ onStartClick }: { onStartClick: () => void 
         <div className="mx-auto md:m-0">
           <div>
             <button
+              id="step-book"
               className="group flex h-[60px] w-[262px] items-center gap-[9px] rounded-full bg-darker-purple p-[5px] focus:outline-none"
               onClick={onStartClick}
             >
@@ -93,6 +94,7 @@ export function AppointmentLanding({ onStartClick }: { onStartClick: () => void 
             <LockOpen className="hidden h-4 w-4 text-white transition-all group-hover:block" />
           </div>
           <span
+            id="dashboard"
             className={cn(
               "mr-[27px] hidden font-semibold text-black md:block",
               "transition-all group-hover:text-dark-gray",
