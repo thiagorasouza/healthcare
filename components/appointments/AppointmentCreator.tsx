@@ -23,7 +23,7 @@ import { AppointmentConfirmationCard } from "@/components/appointments/Appointme
 import { LoadingSpinner } from "@/components/ui/loading-spinner";
 import { SavingOverlay } from "@/components/shared/SavingOverlay";
 import { AppointmentLanding } from "@/components/appointments/AppointmentLanding";
-import { saveAppointmentLS } from "@/lib/actions/localStorage";
+import { saveAppointmentLS, setTourState } from "@/lib/actions/localStorage";
 import {
   patientDefaultValues,
   PatientFormData,
@@ -143,7 +143,8 @@ export default function AppointmentCreator({ doctors, state, dispatch }: Appoint
         payload: { appointmentId: createAppointmentResult.value.id },
       });
       startNextStep("bookingTour");
-      setCurrentStep(4);
+      setCurrentStep(3);
+      setTourState("hide");
     } catch (error) {
       console.log(error);
     } finally {

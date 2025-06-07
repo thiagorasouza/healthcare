@@ -120,7 +120,9 @@ export function AppointmentConfirmationCard({
       <div
         className="mt-4 flex flex-col gap-4 lg:flex-row"
         id="step-email-calendar"
-        onClick={() => closeNextStep()}
+        onClick={() => {
+          closeNextStep();
+        }}
       >
         <Button variant="outline" onClick={onHomeClick}>
           <House />

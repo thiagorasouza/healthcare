@@ -13,6 +13,29 @@ export interface AppointmentPublicData {
   duration: number;
 }
 
+type TourState = "show" | "hide";
+
+export function getTourState(): TourState {
+  try {
+    const tourState = localStorage.getItem("tourState");
+    return tourState === "hide" ? tourState : "show";
+  } catch (error) {
+    console.log(error);
+    return "show";
+  }
+}
+
+export function setTourState(tourState: TourState) {
+  console.log("Setting tour state");
+  try {
+    localStorage.setItem("tourState", tourState);
+    return true;
+  } catch (error) {
+    console.log(error);
+    return false;
+  }
+}
+
 export function saveAppointmentLS(newData: AppointmentPublicData) {
   try {
     const localData = getAppointmentsLS();

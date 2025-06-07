@@ -3,6 +3,8 @@
 import LoadingPage from "@/app/loading";
 import AppointmentCreator from "@/components/appointments/AppointmentCreator";
 import { ErrorScreen } from "@/components/shared/ErrorScreen";
+import RestartTour from "@/components/shared/RestartTour";
+import { getTourState } from "@/lib/actions/localStorage";
 import { ReducerContext } from "@/lib/context/reducerContext";
 import { listDoctors } from "@/server/actions/listDoctors.bypass";
 import { DoctorModel } from "@/server/domain/models/doctorModel";
@@ -31,7 +33,10 @@ export default function BookingPage() {
 
   useEffect(() => {
     loadDoctors();
-    startNextStep("bookingTour");
+    const tourState = getTourState();
+    if (tourState === "show") {
+      startNextStep("bookingTour");
+    }
   }, []);
 
   if (!doctors) {
@@ -48,6 +53,11 @@ export default function BookingPage() {
       <ErrorScreen title="Error" message="Sorry, there are no doctors available." refresh={false} />
     );
   } else {
-    return <AppointmentCreator doctors={doctors} state={state} dispatch={dispatch} />;
+    return (
+      <>
+        <RestartTour />
+        <AppointmentCreator doctors={doctors} state={state} dispatch={dispatch} />
+      </>
+    );
   }
 }

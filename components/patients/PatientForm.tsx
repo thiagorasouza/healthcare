@@ -48,7 +48,6 @@ export default function PatientForm({
 }: CreatePatientProps | UpdatePatientProps) {
   const [message, setMessage] = useState("");
   const [loading, setLoading] = useState(false);
-  const { setCurrentStep } = useNextStep();
 
   // Creates a mock PDF from patient.identificationId when editting a patient
   useEffect(() => {
@@ -75,7 +74,6 @@ export default function PatientForm({
   }, [form, mode, patient?.identificationId]);
 
   async function fillWithTestingData() {
-    setCurrentStep(3); // Save button
     const patientDataMock = await mockPatientData();
     form.reset({ ...patientDataMock });
   }

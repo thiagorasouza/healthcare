@@ -41,14 +41,6 @@ const steps: Tour[] = [
         showSkip: true,
       },
       {
-        icon: "💾",
-        title: "Save",
-        content: <p>Save the mock data to proceed.</p>,
-        selector: "#step-submit-button",
-        side: "top",
-        showSkip: true,
-      },
-      {
         icon: "📩",
         title: "Email",
         content: <p>Receive all the booking information in your email.</p>,
@@ -80,7 +72,9 @@ export default function RootLayout({
     <html lang="en" className="scrollbar-none">
       <body className={outfit.className}>
         <NextStepProvider>
-          <NextStep steps={steps}>{children}</NextStep>
+          <NextStep steps={steps} disableConsoleLogs>
+            {children}
+          </NextStep>
         </NextStepProvider>
         <Toaster />
       </body>
