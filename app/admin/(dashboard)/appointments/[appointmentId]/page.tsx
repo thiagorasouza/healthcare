@@ -25,7 +25,6 @@ export default function EditAppointmentPage({ params }: { params: { appointmentI
           setAppointment("error");
           return;
         }
-        // console.log("🚀 ~ loadAppointment ~ appointmentResult:", appointmentResult);
         setAppointment(appointmentResult.value);
       } catch (error) {
         console.log(error);
@@ -33,7 +32,7 @@ export default function EditAppointmentPage({ params }: { params: { appointmentI
       }
     }
     loadAppointment();
-  }, []);
+  }, [appointmentId]);
 
   if (error) {
     return <ErrorCard text="Appointment not found" />;

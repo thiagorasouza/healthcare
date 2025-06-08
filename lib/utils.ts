@@ -199,6 +199,10 @@ export function scrollToTop() {
   window.scrollTo({ top: 0, behavior: "smooth" });
 }
 
+export function scrollToBottom() {
+  window.scrollTo({ top: document.body.clientHeight, behavior: "smooth" });
+}
+
 export function subtractTimeStrings(startTime: string, endTime: string): number {
   // Parse the time strings to Date objects (using a reference date, e.g., 1970-01-01)
   const formatString = "HH:mm";

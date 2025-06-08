@@ -35,7 +35,7 @@ export default function PatientEditPage({ params }: { params: { patientId: strin
     }
 
     loadPatient();
-  }, []);
+  }, [patientId]);
 
   const loading = !patient;
   const error = patient === "error";

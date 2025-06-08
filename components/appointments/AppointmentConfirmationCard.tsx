@@ -10,7 +10,9 @@ import { DoctorModel } from "@/server/domain/models/doctorModel";
 import { PatientModel } from "@/server/domain/models/patientModel";
 import { displayDate, joinDateTime } from "@/server/useCases/shared/helpers/date";
 import { format } from "date-fns";
-import { CalendarDays, CheckCircle, Clock, Cross, House, Mail, User } from "lucide-react";
+import { CalendarDays, CheckCircle, Clock, Cross, House, Lock, Mail, User } from "lucide-react";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useNextStep } from "nextstepjs";
 
 interface AppointmentConfirmationCardProps {
@@ -33,10 +35,15 @@ export function AppointmentConfirmationCard({
   onHomeClick,
 }: AppointmentConfirmationCardProps) {
   const { closeNextStep } = useNextStep();
+  const router = useRouter();
   const dateBgColor = colorize(1);
   const hourBgColor = colorize(2);
 
   const idTypeLabel = patient && idLabels[patient?.identificationType];
+
+  function onDashboardClick() {
+    router.push("/admin/login");
+  }
 
   return (
     <article className="lg:flex-center flex flex-col gap-6 py-8">
@@ -135,6 +142,10 @@ export function AppointmentConfirmationCard({
           startTime={joinDateTime(slot.date, slot.hour)}
           duration={slot.duration}
         />
+        <Button onClick={onDashboardClick} className="dashboard" id="step-dashboard">
+          <Lock />
+          Dashboard
+        </Button>
       </div>
     </article>
   );

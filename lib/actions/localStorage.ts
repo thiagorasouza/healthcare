@@ -26,7 +26,6 @@ export function getTourState(): TourState {
 }
 
 export function setTourState(tourState: TourState) {
-  console.log("Setting tour state");
   try {
     localStorage.setItem("tourState", tourState);
     return true;

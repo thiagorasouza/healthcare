@@ -56,8 +56,6 @@ export function AppointmentForm({
   const [patients, setPatients] = useState<PatientModel[] | "error">();
   const router = useRouter();
 
-  // console.log("🚀 ~ appointment:", appointment);
-
   const form = useForm<AppointmentFormData>({
     resolver: zodResolver(appointmentFormSchema),
     defaultValues: {
@@ -120,7 +118,6 @@ export function AppointmentForm({
   }, [slots, slotsError, slotsLoading]);
 
   const selectedDate = form.watch("date");
-  // console.log("🚀 ~ selectedDate:", selectedDate);
 
   const hours = useMemo(() => {
     const dateStr = setToMidnightUTC(selectedDate).toISOString();
@@ -130,7 +127,6 @@ export function AppointmentForm({
 
     return hours;
   }, [selectedDate, slotsLoading, slotsError, slots]);
-  // console.log("🚀 ~ hours ~ hours:", hours);
 
   async function loadDoctors() {
     try {

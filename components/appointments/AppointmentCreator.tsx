@@ -17,8 +17,8 @@ import { ErrorDialog } from "@/components/shared/ErrorDialog";
 import { displayError } from "@/server/config/errors";
 import { joinDateTime } from "@/server/useCases/shared/helpers/date";
 import { Button } from "@/components/ui/button";
-import { ArrowLeft } from "lucide-react";
-import { cn, scrollToTop } from "@/lib/utils";
+import { ArrowLeft, Router } from "lucide-react";
+import { cn, scrollToBottom, scrollToTop } from "@/lib/utils";
 import { AppointmentConfirmationCard } from "@/components/appointments/AppointmentConfirmationCard";
 import { LoadingSpinner } from "@/components/ui/loading-spinner";
 import { SavingOverlay } from "@/components/shared/SavingOverlay";
@@ -64,12 +64,12 @@ export default function AppointmentCreator({ doctors, state, dispatch }: Appoint
       const slotsResult = await getSlots(objectToFormData({ doctorId: doctor.id, startDate }));
 
       if (slotsResult.ok) {
-        // console.log("slotsResult", slotsResult);
         dispatch({ type: "set_doctor", payload: { doctor, slots: slotsResult.value } });
       }
     } catch (error) {
     } finally {
       setLoading(false);
+      scrollToBottom();
     }
   }
 
@@ -116,13 +116,11 @@ export default function AppointmentCreator({ doctors, state, dispatch }: Appoint
       const doctorId = state.doctor.id;
       const patientId = state.patient.id;
       const startTime = joinDateTime(state.slot.date, state.slot.hour).toISOString();
-      // console.log("🚀 ~ onBookClick ~ startTime:", startTime);
       const duration = state.slot.duration;
 
       const createAppointmentResult = await createAppointment(
         objectToFormData({ doctorId, patientId, startTime, duration }),
       );
-      // console.log("🚀 ~ onBookClick ~ createAppointmentResult:", createAppointmentResult);
 
       if (!createAppointmentResult.ok) {
         setMessage(displayError(createAppointmentResult));

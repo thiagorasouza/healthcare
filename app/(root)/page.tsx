@@ -16,22 +16,23 @@ export default function BookingPage() {
   const { state, dispatch } = useContext(ReducerContext);
   const { startNextStep } = useNextStep();
 
-  async function loadDoctors() {
-    try {
-      const doctorsResult = await listDoctors();
-      if (!doctorsResult.ok) {
-        setDoctors("error");
-        return;
-      }
-
-      setDoctors(doctorsResult.value);
-    } catch (error) {
-      console.log(error);
-      setDoctors("error");
-    }
-  }
-
+  // @estlint
   useEffect(() => {
+    async function loadDoctors() {
+      try {
+        const doctorsResult = await listDoctors();
+        if (!doctorsResult.ok) {
+          setDoctors("error");
+          return;
+        }
+
+        setDoctors(doctorsResult.value);
+      } catch (error) {
+        console.log(error);
+        setDoctors("error");
+      }
+    }
+
     loadDoctors();
     const tourState = getTourState();
     if (tourState === "show") {

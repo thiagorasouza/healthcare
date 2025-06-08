@@ -28,7 +28,6 @@ export default function AppointmentSummaryCard({
   onBookClick,
   className,
 }: SummaryCardProps) {
-  // console.log("🚀 ~ slot:", slot);
   const dateBgColor = colorize(1);
   const hourBgColor = colorize(2);
 

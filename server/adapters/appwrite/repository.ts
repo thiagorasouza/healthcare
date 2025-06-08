@@ -62,7 +62,6 @@ export abstract class Repository<Model> implements RepositoryInterface<Model> {
         this.collectionId,
         id,
       )) as Appwritify<Model>;
-      // console.log("🚀 ~ Repository<Model> ~ getById ~ result:", result);
 
       return new Success<Model>(this.map(result));
     } catch (error) {

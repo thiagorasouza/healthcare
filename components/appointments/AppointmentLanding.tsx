@@ -35,8 +35,8 @@ export function AppointmentLanding({ onStartClick }: { onStartClick: () => void 
                 <Image
                   src="/img/arrow.svg"
                   alt="user icon"
-                  width={18}
-                  height={18}
+                  width={19}
+                  height={16}
                   className="mt-[1px] text-white"
                 />
               </div>
@@ -76,6 +76,7 @@ export function AppointmentLanding({ onStartClick }: { onStartClick: () => void 
       <Image
         src="/img/landing-side.png"
         alt="Doctor"
+        priority={true}
         width={1418}
         height={2048}
         //   className="absolute bottom-0 top-0 z-10 h-full max-h-full object-contain object-right"

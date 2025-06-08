@@ -83,7 +83,11 @@ export default function AppointmentLayout({ children }: { children: ReactNode })
         <div className="mx-auto flex max-w-[1580px] flex-1 justify-center gap-10 p-3">
           <aside className="hidden flex-shrink-0 flex-col py-4 xl:flex">
             <header className="mb-8 px-4">
-              <Link href="/" className="flex items-center gap-2" onClick={() => router.refresh()}>
+              <Link
+                href="/"
+                className="flex items-center gap-2"
+                onClick={() => window.location.reload()}
+              >
                 <Image
                   src="/img/logo-dark.svg"
                   alt="heartbeat logo"
@@ -117,10 +121,7 @@ export default function AppointmentLayout({ children }: { children: ReactNode })
                     <p>Find</p>
                   </Link>
                 </li>
-                <li
-                  id="step-dashboard"
-                  className="cursor-pointer rounded-full px-5 py-3 font-semibold transition duration-300 hover:rounded-full hover:bg-black hover:text-white"
-                >
+                <li className="cursor-pointer rounded-full px-5 py-3 font-semibold transition duration-300 hover:rounded-full hover:bg-black hover:text-white">
                   <Link href="/admin" className="flex items-center gap-4" target="_blank">
                     <Lock className="h-5 w-5" />
                     <p>Dashboard</p>

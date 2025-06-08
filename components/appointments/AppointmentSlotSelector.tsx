@@ -22,7 +22,6 @@ interface Props {
 
 export function AppointmentSlotSelector({ slots, doctor, slot, onDateClick, onHourClick }: Props) {
   const dates = [...slots.keys()].slice(0, MAX_DATES);
-  // console.log("🚀 ~ AppointmentSlotSelector ~ dates:", dates);
   const dateSelected = slot?.date;
 
   let hours = (dateSelected && slots.get(dateSelected)) || [];
@@ -94,11 +93,8 @@ interface DateCardProps {
 }
 
 function DateCard({ dateStr, onDateClick, highlight = false }: DateCardProps) {
-  // console.log("🚀 ~ DateCard ~ dateStr:", dateStr);
   const date = new Date(dateStr);
-  // console.log("🚀 ~ DateCard ~ date:", date)
   const day = date.getUTCDate();
-  // console.log("🚀 ~ DateCard ~ day:", day);
   const weekday = capitalize(weekdays[date.getDay()]);
   return (
     <div
