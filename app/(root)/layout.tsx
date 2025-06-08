@@ -86,7 +86,7 @@ export default function AppointmentLayout({ children }: { children: ReactNode })
               <Link
                 href="/"
                 className="flex items-center gap-2"
-                onClick={() => window.location.reload()}
+                onClick={() => router.replace("/")}
               >
                 <Image
                   src="/img/logo-dark.svg"
